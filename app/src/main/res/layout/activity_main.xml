@@ -7,5 +7,51 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/presets_option_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_line"
+
+        android:text="@string/preset_option_button_text"
+        android:fontFamily="@font/montserrat_bold"
+
+        android:background="@color/green"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/direct_ai_using_option_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_line"
+
+        android:text="@string/direct_ai_using_option_button_text"
+        android:fontFamily="@font/montserrat_bold"
+
+        android:background="@color/yellow"
+        />
+
+    <View
+        android:id="@+id/horizontal_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+
+        android:background="@android:color/black"
+
+        android:orientation="horizontal"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintHorizontal_bias="0.5"
+        />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

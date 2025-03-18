@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Veritas</string>
+    <string name="preset_option_button_text">Режимы</string>
+    <string name="direct_ai_using_option_button_text">Использование ИИ напрямую</string>
 </resources>
