@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/fire_id"
+        android:enabled="true"
+        android:icon="@drawable/fire"
+        android:title="@string/preset_option_text" />
+
+    <item
+        android:id="@+id/ai_id"
+        android:enabled="true"
+        android:icon="@drawable/ai"
+        android:title="@string/direct_ai_using_option_text" />
+
+    <item android:id="@+id/settings_id"
+        android:enabled="true"
+        android:icon="@drawable/settings"
+        android:title="@string/settings_text" />
+
+</menu>

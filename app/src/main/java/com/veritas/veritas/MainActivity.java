@@ -1,29 +1,53 @@
 package com.veritas.veritas;
 
 import android.os.Bundle;
-import android.view.View;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppCompatButton presets_option_button;
-    private AppCompatButton direct_ai_using_option_button;
+    private final String TAG = "MainActivity";
+
+    private BottomNavigationView nav;
+
+    private int current_frag_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        presets_option_button = findViewById(R.id.presets_option_button);
-        direct_ai_using_option_button = findViewById(R.id.direct_ai_using_option_button);
 
-        presets_option_button.setOnClickListener(view -> {
+        nav = findViewById(R.id.bottom_navigation);
 
+        FragmentWorking fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager());
+
+        current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
+
+        nav.setOnItemSelectedListener(item -> {
+
+            int id = item.getItemId();
+
+            if (id == R.id.fire_id && current_frag_id != R.id.fire_id) {
+                current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
+                return true;
+            }
+
+            else if (id == R.id.ai_id && current_frag_id != R.id.ai_id) {
+                current_frag_id = fw.setFragment(R.id.ai_direct_using_fragment);
+                return true;
+            }
+
+            else if (id == R.id.settings_id && current_frag_id != R.id.settings_id) {
+                current_frag_id = fw.setFragment(R.id.settings_fragment);
+                return true;
+            }
+
+            else {
+                return false;
+            }
         });
+
+
     }
 }
