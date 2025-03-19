@@ -3,4 +3,10 @@
     <string name="preset_option_text">Режимы</string>
     <string name="direct_ai_using_option_text">ИИ</string>
     <string name="settings_text">Настройки</string>
+    <string name="user_add_button_text">Добавить игрока</string>
+    <string name="name">Имя</string>
+    <string name="male">Мужчина</string>
+    <string name="female">Женщина</string>
+    <string name="add">Добавить</string>
+    <string name="cancel">Отмена</string>
 </resources>
