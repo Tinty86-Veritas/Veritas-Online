@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.veritas.veritas.DB.entity.Sex;
 
 public class SexesTable {
-    private static final String DATABASE_NAME = "veritas.db";
+    private static final String DATABASE_NAME = "users.db";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_NAME = "sexes";
 
@@ -25,12 +25,12 @@ public class SexesTable {
         mDataBase = mOpenHelper.getWritableDatabase();
     }
 
-    public Sex select(long id) {
+    public String select(long id) {
         Cursor mCursor = mDataBase.query(TABLE_NAME, null, COLUMN_ID + " = ?", new String[] {String.valueOf(id)}, null, null, null);
 
         mCursor.moveToFirst();
         String title = mCursor.getString(NUM_COLUMN_TITLE);
-        return new Sex(id, title);
+        return title;
     }
 
     public void drop() {

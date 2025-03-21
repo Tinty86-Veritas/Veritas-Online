@@ -17,7 +17,7 @@ import com.veritas.veritas.R;
 public class UserAddDialog extends DialogFragment {
 
     public interface UserAddDialogListener {
-        void onUserAdded(String name, String sex);
+        void onUserAdded(String name, long sex);
     }
 
     private UserAddDialogListener listener;
@@ -38,16 +38,16 @@ public class UserAddDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
 
-                        String selected_sex;
+                        int selected_sex;
 
                         String name = String.valueOf(((EditText) view.findViewById(R.id.edit_text_name)).getText());
 
                         int selected_sex_id = ((RadioGroup) view.findViewById(R.id.sex_radio_group)).getCheckedRadioButtonId();
 
                         if (selected_sex_id == R.id.radio_button_male) {
-                            selected_sex = getString(R.string.male);
+                            selected_sex = 1;
                         } else {
-                            selected_sex = getString(R.string.female);
+                            selected_sex = 2;
                         }
 
                         Log.i("UserAddDialog", "name: " + name + "\nsex: " + selected_sex);

@@ -6,42 +6,46 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.veritas.veritas.DB.entity.User;
+import com.veritas.veritas.Adapters.entity.User;
+import com.veritas.veritas.DB.entity.UserEntityDB;
 
 import java.util.ArrayList;
 
-public class UsersTable {
-    private static final String DATABASE_NAME = "veritas.db";
+public class PlayersTable {
+    private static final String TABLE_NAME = "players";
+    private static final String DATABASE_NAME = "users.db";
     private static final int DATABASE_VERSION = 1;
-    private static final String TABLE_NAME = "users";
 
     private static final String COLUMN_ID = "id";
-    private static final String COLUMN_NAME = "Name";
-    private static final String COLUMN_SEX = "Sex_id";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_SEX_ID = "sex_id";
 
     private static final int NUM_COLUMN_ID = 0;
     private static final int NUM_COLUMN_NAME = 1;
-    private static final int NUM_COLUMN_SEX = 2;
+    private static final int NUM_COLUMN_SEXID = 2;
 
     private SQLiteDatabase mDataBase;
 
-    public UsersTable(Context context) {
+    private Context context;
+
+    public PlayersTable(Context context) {
+        this.context = context;
         OpenHelper mOpenHelper = new OpenHelper(context);
         mDataBase = mOpenHelper.getWritableDatabase();
     }
 
-    public long insert(String name,String sex) {
+    public long insert(String name, long sex_id) {
         ContentValues cv=new ContentValues();
         cv.put(COLUMN_NAME, name);
-        cv.put(COLUMN_SEX, sex);
+        cv.put(COLUMN_SEX_ID, sex_id);
         return mDataBase.insert(TABLE_NAME, null, cv);
     }
 
-    public int update(User user) {
+    public int update(UserEntityDB userEntityDB) {
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_NAME, user.getName());
-        cv.put(COLUMN_SEX, user.getSex());
-        return mDataBase.update(TABLE_NAME, cv, COLUMN_ID + " = ?", new String[] {String.valueOf(user.getId())});
+        cv.put(COLUMN_NAME, userEntityDB.getName());
+        cv.put(COLUMN_SEX_ID, userEntityDB.getSexId());
+        return mDataBase.update(TABLE_NAME, cv, COLUMN_ID + " = ?", new String[] {String.valueOf(userEntityDB.getId())});
     }
 
     public void deleteAll() {
@@ -52,26 +56,27 @@ public class UsersTable {
         mDataBase.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[] {String.valueOf(id)});
     }
 
-    public User select(long id) {
+    public UserEntityDB select(long id) {
         Cursor mCursor = mDataBase.query(TABLE_NAME, null, COLUMN_ID + " = ?", new String[] {String.valueOf(id)}, null, null, null);
 
         mCursor.moveToFirst();
         String name = mCursor.getString(NUM_COLUMN_NAME);
-        String sex = mCursor.getString(NUM_COLUMN_SEX);
-        return new User(id, name, sex);
+        long sex_id = Long.parseLong(mCursor.getString(NUM_COLUMN_SEXID));
+        return new UserEntityDB(id, name, sex_id);
     }
 
     public ArrayList<User> selectAll() {
         Cursor mCursor = mDataBase.query(TABLE_NAME, null, null, null, null, null, null);
 
         ArrayList<User> arr = new ArrayList<User>();
+        SexesTable sexesTable = new SexesTable(context);
         mCursor.moveToFirst();
         if (!mCursor.isAfterLast()) {
             do {
-                long id = mCursor.getLong(NUM_COLUMN_ID);
                 String name = mCursor.getString(NUM_COLUMN_NAME);
-                String sex = mCursor.getString(NUM_COLUMN_SEX);
-                arr.add(new User(id, name, sex));
+                long sex_id = Long.parseLong(mCursor.getString(NUM_COLUMN_SEXID));
+                String sex = sexesTable.select(sex_id);
+                arr.add(new User(name, sex));
             } while (mCursor.moveToNext());
         }
         return arr;
@@ -86,14 +91,15 @@ public class UsersTable {
         OpenHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
+
         @Override
         public void onCreate(SQLiteDatabase db) {
 
             String query = "CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     COLUMN_NAME+ " TEXT NOT NULL, " +
-                    COLUMN_SEX + " INTEGER NOT NULL," +
-                    "FOREIGN KEY (" + COLUMN_SEX + ") REFERENCES sexes(id)" + ");";
+                    COLUMN_SEX_ID + " INTEGER NOT NULL," +
+                    "FOREIGN KEY (" + COLUMN_SEX_ID + ") REFERENCES sexes(id)" + ");";
             db.execSQL(query);
         }
 

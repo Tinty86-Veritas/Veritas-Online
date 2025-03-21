@@ -2,15 +2,15 @@ package com.veritas.veritas.DB.entity;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class UserEntityDB implements Serializable {
     private final long id;
     private final String name;
-    private final String sex;
+    private final long sex_id;
 
-    public User(long id, String name, String sex) {
+    public UserEntityDB(long id, String name, long sex_id) {
         this.id = id;
         this.name = name;
-        this.sex = sex;
+        this.sex_id = sex_id;
     }
 
     public long getId() {
@@ -21,7 +21,7 @@ public class User implements Serializable {
         return name;
     }
 
-    public String getSex() {
-        return sex;
+    public long getSexId() {
+        return sex_id;
     }
 }
