@@ -16,11 +16,16 @@ import com.veritas.veritas.R;
 
 public class UserAddDialog extends DialogFragment {
 
-    private EditText editTextName;
+    public interface UserAddDialogListener {
+        void onUserAdded(String name, String sex);
+    }
 
-    private RadioGroup sex_radio_group;
+    private UserAddDialogListener listener;
 
-    private String selected_sex;
+    // Устанавливаем слушатель в методе setListener
+    public void setListener(UserAddDialogListener listener) {
+        this.listener = listener;
+    }
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -32,10 +37,12 @@ public class UserAddDialog extends DialogFragment {
                 .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        editTextName = view.findViewById(R.id.edit_text_name);
-                        sex_radio_group = view.findViewById(R.id.sex_radio_group);
 
-                        int selected_sex_id = sex_radio_group.getCheckedRadioButtonId();
+                        String selected_sex;
+
+                        String name = String.valueOf(((EditText) view.findViewById(R.id.edit_text_name)).getText());
+
+                        int selected_sex_id = ((RadioGroup) view.findViewById(R.id.sex_radio_group)).getCheckedRadioButtonId();
 
                         if (selected_sex_id == R.id.radio_button_male) {
                             selected_sex = getString(R.string.male);
@@ -43,9 +50,11 @@ public class UserAddDialog extends DialogFragment {
                             selected_sex = getString(R.string.female);
                         }
 
-                        Log.i("UserAddDialog", "name: " + editTextName.getText() + "\nsex: " + selected_sex);
-//                        UsersDB usersDB = new UsersDB(requireContext());
-//                        usersDB.insert()
+                        Log.i("UserAddDialog", "name: " + name + "\nsex: " + selected_sex);
+                        // Передаем данные через интерфейс
+                        if (listener != null) {
+                            listener.onUserAdded(name, selected_sex);
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -53,6 +62,6 @@ public class UserAddDialog extends DialogFragment {
                         UserAddDialog.this.getDialog().cancel();
                     }
                 });
-        return builder.create();
+        return builder.show();
     }
 }
