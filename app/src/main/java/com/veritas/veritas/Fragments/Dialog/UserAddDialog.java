@@ -3,7 +3,6 @@ package com.veritas.veritas.Fragments.Dialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -49,8 +48,6 @@ public class UserAddDialog extends DialogFragment {
                         } else {
                             selected_sex = 2;
                         }
-
-                        Log.i("UserAddDialog", "name: " + name + "\nsex: " + selected_sex);
                         // Передаем данные через интерфейс
                         if (listener != null) {
                             listener.onUserAdded(name, selected_sex);

@@ -11,15 +11,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.veritas.veritas.Adapters.entity.User;
-import com.veritas.veritas.R;
 
 import java.util.ArrayList;
 
 public class UsersListAdapter extends ArrayAdapter<User> {
+
     public UsersListAdapter(@NonNull Context context, ArrayList<User> arr) {
-        super(context, R.layout.users_adapter_item, arr);
+        super(context, android.R.layout.simple_list_item_2, arr);
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -31,12 +32,13 @@ public class UsersListAdapter extends ArrayAdapter<User> {
         }
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.users_adapter_item, null);
+            convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_2, null);
         }
 
-        ((TextView) convertView.findViewById(R.id.user_name)).setText(user.getName());
-        ((TextView) convertView.findViewById(R.id.user_sex)).setText(user.getSex());
+        ((TextView) convertView.findViewById(android.R.id.text1)).setText(user.getName());
+        ((TextView) convertView.findViewById(android.R.id.text2)).setText(user.getSex());
 
         return convertView;
     }
 }
+

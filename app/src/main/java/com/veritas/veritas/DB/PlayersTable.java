@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class PlayersTable {
     private static final String TABLE_NAME = "players";
     private static final String DATABASE_NAME = "users.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
@@ -36,7 +36,7 @@ public class PlayersTable {
 
     public long insert(String name, long sex_id) {
         ContentValues cv=new ContentValues();
-        cv.put(COLUMN_NAME, name);
+        cv.put(COLUMN_NAME, name.trim());
         cv.put(COLUMN_SEX_ID, sex_id);
         return mDataBase.insert(TABLE_NAME, null, cv);
     }
@@ -52,8 +52,8 @@ public class PlayersTable {
         mDataBase.delete(TABLE_NAME, null, null);
     }
 
-    public void delete(long id) {
-        mDataBase.delete(TABLE_NAME, COLUMN_ID + " = ?", new String[] {String.valueOf(id)});
+    public void delete(String name) {
+        mDataBase.delete(TABLE_NAME, COLUMN_NAME + " = ?", new String[] {name.trim()});
     }
 
     public UserEntityDB select(long id) {
@@ -97,7 +97,7 @@ public class PlayersTable {
 
             String query = "CREATE TABLE " + TABLE_NAME + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_NAME+ " TEXT NOT NULL, " +
+                    COLUMN_NAME+ " TEXT NOT NULL UNIQUE, " +
                     COLUMN_SEX_ID + " INTEGER NOT NULL," +
                     "FOREIGN KEY (" + COLUMN_SEX_ID + ") REFERENCES sexes(id)" + ");";
             db.execSQL(query);

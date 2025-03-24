@@ -16,7 +16,8 @@
     <RadioGroup
         android:id="@+id/sex_radio_group"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:checkedButton="@id/radio_button_male">
         <RadioButton
             android:id="@+id/radio_button_male"
             android:layout_width="wrap_content"

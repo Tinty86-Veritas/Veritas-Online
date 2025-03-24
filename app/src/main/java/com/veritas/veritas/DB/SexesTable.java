@@ -9,7 +9,7 @@ import com.veritas.veritas.DB.entity.Sex;
 
 public class SexesTable {
     private static final String DATABASE_NAME = "users.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
     private static final String TABLE_NAME = "sexes";
 
     private static final String COLUMN_ID = "id";

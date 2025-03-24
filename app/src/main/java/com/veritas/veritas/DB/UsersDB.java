@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class UsersDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "users.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String CREATE_TABLE_SEXES =
             "CREATE TABLE sexes (" +
@@ -16,7 +16,7 @@ public class UsersDB extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_PLAYERS =
             "CREATE TABLE players (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "name TEXT NOT NULL, " +
+                    "name TEXT NOT NULL UNIQUE, " +
                     "sex_id INTEGER NOT NULL, " +
                     "FOREIGN KEY (sex_id) REFERENCES sexes(id));";
 
@@ -38,5 +38,7 @@ public class UsersDB extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) { }
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        db.execSQL("DROP TABLE IF EXISTS players");
+    }
 }
