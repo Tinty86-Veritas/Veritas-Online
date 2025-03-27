@@ -2,11 +2,12 @@ package com.veritas.veritas.AI;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.veritas.veritas.Adapters.entity.User;
+import com.veritas.veritas.DB.PlayersTable;
 import com.veritas.veritas.R;
 
 import java.io.IOException;
@@ -26,31 +27,56 @@ import okhttp3.Response;
 
 public class AIRequest {
 
-//    private Context context;
-
     private static final String TAG = "AIRequest";
 
     private static final String API_KEY = "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";
     private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-    // developing const only
+    private static String prompt;
 
-    private static final String TEST_CONTENT = "В чем смысл жизни?";
+    // developing only
+
+    private final static int questionNum = 50;
+
+//    prompt = "В чем смысл жизни?";
 
     // ---------------
 
-//    private final String FUN_MODE_PROMPT = context.getString(R.string.FUN_MODE_PROMPT).trim();
-//
-//    public AIRequest(Context context) {
-//        this.context = context;
-//    }
+    Gson gson = new Gson();
 
-    public interface ApiCallback {
-        void onSuccess(String content);
-        void onFailure(String error);
+    public AIRequest(Context context, int mode_id) {
+        String mode = null;
+
+        PlayersTable playersTable = new PlayersTable(context);
+
+        ArrayList<User> users = playersTable.selectAll();
+
+        HashMap<String, HashMap<String, String>> payload = new HashMap<>();
+
+        HashMap<String, String> cur_user = new HashMap<>();
+
+        for (User user : users) {
+            cur_user.put(user.getName(), user.getSex());
+            payload.put("players", cur_user);
+        }
+
+        String participants = gson.toJson(payload);
+
+        Log.i(TAG, "participantsJSON:\n" + participants);
+
+        if (mode_id == R.id.fun_mode_fragment) {
+            mode = "Fun";
+        }
+        if (mode != null) {
+            prompt = String.format(context.getString(R.string.prompt).trim(), questionNum)
+                    + "Режим: " + mode
+                    + "Участники и их пола: " + participants;
+        } else {
+            Log.wtf(TAG, "mode is somehow null");
+        }
     }
 
-    private static String createJSON(Gson gson, String message_content) {
+    private String createJSON(String message_content) {
         Map<String, Object> payload = new HashMap<>();
         payload.put("model", "deepseek/deepseek-chat:free");
 
@@ -65,9 +91,7 @@ public class AIRequest {
         return gson.toJson(payload);
     }
 
-    public static void sendPOST(ApiCallback callback) {
-
-        Gson gson = new Gson();
+    public void sendPOST(ApiCallback callback) {
 
         Log.i(TAG, "sendPOST method entered");
 
@@ -78,7 +102,7 @@ public class AIRequest {
                 .add("Content-Type", "application/json")
                 .build();
 
-        String jsonBody = createJSON(gson, TEST_CONTENT);
+        String jsonBody = createJSON(prompt);
 
         RequestBody body = RequestBody.create(
                 jsonBody,
@@ -127,5 +151,10 @@ public class AIRequest {
                 }
             }
         });
+    }
+
+    public interface ApiCallback {
+        void onSuccess(String content);
+        void onFailure(String error);
     }
 }
