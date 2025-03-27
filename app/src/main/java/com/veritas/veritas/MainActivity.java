@@ -22,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentWorking fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager());
 
-        current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
+        current_frag_id = fw.setFragment(R.id.settings_fragment);
+
+        nav.setSelectedItemId(R.id.settings_id);
 
         nav.setOnItemSelectedListener(item -> {
 
