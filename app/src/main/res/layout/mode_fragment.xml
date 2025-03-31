@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fun_mode_fragment">
+    android:id="@+id/mode_fragment">
 
 
 <!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/recyclerView"-->
+<!--        android:id="@+id/questions_recycler"-->
 <!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+
+<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
 
 <!--        android:layout_marginBottom="590dp"-->
 <!--        app:layout_constraintBottom_toTopOf="@+id/refresh_bt"-->
@@ -29,7 +31,7 @@
         android:id="@+id/refresh_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="172dp"
+        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

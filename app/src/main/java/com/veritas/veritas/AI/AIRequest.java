@@ -36,7 +36,7 @@ public class AIRequest {
 
     // developing only
 
-    private final static int questionNum = 50;
+    private final static int questionNum = 5;
 
 //    prompt = "В чем смысл жизни?";
 
@@ -44,8 +44,7 @@ public class AIRequest {
 
     Gson gson = new Gson();
 
-    public AIRequest(Context context, int mode_id) {
-        String mode = null;
+    public AIRequest(Context context, String mode_name) {
 
         PlayersTable playersTable = new PlayersTable(context);
 
@@ -64,13 +63,10 @@ public class AIRequest {
 
         Log.i(TAG, "participantsJSON:\n" + participants);
 
-        if (mode_id == R.id.fun_mode_fragment) {
-            mode = "Fun";
-        }
-        if (mode != null) {
+        if (mode_name != null) {
             prompt = String.format(context.getString(R.string.prompt).trim(), questionNum)
-                    + "Режим: " + mode
-                    + "Участники и их пола: " + participants;
+                    + "Режим: " + mode_name
+                    + ". Участники и их пола: " + participants;
         } else {
             Log.wtf(TAG, "mode is somehow null");
         }
