@@ -10,8 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.veritas.veritas.Fragments.AiFragment;
 import com.veritas.veritas.Fragments.ModeSelectionFragment;
-import com.veritas.veritas.Fragments.ModesFragments.FunModeFragment;
-import com.veritas.veritas.Fragments.ModesFragments.SoftModeFragment;
+import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragment;
 
 public class FragmentWorking {
@@ -20,6 +19,11 @@ public class FragmentWorking {
     private final Context context;
 
     private FragmentManager fm;
+
+    public static final int fun_mode_id = 0;
+    public static final int soft_mode_id = 1;
+    public static final int hot_mode_id = 2;
+    public static final int extreme_mode_id = 3;
 
     public FragmentWorking(Context context, String TAG, FragmentManager fm) {
         this.TAG = TAG;
@@ -35,10 +39,14 @@ public class FragmentWorking {
             fragment = new AiFragment();
         } else if (frag_id == R.id.settings_fragment){
             fragment = new SettingsFragment();
-        } else if (frag_id == R.id.fun_mode_fragment) {
-            fragment = new FunModeFragment();
-        } else if (frag_id == R.id.soft_mode_fragment) {
-            fragment = new SoftModeFragment();
+        } else if (frag_id == fun_mode_id) {
+            fragment = new ModeFragment("Fun");
+        } else if (frag_id == soft_mode_id) {
+            fragment = new ModeFragment("Soft");
+        } else if (frag_id == hot_mode_id) {
+            fragment = new ModeFragment("Hot");
+        } else if (frag_id == extreme_mode_id) {
+            fragment = new ModeFragment("Extreme");
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();

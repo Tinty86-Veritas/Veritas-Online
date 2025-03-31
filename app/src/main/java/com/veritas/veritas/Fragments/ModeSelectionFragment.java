@@ -1,5 +1,10 @@
 package com.veritas.veritas.Fragments;
 
+import static com.veritas.veritas.FragmentWorking.extreme_mode_id;
+import static com.veritas.veritas.FragmentWorking.fun_mode_id;
+import static com.veritas.veritas.FragmentWorking.hot_mode_id;
+import static com.veritas.veritas.FragmentWorking.soft_mode_id;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +25,7 @@ public class ModeSelectionFragment extends Fragment {
 
     private static final String TAG = "ModeSelectionFragment";
 
-    private ArrayList<String> modes_names = new ArrayList<>(List.of("Fun", "Soft"));
+    private ArrayList<String> modes_names = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme"));
 
     private ArrayAdapter adapter;
     private ListView modes_list_view;
@@ -40,9 +45,15 @@ public class ModeSelectionFragment extends Fragment {
         modes_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                switch (modes_names.get(i)) {
+//                    case "Fun": fw.setFragment(R.id.mode_fragment); break;
+//                    case "Soft": fw.setFragment(R.id.soft_mode_fragment); break;
+//                }
                 switch (modes_names.get(i)) {
-                    case "Fun": fw.setFragment(R.id.fun_mode_fragment); break;
-                    case "Soft": fw.setFragment(R.id.soft_mode_fragment); break;
+                    case "Fun": fw.setFragment(fun_mode_id); break;
+                    case "Soft": fw.setFragment(soft_mode_id); break;
+                    case "Hot": fw.setFragment(hot_mode_id); break;
+                    case "Extreme": fw.setFragment(extreme_mode_id); break;
                 }
             }
         });
