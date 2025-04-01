@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.veritas.veritas.Adapters.UsersListAdapter;
 import com.veritas.veritas.Adapters.entity.User;
-import com.veritas.veritas.DB.PlayersTable;
 import com.veritas.veritas.DB.UsersDB;
 import com.veritas.veritas.Fragments.Dialog.UserAddDialog;
 import com.veritas.veritas.R;
@@ -29,7 +28,6 @@ public class SettingsFragment extends Fragment implements UserAddDialog.UserAddD
     ArrayAdapter<User> adapter;
 
     private UsersDB usersDB;
-    private PlayersTable playersTable;
 
     private ListView users_list_view;
     private Button user_add_button;
@@ -41,15 +39,14 @@ public class SettingsFragment extends Fragment implements UserAddDialog.UserAddD
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
 
         usersDB = new UsersDB(requireContext());
-        playersTable = new PlayersTable(requireContext());
 
         users_list_view = view.findViewById(R.id.users_list);
         user_add_button = view.findViewById(R.id.user_add_button);
 
         if (adapter == null) {
-            adapter = new UsersListAdapter(requireContext(), playersTable.selectAll());
+            adapter = new UsersListAdapter(requireContext(), usersDB.selectAllFromPlayers());
         } else {
-            adapter.addAll(playersTable.selectAll());
+            adapter.addAll(usersDB.selectAllFromPlayers());
         }
 
         users_list_view.setAdapter(adapter);
@@ -68,14 +65,14 @@ public class SettingsFragment extends Fragment implements UserAddDialog.UserAddD
     private void updateAdapter() {
         adapter.clear();
 
-        adapter.addAll(playersTable.selectAll());
+        adapter.addAll(usersDB.selectAllFromPlayers());
 
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onUserAdded(String name, long sex) {
-        playersTable.insert(name, sex);
+    public void onUserAdded(String name, int sex) {
+        usersDB.insertIntoPlayers(name, sex);
 
         updateAdapter();
     }
@@ -91,8 +88,8 @@ public class SettingsFragment extends Fragment implements UserAddDialog.UserAddD
         CharSequence title = item.getTitle();
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         if (title.equals(getString(R.string.delete))) {
-            User user = playersTable.selectAll().get(info.position);
-            playersTable.delete(user.getName());
+            User user = usersDB.selectAllFromPlayers().get(info.position);
+            usersDB.deleteFromPlayers(user.getName());
 
             updateAdapter();
 
