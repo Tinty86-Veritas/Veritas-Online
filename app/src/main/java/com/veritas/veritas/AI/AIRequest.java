@@ -36,7 +36,7 @@ public class AIRequest {
 
     // developing only
 
-    private final static int questionNum = 5;
+    private final static int questionNum = 30;
 
 //    prompt = "В чем смысл жизни?";
 
@@ -123,8 +123,6 @@ public class AIRequest {
                     if (response.body() != null) {
                         String responseData = response.body().string().trim();
                         Log.i(TAG, "API Response:\n" + responseData);
-//                        Map<String, String> jsonResponse = gson.fromJson(responseData, Map.class);
-//                        result = jsonResponse.get("");
 
                         Map<String, Object> root = gson.fromJson(responseData, Map.class);
 
