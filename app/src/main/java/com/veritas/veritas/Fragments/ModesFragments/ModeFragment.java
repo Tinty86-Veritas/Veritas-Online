@@ -25,14 +25,12 @@ public class ModeFragment extends Fragment {
 
     private AIRequest aiRequest;
 
-    private TextView answerTV;
-
-//    private RecyclerView questionsRecycler;
+    private RecyclerView questionsRecycler;
 
     private ImageButton refreshBt;
 
     ArrayList<String> questions = new ArrayList<>();
-//    RecyclerAdapter adapter = new RecyclerAdapter(questions);
+    RecyclerAdapter adapter = new RecyclerAdapter(questions);
 
     private String mode_name;
 
@@ -47,15 +45,15 @@ public class ModeFragment extends Fragment {
         aiRequest = new AIRequest(requireContext(), mode_name);
 
         refreshBt = view.findViewById(R.id.refresh_bt);
-//        questionsRecycler = view.findViewById(R.id.questions_recycler);
+        questionsRecycler = view.findViewById(R.id.questions_recycler);
 
-//        questionsRecycler.setAdapter(adapter);
-        answerTV = view.findViewById(R.id.output_tv);
+        questionsRecycler.setAdapter(adapter);
 
         refreshBt.setOnClickListener(v -> {
             APIHandle();
-            answerTV.setText("");
         });
+
+        refreshBt.setOnClickListener(v -> APIHandle());
 
         APIHandle();
 
@@ -82,11 +80,8 @@ public class ModeFragment extends Fragment {
 //                adapter = new RecyclerAdapter(questions);
 
                 requireActivity().runOnUiThread(() -> {
-                    answerTV.setText(content);
-//                    adapter.notifyItemInserted(questions.size() - 1);
+                    adapter.notifyItemInserted(questions.size() - 1);
                 });
-
-                questions.toArray(new String[0]);
 
                 Log.i(TAG, questions.toString());
             }
@@ -94,7 +89,6 @@ public class ModeFragment extends Fragment {
             @Override
             public void onFailure(String error) {
                 requireActivity().runOnUiThread(() -> {
-//                    answerTV.setText("Error: " + error);
                     Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
                 });
             }
