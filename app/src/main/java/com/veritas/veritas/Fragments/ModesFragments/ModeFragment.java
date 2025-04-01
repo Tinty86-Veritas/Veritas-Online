@@ -5,13 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.R;
 
@@ -25,14 +24,13 @@ public class ModeFragment extends Fragment {
 
     private AIRequest aiRequest;
 
-    private TextView answerTV;
+    private ListView questionsLV;
 
-//    private RecyclerView questionsRecycler;
+    private ArrayAdapter adapter;
 
     private ImageButton refreshBt;
 
     ArrayList<String> questions = new ArrayList<>();
-//    RecyclerAdapter adapter = new RecyclerAdapter(questions);
 
     private String mode_name;
 
@@ -44,17 +42,18 @@ public class ModeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
+        adapter = new ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, questions);
+
         aiRequest = new AIRequest(requireContext(), mode_name);
 
         refreshBt = view.findViewById(R.id.refresh_bt);
-//        questionsRecycler = view.findViewById(R.id.questions_recycler);
 
-//        questionsRecycler.setAdapter(adapter);
-        answerTV = view.findViewById(R.id.output_tv);
+        questionsLV = view.findViewById(R.id.questions_lv);
+
+        questionsLV.setAdapter(adapter);
 
         refreshBt.setOnClickListener(v -> {
             APIHandle();
-            answerTV.setText("");
         });
 
         APIHandle();
@@ -79,14 +78,9 @@ public class ModeFragment extends Fragment {
                     questions.add(matcher.group(1).trim());
                 }
 
-//                adapter = new RecyclerAdapter(questions);
-
                 requireActivity().runOnUiThread(() -> {
-                    answerTV.setText(content);
-//                    adapter.notifyItemInserted(questions.size() - 1);
+                    adapter.notifyDataSetChanged();
                 });
-
-                questions.toArray(new String[0]);
 
                 Log.i(TAG, questions.toString());
             }
@@ -94,7 +88,6 @@ public class ModeFragment extends Fragment {
             @Override
             public void onFailure(String error) {
                 requireActivity().runOnUiThread(() -> {
-//                    answerTV.setText("Error: " + error);
                     Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
                 });
             }
