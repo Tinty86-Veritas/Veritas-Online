@@ -36,7 +36,7 @@ public class AIRequest {
 
     // developing only
 
-    private final static int questionNum = 30;
+    private final static int answersNum = 30;
 
 //    prompt = "В чем смысл жизни?";
 
@@ -64,7 +64,7 @@ public class AIRequest {
         Log.i(TAG, "participantsJSON:\n" + participants);
 
         if (mode_name != null) {
-            prompt = String.format(context.getString(R.string.prompt).trim(), questionNum)
+            prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
                     + "Режим: " + mode_name
                     + ". Участники и их пола: " + participants;
         } else {
