@@ -16,7 +16,7 @@ import com.veritas.veritas.R;
 public class UserAddDialog extends DialogFragment {
 
     public interface UserAddDialogListener {
-        void onUserAdded(String name, long sex);
+        void onUserAdded(String name, int sex);
     }
 
     private UserAddDialogListener listener;

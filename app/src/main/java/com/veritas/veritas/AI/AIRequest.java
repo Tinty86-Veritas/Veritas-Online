@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.veritas.veritas.Adapters.entity.User;
-import com.veritas.veritas.DB.PlayersTable;
+import com.veritas.veritas.DB.UsersDB;
 import com.veritas.veritas.R;
 
 import java.io.IOException;
@@ -46,9 +46,9 @@ public class AIRequest {
 
     public AIRequest(Context context, String mode_name) {
 
-        PlayersTable playersTable = new PlayersTable(context);
+        UsersDB usersDB = new UsersDB(context);
 
-        ArrayList<User> users = playersTable.selectAll();
+        ArrayList<User> users = usersDB.selectAllFromPlayers();
 
         HashMap<String, HashMap<String, String>> payload = new HashMap<>();
 
