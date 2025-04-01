@@ -6,10 +6,14 @@
     android:layout_height="match_parent"
     android:id="@+id/mode_fragment">
 
-    <ListView
-        android:id="@+id/questions_lv"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questions_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
         app:layout_constraintBottom_toTopOf="@+id/refresh_bt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
