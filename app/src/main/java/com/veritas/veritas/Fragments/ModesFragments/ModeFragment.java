@@ -23,6 +23,8 @@ public class ModeFragment extends Fragment {
 
     private static final String TAG = "ModeFragment";
 
+    private boolean isDare = false;
+
     private AIRequest aiRequest;
 
     private RecyclerView questionsRecycler;
@@ -38,20 +40,25 @@ public class ModeFragment extends Fragment {
         this.mode_name = mode_name;
     }
 
+    public ModeFragment(String mode_name, boolean isDare) {
+        if (isDare) {
+            this.isDare = true;
+        }
+        this.mode_name = mode_name;
+    }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
-        aiRequest = new AIRequest(requireContext(), mode_name);
+        aiRequest = new AIRequest(requireContext(), mode_name, isDare);
 
         refreshBt = view.findViewById(R.id.refresh_bt);
         questionsRecycler = view.findViewById(R.id.questions_recycler);
 
         questionsRecycler.setAdapter(adapter);
 
-        refreshBt.setOnClickListener(v -> {
-            APIHandle();
-        });
+        refreshBt.setOnClickListener(v -> APIHandle());
 
         refreshBt.setOnClickListener(v -> APIHandle());
 
@@ -76,8 +83,6 @@ public class ModeFragment extends Fragment {
                 while (matcher.find()) {
                     questions.add(matcher.group(1).trim());
                 }
-
-//                adapter = new RecyclerAdapter(questions);
 
                 requireActivity().runOnUiThread(() -> {
                     adapter.notifyItemInserted(questions.size() - 1);

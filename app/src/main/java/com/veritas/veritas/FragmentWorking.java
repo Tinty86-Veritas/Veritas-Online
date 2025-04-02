@@ -25,6 +25,11 @@ public class FragmentWorking {
     public static final int hot_mode_id = 2;
     public static final int extreme_mode_id = 3;
 
+    public static final int dare_fun_mode_id = 4;
+    public static final int dare_soft_mode_id = 5;
+    public static final int dare_hot_mode_id = 6;
+    public static final int dare_extreme_mode_id = 7;
+
     public FragmentWorking(Context context, String TAG, FragmentManager fm) {
         this.TAG = TAG;
         this.context = context;
@@ -47,6 +52,14 @@ public class FragmentWorking {
             fragment = new ModeFragment("Hot");
         } else if (frag_id == extreme_mode_id) {
             fragment = new ModeFragment("Extreme");
+        } else if (frag_id == dare_fun_mode_id) {
+            fragment = new ModeFragment("Fun Dare", true);
+        } else if (frag_id == dare_soft_mode_id) {
+            fragment = new ModeFragment("Soft Dare", true);
+        } else if (frag_id == dare_hot_mode_id) {
+            fragment = new ModeFragment("Hot Dare", true);
+        } else if (frag_id == dare_extreme_mode_id) {
+            fragment = new ModeFragment("Extreme Dare", true);
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();
