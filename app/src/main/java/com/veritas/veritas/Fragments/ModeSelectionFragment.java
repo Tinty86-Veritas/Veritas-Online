@@ -1,5 +1,9 @@
 package com.veritas.veritas.Fragments;
 
+import static com.veritas.veritas.FragmentWorking.dare_extreme_mode_id;
+import static com.veritas.veritas.FragmentWorking.dare_fun_mode_id;
+import static com.veritas.veritas.FragmentWorking.dare_hot_mode_id;
+import static com.veritas.veritas.FragmentWorking.dare_soft_mode_id;
 import static com.veritas.veritas.FragmentWorking.extreme_mode_id;
 import static com.veritas.veritas.FragmentWorking.fun_mode_id;
 import static com.veritas.veritas.FragmentWorking.hot_mode_id;
@@ -25,7 +29,7 @@ public class ModeSelectionFragment extends Fragment {
 
     private static final String TAG = "ModeSelectionFragment";
 
-    private ArrayList<String> modes_names = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme"));
+    private ArrayList<String> modes_names;
 
     private ArrayAdapter adapter;
     private ListView modes_list_view;
@@ -33,6 +37,9 @@ public class ModeSelectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_selection_fragment, container, false);
+
+        modes_names = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme",
+                        "Fun Dare", "Soft Dare", "Hot Dare", "Extreme Dare"));
 
         FragmentWorking fw = new FragmentWorking(getContext(), TAG, getParentFragmentManager());
 
@@ -42,19 +49,16 @@ public class ModeSelectionFragment extends Fragment {
 
         modes_list_view.setAdapter(adapter);
 
-        modes_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                switch (modes_names.get(i)) {
-//                    case "Fun": fw.setFragment(R.id.mode_fragment); break;
-//                    case "Soft": fw.setFragment(R.id.soft_mode_fragment); break;
-//                }
-                switch (modes_names.get(i)) {
-                    case "Fun": fw.setFragment(fun_mode_id); break;
-                    case "Soft": fw.setFragment(soft_mode_id); break;
-                    case "Hot": fw.setFragment(hot_mode_id); break;
-                    case "Extreme": fw.setFragment(extreme_mode_id); break;
-                }
+        modes_list_view.setOnItemClickListener((adapterView, view1, i, l) -> {
+            switch (modes_names.get(i)) {
+                case "Fun": fw.setFragment(fun_mode_id); break;
+                case "Soft": fw.setFragment(soft_mode_id); break;
+                case "Hot": fw.setFragment(hot_mode_id); break;
+                case "Extreme": fw.setFragment(extreme_mode_id); break;
+                case "Fun Dare": fw.setFragment(dare_fun_mode_id); break;
+                case "Soft Dare": fw.setFragment(dare_soft_mode_id); break;
+                case "Hot Dare": fw.setFragment(dare_hot_mode_id); break;
+                case "Extreme Dare": fw.setFragment(dare_extreme_mode_id); break;
             }
         });
 
