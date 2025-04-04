@@ -38,9 +38,7 @@ public class AIRequest {
 
     // developing only
 
-    private final static int answersNum = 30;
-
-//    prompt = "В чем смысл жизни?";
+    private final static int answersNum = 5;
 
     // ---------------
 
