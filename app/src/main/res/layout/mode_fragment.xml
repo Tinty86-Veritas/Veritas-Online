@@ -6,27 +6,33 @@
     android:layout_height="match_parent"
     android:id="@+id/mode_fragment">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/questions_recycler"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/pullToRefresh"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent">
 
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/questions_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
 
-        app:layout_constraintBottom_toTopOf="@+id/refresh_bt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 
-    <ImageButton
-        android:id="@+id/refresh_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/refresh" />
+            app:layout_constraintBottom_toTopOf="@+id/refresh_bt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/refresh_bt"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="60dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.498"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:srcCompat="@drawable/refresh" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

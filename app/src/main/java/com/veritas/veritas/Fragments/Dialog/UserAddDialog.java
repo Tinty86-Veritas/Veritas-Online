@@ -21,7 +21,6 @@ public class UserAddDialog extends DialogFragment {
 
     private UserAddDialogListener listener;
 
-    // Устанавливаем слушатель в методе setListener
     public void setListener(UserAddDialogListener listener) {
         this.listener = listener;
     }
@@ -33,25 +32,22 @@ public class UserAddDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.add_user_dialog, null);
 
         builder.setView(view)
-                .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
+                .setPositiveButton(R.string.add, (dialog, id) -> {
 
-                        int selected_sex;
+                    int selected_sex;
 
-                        String name = String.valueOf(((EditText) view.findViewById(R.id.edit_text_name)).getText());
+                    String name = String.valueOf(((EditText) view.findViewById(R.id.edit_text_name)).getText());
 
-                        int selected_sex_id = ((RadioGroup) view.findViewById(R.id.sex_radio_group)).getCheckedRadioButtonId();
+                    int selected_sex_id = ((RadioGroup) view.findViewById(R.id.sex_radio_group)).getCheckedRadioButtonId();
 
-                        if (selected_sex_id == R.id.radio_button_male) {
-                            selected_sex = 1;
-                        } else {
-                            selected_sex = 2;
-                        }
-                        // Передаем данные через интерфейс
-                        if (listener != null) {
-                            listener.onUserAdded(name, selected_sex);
-                        }
+                    if (selected_sex_id == R.id.radio_button_male) {
+                        selected_sex = 1;
+                    } else {
+                        selected_sex = 2;
+                    }
+                    // Передаем данные через интерфейс
+                    if (listener != null) {
+                        listener.onUserAdded(name, selected_sex);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
