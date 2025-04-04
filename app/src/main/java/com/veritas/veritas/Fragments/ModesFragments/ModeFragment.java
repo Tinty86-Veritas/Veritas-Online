@@ -22,7 +22,7 @@ public class ModeFragment extends Fragment {
 
     private static final String TAG = "ModeFragment";
 
-    private boolean isDare = false;
+    private String game_name;
 
     private AIRequest aiRequest;
 
@@ -39,18 +39,17 @@ public class ModeFragment extends Fragment {
         this.mode_name = mode_name;
     }
 
-    public ModeFragment(String mode_name, boolean isDare) {
-        if (isDare) {
-            this.isDare = true;
-        }
+    public ModeFragment(String mode_name, String game_name) {
+        this.game_name = game_name;
         this.mode_name = mode_name;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, TAG);
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
-        aiRequest = new AIRequest(requireContext(), mode_name, isDare);
+        aiRequest = new AIRequest(requireContext(), mode_name, game_name);
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
 

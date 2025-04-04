@@ -7,6 +7,10 @@ import static com.veritas.veritas.FragmentWorking.dare_soft_mode_id;
 import static com.veritas.veritas.FragmentWorking.extreme_mode_id;
 import static com.veritas.veritas.FragmentWorking.fun_mode_id;
 import static com.veritas.veritas.FragmentWorking.hot_mode_id;
+import static com.veritas.veritas.FragmentWorking.neverEver_extreme_mode_id;
+import static com.veritas.veritas.FragmentWorking.neverEver_fun_mode_id;
+import static com.veritas.veritas.FragmentWorking.neverEver_hot_mode_id;
+import static com.veritas.veritas.FragmentWorking.neverEver_soft_mode_id;
 import static com.veritas.veritas.FragmentWorking.soft_mode_id;
 
 import android.os.Bundle;
@@ -38,7 +42,8 @@ public class ModeSelectionFragment extends Fragment {
         View view = inflater.inflate(R.layout.mode_selection_fragment, container, false);
 
         modes_names = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme",
-                        "Fun Dare", "Soft Dare", "Hot Dare", "Extreme Dare"));
+                        "Fun Dare", "Soft Dare", "Hot Dare", "Extreme Dare",
+                "NeverEver Fun", "NeverEver Soft", "NeverEver Hot", "NeverEver Extreme"));
 
         FragmentWorking fw = new FragmentWorking(getContext(), TAG, getParentFragmentManager());
 
@@ -58,6 +63,10 @@ public class ModeSelectionFragment extends Fragment {
                 case "Soft Dare": fw.setFragment(dare_soft_mode_id); break;
                 case "Hot Dare": fw.setFragment(dare_hot_mode_id); break;
                 case "Extreme Dare": fw.setFragment(dare_extreme_mode_id); break;
+                case "NeverEver Fun": fw.setFragment(neverEver_fun_mode_id); break;
+                case "NeverEver Soft": fw.setFragment(neverEver_soft_mode_id); break;
+                case "NeverEver Hot": fw.setFragment(neverEver_hot_mode_id); break;
+                case "NeverEver Extreme": fw.setFragment(neverEver_extreme_mode_id); break;
             }
         });
 

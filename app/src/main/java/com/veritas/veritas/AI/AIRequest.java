@@ -34,8 +34,6 @@ public class AIRequest {
 
     private static String prompt;
 
-    private boolean isDare;
-
     // developing only
 
     private final static int answersNum = 5;
@@ -44,9 +42,7 @@ public class AIRequest {
 
     Gson gson = new Gson();
 
-    public AIRequest(Context context, String mode_name, boolean isDare) {
-
-        this.isDare = isDare;
+    public AIRequest(Context context, String mode_name, String game_name) {
 
         UsersDB usersDB = new UsersDB(context);
 
@@ -65,18 +61,19 @@ public class AIRequest {
 
         Log.i(TAG, "participantsJSON:\n" + participants);
 
-        if (mode_name != null) {
-            if (isDare) {
+        if (game_name != null) {
+            if (game_name.equals("Dare")) {
                 prompt = String.format(context.getString(R.string.dare_prompt).trim(), answersNum)
-                        + "Режим: " + mode_name
-                        + ". Участники и их пола: " + participants;
-            } else {
-                prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
+                        + "Режим: " + mode_name;
+            } else if (game_name.equals("NeverEver")) {
+                prompt = String.format(context.getString(R.string.neverEver_prompt).trim(), answersNum)
                         + "Режим: " + mode_name
                         + ". Участники и их пола: " + participants;
             }
         } else {
-            Log.wtf(TAG, "mode name is somehow null");
+            prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
+                    + "Режим: " + mode_name
+                    + ". Участники и их пола: " + participants;
         }
     }
 
