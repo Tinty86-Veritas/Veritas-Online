@@ -30,6 +30,11 @@ public class FragmentWorking {
     public static final int dare_hot_mode_id = 6;
     public static final int dare_extreme_mode_id = 7;
 
+    public static final int neverEver_fun_mode_id = 8;
+    public static final int neverEver_soft_mode_id = 9;
+    public static final int neverEver_hot_mode_id = 10;
+    public static final int neverEver_extreme_mode_id = 11;
+
     public FragmentWorking(Context context, String TAG, FragmentManager fm) {
         this.TAG = TAG;
         this.context = context;
@@ -53,13 +58,21 @@ public class FragmentWorking {
         } else if (frag_id == extreme_mode_id) {
             fragment = new ModeFragment("Extreme");
         } else if (frag_id == dare_fun_mode_id) {
-            fragment = new ModeFragment("Fun Dare", true);
+            fragment = new ModeFragment("Fun Dare", "Dare");
         } else if (frag_id == dare_soft_mode_id) {
-            fragment = new ModeFragment("Soft Dare", true);
+            fragment = new ModeFragment("Soft Dare", "Dare");
         } else if (frag_id == dare_hot_mode_id) {
-            fragment = new ModeFragment("Hot Dare", true);
+            fragment = new ModeFragment("Hot Dare", "Dare");
         } else if (frag_id == dare_extreme_mode_id) {
-            fragment = new ModeFragment("Extreme Dare", true);
+            fragment = new ModeFragment("Extreme Dare", "Dare");
+        } else if (frag_id == neverEver_fun_mode_id) {
+            fragment = new ModeFragment("Fun NeverEver", "NeverEver");
+        } else if (frag_id == neverEver_soft_mode_id) {
+            fragment = new ModeFragment("Soft NeverEver", "NeverEver");
+        } else if (frag_id == neverEver_hot_mode_id) {
+            fragment = new ModeFragment("Hot NeverEver", "NeverEver");
+        } else if (frag_id == neverEver_extreme_mode_id) {
+            fragment = new ModeFragment("Extreme NeverEver", "NeverEver");
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();
