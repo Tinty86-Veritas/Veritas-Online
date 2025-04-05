@@ -12,6 +12,7 @@ import com.veritas.veritas.Fragments.AiFragment;
 import com.veritas.veritas.Fragments.ModeSelectionFragment;
 import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragment;
+import com.veritas.veritas.Fragments.SettingsFragments.SettingsBDFragment;
 
 public class FragmentWorking {
 
@@ -19,6 +20,8 @@ public class FragmentWorking {
     private final Context context;
 
     private FragmentManager fm;
+
+    // Game Modes
 
     public static final int fun_mode_id = 0;
     public static final int soft_mode_id = 1;
@@ -49,6 +52,8 @@ public class FragmentWorking {
             fragment = new AiFragment();
         } else if (frag_id == R.id.settings_fragment){
             fragment = new SettingsFragment();
+        } else if (frag_id == R.id.settings_bd_fragment) {
+            fragment = new SettingsBDFragment();
         } else if (frag_id == fun_mode_id) {
             fragment = new ModeFragment("Fun");
         } else if (frag_id == soft_mode_id) {
