@@ -64,11 +64,11 @@ public class AIRequest {
         if (game_name != null) {
             if (game_name.equals("Dare")) {
                 prompt = String.format(context.getString(R.string.dare_prompt).trim(), answersNum)
-                        + "Режим: " + mode_name;
-            } else if (game_name.equals("NeverEver")) {
-                prompt = String.format(context.getString(R.string.neverEver_prompt).trim(), answersNum)
                         + "Режим: " + mode_name
                         + ". Участники и их пола: " + participants;
+            } else if (game_name.equals("NeverEver")) {
+                prompt = String.format(context.getString(R.string.neverEver_prompt).trim(), answersNum)
+                        + "Режим: " + mode_name;
             }
         } else {
             prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
