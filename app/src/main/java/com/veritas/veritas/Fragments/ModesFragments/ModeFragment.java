@@ -80,9 +80,13 @@ public class ModeFragment extends Fragment {
                 }
 
                 requireActivity().runOnUiThread(() -> {
-//                    adapter.notifyItemInserted(questions.size() - 1);
-                    adapter.notifyDataSetChanged();
-                    pullToRefresh.setRefreshing(false);
+                    if(isAdded()) {
+    //                    adapter.notifyItemInserted(questions.size() - 1);
+                        adapter.notifyDataSetChanged();
+                        pullToRefresh.setRefreshing(false);
+                    } else {
+                        Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_SHORT).show();
+                    }
                 });
 
                 Log.i(TAG, questions.toString());

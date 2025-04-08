@@ -1,17 +1,20 @@
 package com.veritas.veritas.Fragments;
 
-import static com.veritas.veritas.FragmentWorking.dare_extreme_mode_id;
-import static com.veritas.veritas.FragmentWorking.dare_fun_mode_id;
-import static com.veritas.veritas.FragmentWorking.dare_hot_mode_id;
-import static com.veritas.veritas.FragmentWorking.dare_soft_mode_id;
-import static com.veritas.veritas.FragmentWorking.extreme_mode_id;
-import static com.veritas.veritas.FragmentWorking.fun_mode_id;
-import static com.veritas.veritas.FragmentWorking.hot_mode_id;
-import static com.veritas.veritas.FragmentWorking.neverEver_extreme_mode_id;
-import static com.veritas.veritas.FragmentWorking.neverEver_fun_mode_id;
-import static com.veritas.veritas.FragmentWorking.neverEver_hot_mode_id;
-import static com.veritas.veritas.FragmentWorking.neverEver_soft_mode_id;
-import static com.veritas.veritas.FragmentWorking.soft_mode_id;
+import static com.veritas.veritas.FragmentWorking.MODE_EXTREME_DARE;
+import static com.veritas.veritas.FragmentWorking.MODE_EXTREME_NEVEREVER;
+import static com.veritas.veritas.FragmentWorking.MODE_FUN;
+import static com.veritas.veritas.FragmentWorking.MODE_FUN_DARE;
+import static com.veritas.veritas.FragmentWorking.MODE_FUN_NEVEREVER;
+import static com.veritas.veritas.FragmentWorking.MODE_HOT;
+import static com.veritas.veritas.FragmentWorking.MODE_HOT_DARE;
+import static com.veritas.veritas.FragmentWorking.MODE_HOT_NEVEREVER;
+import static com.veritas.veritas.FragmentWorking.MODE_MADNESS;
+import static com.veritas.veritas.FragmentWorking.MODE_MADNESS_DARE;
+import static com.veritas.veritas.FragmentWorking.MODE_MADNESS_NEVEREVER;
+import static com.veritas.veritas.FragmentWorking.MODE_SOFT;
+import static com.veritas.veritas.FragmentWorking.MODE_SOFT_DARE;
+import static com.veritas.veritas.FragmentWorking.MODE_EXTREME;
+import static com.veritas.veritas.FragmentWorking.MODE_SOFT_NEVEREVER;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -41,9 +44,9 @@ public class ModeSelectionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_selection_fragment, container, false);
 
-        modes_names = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme",
-                        "Fun Dare", "Soft Dare", "Hot Dare", "Extreme Dare",
-                "NeverEver Fun", "NeverEver Soft", "NeverEver Hot", "NeverEver Extreme"));
+        modes_names = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme", "Madness",
+                        "Fun Dare", "Soft Dare", "Hot Dare", "Extreme Dare", "Madness Dare",
+                "Fun NeverEver", "Soft NeverEver", "Hot NeverEver", "Extreme NeverEver", "Madness NeverEver"));
 
         FragmentWorking fw = new FragmentWorking(getContext(), TAG, getParentFragmentManager());
 
@@ -54,21 +57,58 @@ public class ModeSelectionFragment extends Fragment {
         modes_list_view.setAdapter(adapter);
 
         modes_list_view.setOnItemClickListener((adapterView, view1, i, l) -> {
-            switch (modes_names.get(i)) {
-                case "Fun": fw.setFragment(fun_mode_id); break;
-                case "Soft": fw.setFragment(soft_mode_id); break;
-                case "Hot": fw.setFragment(hot_mode_id); break;
-                case "Extreme": fw.setFragment(extreme_mode_id); break;
-                case "Fun Dare": fw.setFragment(dare_fun_mode_id); break;
-                case "Soft Dare": fw.setFragment(dare_soft_mode_id); break;
-                case "Hot Dare": fw.setFragment(dare_hot_mode_id); break;
-                case "Extreme Dare": fw.setFragment(dare_extreme_mode_id); break;
-                case "NeverEver Fun": fw.setFragment(neverEver_fun_mode_id); break;
-                case "NeverEver Soft": fw.setFragment(neverEver_soft_mode_id); break;
-                case "NeverEver Hot": fw.setFragment(neverEver_hot_mode_id); break;
-                case "NeverEver Extreme": fw.setFragment(neverEver_extreme_mode_id); break;
+            String selectedMode = modes_names.get(i);
+            switch (selectedMode) {
+                case MODE_FUN:
+                    fw.setFragment(MODE_FUN);
+                    break;
+                case MODE_SOFT:
+                    fw.setFragment(MODE_SOFT);
+                    break;
+                case MODE_HOT:
+                    fw.setFragment(MODE_HOT);
+                    break;
+                case MODE_EXTREME:
+                    fw.setFragment(MODE_EXTREME);
+                    break;
+                case MODE_MADNESS:
+                    fw.setFragment(MODE_MADNESS);
+                    break;
+                case MODE_FUN_DARE:
+                    fw.setFragment(MODE_FUN_DARE);
+                    break;
+                case MODE_SOFT_DARE:
+                    fw.setFragment(MODE_SOFT_DARE);
+                    break;
+                case MODE_HOT_DARE:
+                    fw.setFragment(MODE_HOT_DARE);
+                    break;
+                case MODE_EXTREME_DARE:
+                    fw.setFragment(MODE_EXTREME_DARE);
+                    break;
+                case MODE_MADNESS_DARE:
+                    fw.setFragment(MODE_MADNESS_DARE);
+                    break;
+                case MODE_FUN_NEVEREVER:
+                    fw.setFragment(MODE_FUN_NEVEREVER);
+                    break;
+                case MODE_SOFT_NEVEREVER:
+                    fw.setFragment(MODE_SOFT_NEVEREVER);
+                    break;
+                case MODE_HOT_NEVEREVER:
+                    fw.setFragment(MODE_HOT_NEVEREVER);
+                    break;
+                case MODE_EXTREME_NEVEREVER:
+                    fw.setFragment(MODE_EXTREME_NEVEREVER);
+                    break;
+                case MODE_MADNESS_NEVEREVER:
+                    fw.setFragment(MODE_MADNESS_NEVEREVER);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + selectedMode);
             }
         });
+
 
         return view;
     }
