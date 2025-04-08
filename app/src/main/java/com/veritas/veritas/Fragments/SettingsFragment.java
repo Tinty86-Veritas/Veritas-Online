@@ -2,6 +2,7 @@ package com.veritas.veritas.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,9 +25,6 @@ public class SettingsFragment extends Fragment {
 
     private static final String TAG = "SettingsFragment";
 
-    private ArrayList<String> settings_list = new ArrayList<>(List.of(
-            getString(R.string.players)));
-
     private ArrayAdapter adapter;
 
     private ListView settings_lv;
@@ -36,11 +34,13 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
 
+        ArrayList<String> settings_list = new ArrayList<>(List.of(
+                getString(R.string.players)));
+
         settings_lv = view.findViewById(R.id.settings_lv);
 
-        Intent intent = new Intent(getActivity(), SettingsPlaceholderActivity.class);
-
         settings_lv.setOnItemClickListener((adapterView, view1, i, l) -> {
+            Intent intent = new Intent(getActivity(), SettingsPlaceholderActivity.class);
             switch (i) {
                 case 0: intent.putExtra("settingsId", R.id.settings_bd_fragment); break;
             }

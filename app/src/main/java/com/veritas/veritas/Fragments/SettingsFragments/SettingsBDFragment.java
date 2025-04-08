@@ -1,6 +1,8 @@
 package com.veritas.veritas.Fragments.SettingsFragments;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -23,6 +25,8 @@ import com.veritas.veritas.Fragments.Dialog.UserAddDialog;
 import com.veritas.veritas.R;
 
 public class SettingsBDFragment extends Fragment implements UserAddDialog.UserAddDialogListener {
+
+    public static final String TAG = "SettingsBDFragment";
 
     ArrayAdapter<User> adapter;
 
@@ -59,6 +63,17 @@ public class SettingsBDFragment extends Fragment implements UserAddDialog.UserAd
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Activity activity = getActivity();
+        if (activity != null) {
+            getActivity().finish();
+        } else {
+            Log.wtf(TAG, "onDestroy has got null as an activity");
+        }
     }
 
     private void updateAdapter() {

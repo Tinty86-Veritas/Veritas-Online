@@ -1,6 +1,7 @@
 package com.veritas.veritas;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -49,7 +50,5 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
     }
 }
