@@ -2,12 +2,9 @@ package com.veritas.veritas.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -16,7 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.veritas.veritas.R;
-import com.veritas.veritas.SettingsPlaceholderActivity;
+import com.veritas.veritas.Activities.SettingsPlaceholderActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,11 @@
-package com.veritas.veritas;
+package com.veritas.veritas.Activities;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.veritas.veritas.Util.FragmentWorking;
+import com.veritas.veritas.R;
 
 public class MainActivity extends AppCompatActivity {
 

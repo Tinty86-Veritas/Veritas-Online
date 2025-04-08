@@ -1,11 +1,12 @@
-package com.veritas.veritas;
+package com.veritas.veritas.Activities;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.veritas.veritas.Util.FragmentWorking;
+import com.veritas.veritas.R;
 
 public class SettingsPlaceholderActivity extends AppCompatActivity {
 

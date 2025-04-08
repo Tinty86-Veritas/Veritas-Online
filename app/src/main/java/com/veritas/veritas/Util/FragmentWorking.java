@@ -1,4 +1,4 @@
-package com.veritas.veritas;
+package com.veritas.veritas.Util;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,6 +13,7 @@ import com.veritas.veritas.Fragments.ModeSelectionFragment;
 import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragment;
 import com.veritas.veritas.Fragments.SettingsFragments.SettingsBDFragment;
+import com.veritas.veritas.R;
 
 public class FragmentWorking {
 
@@ -51,6 +52,8 @@ public class FragmentWorking {
             fragment = new AiFragment();
         } else if (frag_id == R.id.settings_fragment){
             fragment = new SettingsFragment();
+        } else if (frag_id == R.id.settings_bd_fragment){
+            fragment = new SettingsBDFragment();
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();
@@ -66,7 +69,7 @@ public class FragmentWorking {
         return frag_id;
     }
 
-    public String setFragment(String mode_name) {
+    public void setFragment(String mode_name) {
         Fragment fragment;
         switch (mode_name) {
             case MODE_FUN:
@@ -117,7 +120,7 @@ public class FragmentWorking {
             default:
                 Log.wtf(TAG, "Method setFragment got inappropriate fragment name");
                 Toast.makeText(context, "Method setFragment got inappropriate fragment name", Toast.LENGTH_SHORT).show();
-                return null;
+                return;
         }
 
         FragmentTransaction ft = fm.beginTransaction();
@@ -126,6 +129,5 @@ public class FragmentWorking {
         ft.addToBackStack(null);
         ft.commit();
 
-        return mode_name;
     }
 }

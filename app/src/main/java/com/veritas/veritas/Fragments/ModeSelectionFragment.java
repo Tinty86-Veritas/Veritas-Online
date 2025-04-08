@@ -1,20 +1,20 @@
 package com.veritas.veritas.Fragments;
 
-import static com.veritas.veritas.FragmentWorking.MODE_EXTREME_DARE;
-import static com.veritas.veritas.FragmentWorking.MODE_EXTREME_NEVEREVER;
-import static com.veritas.veritas.FragmentWorking.MODE_FUN;
-import static com.veritas.veritas.FragmentWorking.MODE_FUN_DARE;
-import static com.veritas.veritas.FragmentWorking.MODE_FUN_NEVEREVER;
-import static com.veritas.veritas.FragmentWorking.MODE_HOT;
-import static com.veritas.veritas.FragmentWorking.MODE_HOT_DARE;
-import static com.veritas.veritas.FragmentWorking.MODE_HOT_NEVEREVER;
-import static com.veritas.veritas.FragmentWorking.MODE_MADNESS;
-import static com.veritas.veritas.FragmentWorking.MODE_MADNESS_DARE;
-import static com.veritas.veritas.FragmentWorking.MODE_MADNESS_NEVEREVER;
-import static com.veritas.veritas.FragmentWorking.MODE_SOFT;
-import static com.veritas.veritas.FragmentWorking.MODE_SOFT_DARE;
-import static com.veritas.veritas.FragmentWorking.MODE_EXTREME;
-import static com.veritas.veritas.FragmentWorking.MODE_SOFT_NEVEREVER;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_EXTREME_DARE;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_EXTREME_NEVEREVER;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_FUN;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_FUN_DARE;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_FUN_NEVEREVER;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_HOT;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_HOT_DARE;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_HOT_NEVEREVER;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_MADNESS;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_MADNESS_DARE;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_MADNESS_NEVEREVER;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_SOFT;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_SOFT_DARE;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_EXTREME;
+import static com.veritas.veritas.Util.FragmentWorking.MODE_SOFT_NEVEREVER;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,7 +25,7 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
-import com.veritas.veritas.FragmentWorking;
+import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
