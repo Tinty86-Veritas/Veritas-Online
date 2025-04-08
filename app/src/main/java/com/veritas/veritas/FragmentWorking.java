@@ -12,6 +12,7 @@ import com.veritas.veritas.Fragments.AiFragment;
 import com.veritas.veritas.Fragments.ModeSelectionFragment;
 import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragment;
+import com.veritas.veritas.Fragments.SettingsFragments.SettingsBDFragment;
 
 public class FragmentWorking {
 
@@ -19,7 +20,7 @@ public class FragmentWorking {
     private final Context context;
 
     private FragmentManager fm;
-
+  
     public static final String MODE_FUN = "Fun";
     public static final String MODE_SOFT = "Soft";
     public static final String MODE_HOT = "Hot";
