@@ -32,7 +32,7 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.settings_fragment, container, false);
 
         ArrayList<String> settings_list = new ArrayList<>(List.of(
-                getString(R.string.players)));
+                getString(R.string.players), getString(R.string.num_of_answers)));
 
         settings_lv = view.findViewById(R.id.settings_lv);
 
@@ -40,6 +40,7 @@ public class SettingsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), SettingsPlaceholderActivity.class);
             switch (i) {
                 case 0: intent.putExtra("settingsId", R.id.settings_bd_fragment); break;
+                case 1: intent.putExtra("settingsId"); break;
             }
             startActivity(intent);
         });
