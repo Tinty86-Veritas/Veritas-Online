@@ -40,7 +40,7 @@ public class SettingsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), SettingsPlaceholderActivity.class);
             switch (i) {
                 case 0: intent.putExtra("settingsId", R.id.settings_bd_fragment); break;
-                case 1: intent.putExtra("settingsId"); break;
+//                case 1: intent.putExtra("settingsId", ); break;
             }
             startActivity(intent);
         });

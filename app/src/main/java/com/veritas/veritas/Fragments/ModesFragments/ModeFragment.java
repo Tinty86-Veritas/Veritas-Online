@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.veritas.veritas.AI.AIRequest;
+import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
