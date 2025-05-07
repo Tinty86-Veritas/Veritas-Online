@@ -1,5 +1,7 @@
 package com.veritas.veritas.DB;
 
+import static com.veritas.veritas.Util.PublicVariables.getModes;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -92,10 +94,7 @@ public class GamesDB extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_DARE);
         db.execSQL(CREATE_TABLE_NEVEREVER);
 
-        String[] modes = new String[] {
-                "Fun", "Soft", "Hot", "Extreme", "Madness"};
-
-        for (String mode : modes) {
+        for (String mode : getModes()) {
             insertIntoGame(mode, TABLE_TRUTH);
             insertIntoGame(mode, TABLE_DARE);
             insertIntoGame(mode, TABLE_NEVEREVER);

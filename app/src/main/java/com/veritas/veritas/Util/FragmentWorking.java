@@ -13,6 +13,7 @@ import com.veritas.veritas.Fragments.ModeSelectionFragment;
 import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragment;
 import com.veritas.veritas.Fragments.SettingsFragments.SettingsBDFragment;
+import com.veritas.veritas.Fragments.SettingsFragments.SettingsNumOfAnswersFragment;
 import com.veritas.veritas.R;
 
 public class FragmentWorking {
@@ -54,6 +55,8 @@ public class FragmentWorking {
             fragment = new SettingsFragment();
         } else if (frag_id == R.id.settings_bd_fragment){
             fragment = new SettingsBDFragment();
+        } else if (frag_id == R.id.num_of_answers_fragment){
+            fragment = new SettingsNumOfAnswersFragment();
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();

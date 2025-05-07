@@ -12,6 +12,9 @@ import com.veritas.veritas.R;
 
 import java.util.ArrayList;
 
+//public interface OnItemClickListener {
+//    void onItemClick(ContentItem item);
+//}
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
