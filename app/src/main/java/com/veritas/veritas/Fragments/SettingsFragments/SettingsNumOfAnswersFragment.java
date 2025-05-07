@@ -3,10 +3,10 @@ package com.veritas.veritas.Fragments.SettingsFragments;
 import static com.veritas.veritas.Util.PublicVariables.getGames;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +41,10 @@ public class SettingsNumOfAnswersFragment extends Fragment {
         gamesRecyclerView = view.findViewById(R.id.num_of_answers_recycler_view);
 
         gamesRecyclerView.setAdapter(adapter);
+
+        adapter.setOnClickListener((v, position) -> {
+            Toast.makeText(requireContext(), "IT WORKS", Toast.LENGTH_SHORT).show();
+        });
 
         return view;
     }

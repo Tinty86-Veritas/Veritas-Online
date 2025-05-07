@@ -1,5 +1,6 @@
 package com.veritas.veritas.Adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,24 +13,37 @@ import com.veritas.veritas.R;
 
 import java.util.ArrayList;
 
-//public interface OnItemClickListener {
-//    void onItemClick(ContentItem item);
-//}
-
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView tv;
         public ViewHolder(View view) {
             super(view);
-            tv = view.findViewById(R.id.question);
+            tv = view.findViewById(R.id.item);
+            itemView.setOnClickListener(v -> {
+                Log.i("ClickableRecyclerAdapter", "onClickListener");
+                int pos = getAdapterPosition();
+                if (pos != RecyclerView.NO_POSITION && listener != null) {
+                    listener.onItemClick(v, pos);
+                }
+            });
         }
     }
 
-    private final ArrayList<String> questions;
+    private final ArrayList<String> items;
 
-    public RecyclerAdapter(ArrayList<String> questions) {
-        this.questions = questions;
+    public RecyclerAdapter(ArrayList<String> items) {
+        this.items = items;
     }
 
     @NonNull
@@ -42,12 +56,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
-        String question = questions.get(position);
-        holder.tv.setText(question);
+        String item = items.get(position);
+        holder.tv.setText(item);
     }
 
     @Override
     public int getItemCount() {
-        return questions.toArray().length;
+        return items.toArray().length;
     }
 }
