@@ -31,7 +31,6 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
         }
     }
 
-
     private final Context context;
 
     private final List<String> modes = new ArrayList<>(Arrays.asList(getModes()));
@@ -50,16 +49,17 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                context, android.R.layout.simple_spinner_item, modes);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+                context, android.R.layout.simple_spinner_item, new Integer[] {
+                        1, 3, 5, 7, 10, 15, 20, 25, 50
+        });
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         holder.spinner.setAdapter(adapter);
 
-
-        String game = modes.get(position);
-        holder.tv.setText(game);
+        String mode = modes.get(position);
+        holder.tv.setText(mode);
     }
 
     @Override
