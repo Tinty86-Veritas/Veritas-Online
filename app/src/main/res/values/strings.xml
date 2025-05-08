@@ -93,5 +93,7 @@
     </string>
 
     <string name="dare">Действие</string>
+    <string name="truth">Правда</string>
+    <string name="neverEver">NeverEver</string>
 
 </resources>

@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory app:key="players_category" android:title="Игроки">
+    <PreferenceCategory app:key="players_category" android:title="@string/players">
         <Preference
             app:key="add_player"
             android:summary="@string/user_add_button_text" />
     </PreferenceCategory>
+    <PreferenceCategory app:key="num_of_answers" android:title="@string/num_of_answers">
+        <Preference
+            app:key="truth_game"
+            android:summary="@string/truth"/>
+        <Preference
+            app:key="dare_game"
+            android:summary="@string/dare"/>
+        <Preference
+            app:key="NeverEver_game"
+            android:summary="@string/neverEver"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

@@ -18,9 +18,15 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
         implements UserAddDialog.UserAddDialogListener, ContextMenuPreference.ContextMenuPreferenceListener {
     private static final String KEY_ADD_PLAYER = "add_player";
     private static final String KEY_PLAYERS_CATEGORY = "players_category";
+    private static final String KEY_NUM_OF_ANSWERS = "num_of_answers";
+
+    private static final String KEY_TRUTH_GAME = "truth_game";
+    private static final String KEY_DARE_GAME = "dare_game";
+    private static final String KEY_NEVEREVER_GAME = "NeverEver_game";
 
     private UsersDB usersDB;
     private PreferenceCategory playersCat;
+    private PreferenceCategory numOfAnswers;
 
     @Override
     public void onCreatePreferences(Bundle bundle, String rootKey) {
@@ -39,6 +45,8 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
             dialog.show(getParentFragmentManager(), "myDialog");
             return true;
         });
+
+        numOfAnswers = findPreference(KEY_NUM_OF_ANSWERS);
     }
 
     private void updateList() {
