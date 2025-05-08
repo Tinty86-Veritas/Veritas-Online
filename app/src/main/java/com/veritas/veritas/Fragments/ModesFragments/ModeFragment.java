@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.veritas.veritas.AI.AIRequest;
+import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ public class ModeFragment extends Fragment {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.i(TAG, TAG);
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
         aiRequest = new AIRequest(requireContext(), mode_name, game_name);

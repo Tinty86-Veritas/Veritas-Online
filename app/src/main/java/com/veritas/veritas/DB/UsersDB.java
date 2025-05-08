@@ -16,18 +16,14 @@ public class UsersDB extends SQLiteOpenHelper {
     private static final String TABLE_PLAYERS = "players";
     private static final String TABLE_SEXES = "sexes";
 
-    private static final String PLAYERS_COLUMN_ID = "id";
     private static final String PLAYERS_COLUMN_NAME = "name";
     private static final String PLAYERS_COLUMN_SEX_ID = "sex_id";
 
-    private static final int PLAYERS_NUM_COLUMN_ID = 0;
     private static final int PLAYERS_NUM_COLUMN_NAME = 1;
     private static final int PLAYERS_NUM_COLUMN_SEX_ID = 2;
 
     private static final String SEXES_COLUMN_ID = "id";
-    private static final String SEXES_COLUMN_TITLE = "Title";
 
-    private static final int SEXES_NUM_COLUMN_ID = 0;
     private static final int SEXES_NUM_COLUMN_TITLE = 1;
 
     private static final String CREATE_TABLE_SEXES =
