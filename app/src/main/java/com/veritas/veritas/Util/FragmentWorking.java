@@ -14,6 +14,7 @@ import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragment;
 import com.veritas.veritas.Fragments.SettingsFragments.SettingsBDFragment;
 import com.veritas.veritas.Fragments.SettingsFragments.SettingsNumOfAnswersFragment;
+import com.veritas.veritas.Fragments.SettingsFragments.SettingsPrefFragment;
 import com.veritas.veritas.R;
 
 public class FragmentWorking {
@@ -52,7 +53,8 @@ public class FragmentWorking {
         } else if (frag_id == R.id.ai_direct_using_fragment) {
             fragment = new AiFragment();
         } else if (frag_id == R.id.settings_fragment){
-            fragment = new SettingsFragment();
+//            fragment = new SettingsFragment();
+            fragment = new SettingsPrefFragment();
         } else if (frag_id == R.id.settings_bd_fragment){
             fragment = new SettingsBDFragment();
         } else if (frag_id == R.id.num_of_answers_fragment){

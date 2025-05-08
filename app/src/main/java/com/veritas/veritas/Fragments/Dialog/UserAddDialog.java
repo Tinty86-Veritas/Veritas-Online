@@ -50,11 +50,8 @@ public class UserAddDialog extends DialogFragment {
                         listener.onUserAdded(name, selected_sex);
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        UserAddDialog.this.getDialog().cancel();
-                    }
-                });
+                .setNegativeButton(R.string.cancel, (dialog, id) ->
+                        UserAddDialog.this.getDialog().cancel());
         return builder.show();
     }
 }

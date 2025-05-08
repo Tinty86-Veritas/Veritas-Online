@@ -68,6 +68,7 @@ public class SettingsBDFragment extends Fragment implements UserAddDialog.UserAd
     @Override
     public void onDestroy() {
         super.onDestroy();
+        usersDB.close();
         Activity activity = getActivity();
         if (activity != null) {
             getActivity().finish();
@@ -87,7 +88,6 @@ public class SettingsBDFragment extends Fragment implements UserAddDialog.UserAd
     @Override
     public void onUserAdded(String name, int sex) {
         usersDB.insertIntoPlayers(name, sex);
-
         updateAdapter();
     }
 
@@ -103,7 +103,7 @@ public class SettingsBDFragment extends Fragment implements UserAddDialog.UserAd
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         if (title.equals(getString(R.string.delete))) {
             User user = usersDB.selectAllFromPlayers().get(info.position);
-            usersDB.deleteFromPlayers(user.getName());
+            usersDB.deleteFromPlayers(user.getName(), user.getSex());
 
             updateAdapter();
 

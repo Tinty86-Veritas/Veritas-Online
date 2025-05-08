@@ -48,6 +48,8 @@ public class AIRequest {
 
         ArrayList<User> users = usersDB.selectAllFromPlayers();
 
+        usersDB.close();
+
         HashMap<String, HashMap<String, String>> payload = new HashMap<>();
 
         HashMap<String, String> cur_user = new HashMap<>();
