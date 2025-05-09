@@ -2,7 +2,6 @@ package com.veritas.veritas.Fragments.SettingsFragments;
 
 import android.os.Bundle;
 
-import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -28,6 +27,8 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
     private PreferenceCategory playersCat;
     private PreferenceCategory numOfAnswers;
 
+    private BottomSheetDialogPreference neverEver;
+
     @Override
     public void onCreatePreferences(Bundle bundle, String rootKey) {
         setPreferencesFromResource(R.xml.settings, rootKey);
@@ -36,7 +37,7 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
 
         usersDB = new UsersDB(requireContext());
 
-        updateList();
+        updatePlayersCat();
 
         Preference addUserPref = findPreference(KEY_ADD_PLAYER);
         addUserPref.setOnPreferenceClickListener(pref -> {
@@ -47,10 +48,11 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
         });
 
         numOfAnswers = findPreference(KEY_NUM_OF_ANSWERS);
+
+        neverEver = findPreference(KEY_NEVEREVER_GAME);
     }
 
-    private void updateList() {
-
+    private void updatePlayersCat() {
         // i >= 1 because 0 preference is always add_player preference and it should not be removed
         int count = playersCat.getPreferenceCount();
         for (int i = count - 1; i >= 1; i--) {
@@ -71,13 +73,13 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
     @Override
     public void onUserAdded(String name, int sex) {
         usersDB.insertIntoPlayers(name, sex);
-        updateList();
+        updatePlayersCat();
     }
 
     @Override
     public void isDeleted(boolean status) {
         if (status) {
-            updateList();
+            updatePlayersCat();
         }
     }
 }

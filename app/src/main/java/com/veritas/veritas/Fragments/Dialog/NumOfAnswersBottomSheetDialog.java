@@ -3,9 +3,11 @@ package com.veritas.veritas.Fragments.Dialog;
 import static com.veritas.veritas.Util.PublicVariables.getGames;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.veritas.veritas.Adapters.NumOfAnswersRecyclerAdapter;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
@@ -30,40 +33,33 @@ public class NumOfAnswersBottomSheetDialog extends BottomSheetDialogFragment {
         void getNumOfAnswers(String mode, int num);
     }
 
-    private GamesDB gamesDB;
-
-    private final RecyclerAdapter games_adapter = new RecyclerAdapter(
-            new ArrayList<>(Arrays.asList(getGames())));
-
-    private BottomSheetBehavior<LinearLayout> sheetBehavior;
-    private RecyclerView NumOfAnswersRecyclerView;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_dialog_fragment, container, false);
 
-        gamesDB = new GamesDB(requireContext());
-
-        LinearLayout bottomSheet = view.findViewById(R.id.num_of_answers_bs);
-
-        sheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
-        NumOfAnswersRecyclerView = view.findViewById(R.id.modes_num_of_answers_rv);
+        RecyclerView numOfAnswersRecyclerView = view.findViewById(R.id.modes_num_of_answers_rv);
 
         NumOfAnswersRecyclerAdapter num_of_answers_adapter = new NumOfAnswersRecyclerAdapter(requireContext());
 
-        NumOfAnswersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        numOfAnswersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        NumOfAnswersRecyclerView.setAdapter(num_of_answers_adapter);
-
-        games_adapter.setOnClickListener((v, position) -> {
-            Toast.makeText(requireContext(), "IT WORKS", Toast.LENGTH_SHORT).show();
-            if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
+        numOfAnswersRecyclerView.setAdapter(num_of_answers_adapter);
 
         return view;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+        if (dialog != null) {
+            FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            if (bottomSheet != null) {
+                BottomSheetBehavior<?> behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        }
+    }
+
 }
