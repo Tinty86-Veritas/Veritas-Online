@@ -5,10 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.veritas.veritas.Adapters.entity.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UsersDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "users.db";
@@ -36,12 +39,18 @@ public class UsersDB extends SQLiteOpenHelper {
             "CREATE TABLE IF NOT EXISTS " +
                      TABLE_PLAYERS + " (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "name TEXT NOT NULL UNIQUE, " +
+                    "name TEXT NOT NULL, " +
                     "sex_id INTEGER NOT NULL, " +
+                    "UNIQUE(name, sex_id), " +
                     "FOREIGN KEY (sex_id) REFERENCES sexes(id));";
+
+    // It seems like a workaround
+    private Map<String, Long> sexesMap = new HashMap<>();
 
     public UsersDB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        sexesMap.put("Male", 1L);
+        sexesMap.put("Female", 2L);
     }
 
     public long insertIntoPlayers(String name, int sex_id) {
@@ -52,9 +61,19 @@ public class UsersDB extends SQLiteOpenHelper {
         return db.insert(TABLE_PLAYERS, null, cv);
     }
 
-    public void deleteFromPlayers(String name) {
+    public void deleteFromPlayers(String name, String sex) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_PLAYERS, PLAYERS_COLUMN_NAME + " = ?", new String[] {name.trim()});
+
+        Long sex_id = sexesMap.get(sex);
+
+        if (sex_id == null) {
+            Log.wtf("UsersDB", "sex_id is somehow null");
+        }
+
+        String whereClause = PLAYERS_COLUMN_NAME + " = ? AND "
+                + PLAYERS_COLUMN_SEX_ID + " = ?";
+
+        db.delete(TABLE_PLAYERS, whereClause, new String[] {name.trim(), String.valueOf(sex_id)});
     }
 
     public String selectFromSexes(long id) {

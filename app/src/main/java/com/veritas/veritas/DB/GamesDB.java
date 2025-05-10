@@ -40,52 +40,58 @@ public class GamesDB extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    private long insertIntoGame(String title, String game) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    private long insertIntoGame(String title, String game, SQLiteDatabase db) {
         ContentValues cv = new ContentValues();
         cv.put("title", title.trim());
         cv.put("question_num", 5);
         return db.insert(game, null, cv);
     }
 
-    public long updateTruth(String title, int num) {
-        return updateGame(title, num, TABLE_TRUTH);
-    }
+//    public long updateTruth(String title, int num) {
+//        return updateGame(title, num, TABLE_TRUTH);
+//    }
+//
+//    public long updateDare(String title, int num) {
+//        return updateGame(title, num, TABLE_DARE);
+//    }
+//
+//    public long updateNeverEver(String title, int num) {
+//        return updateGame(title, num, TABLE_NEVEREVER);
+//    }
 
-    public long updateDare(String title, int num) {
-        return updateGame(title, num, TABLE_DARE);
-    }
-
-    public long updateNeverEver(String title, int num) {
-        return updateGame(title, num, TABLE_NEVEREVER);
-    }
-
-    private long updateGame(String title, int num, String game) {
+    public int updateGame(String game, String mode, int num) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("title", title.trim());
+        cv.put("title", mode.trim());
         cv.put("question_num", num);
-        return db.update(game, cv, "title = ?", new String[] {title});
+        return db.update(game, cv, "title = ?", new String[] {mode});
     }
 
-    public int selectFromTruth(String title) {
-        return selectFromGame(title, TABLE_TRUTH);
-    }
+//    public int selectFromTruth(String title) {
+//        return selectFromGame(title, TABLE_TRUTH);
+//    }
+//
+//    public int selectFromDare(String title) {
+//        return selectFromGame(title, TABLE_DARE);
+//    }
+//
+//    public int selectFromNeverEver(String title) {
+//        return selectFromGame(title, TABLE_NEVEREVER);
+//    }
 
-    public int selectFromDare(String title) {
-        return selectFromGame(title, TABLE_DARE);
-    }
-
-    public int selectFromNeverEver(String title) {
-        return selectFromGame(title, TABLE_NEVEREVER);
-    }
-
-    private int selectFromGame(String title, String game) {
+    public int selectFromGame(String game, String mode) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor mCursor = db.query(game, null, "title = ?", new String[] {title}, null, null, null);
+        Cursor mCursor = db.query(game, new String[]{"question_num"}, "title = ?", new String[] {mode},
+                null, null, null);
 
-        mCursor.moveToFirst();
-        return mCursor.getInt(0);
+        if (mCursor.moveToFirst()) {
+            int num = mCursor.getInt(0);
+            mCursor.close();
+            return num;
+        } else {
+            mCursor.close();
+            return 5;
+        }
     }
 
     @Override
@@ -95,9 +101,9 @@ public class GamesDB extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_NEVEREVER);
 
         for (String mode : getModes()) {
-            insertIntoGame(mode, TABLE_TRUTH);
-            insertIntoGame(mode, TABLE_DARE);
-            insertIntoGame(mode, TABLE_NEVEREVER);
+            insertIntoGame(mode, TABLE_TRUTH, db);
+            insertIntoGame(mode, TABLE_DARE, db);
+            insertIntoGame(mode, TABLE_NEVEREVER, db);
         }
     }
 

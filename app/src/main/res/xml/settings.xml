@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory app:key="players_category" android:title="@string/players">
+        <Preference
+            app:key="add_player"
+            android:summary="@string/user_add_button_text" />
+    </PreferenceCategory>
+    <PreferenceCategory app:key="num_of_answers" android:title="@string/num_of_answers">
+        <com.veritas.veritas.Fragments.SettingsFragments.Preferences.BottomSheetDialogPreference
+            app:key="truth"
+            android:summary="@string/truth"/>
+        <com.veritas.veritas.Fragments.SettingsFragments.Preferences.BottomSheetDialogPreference
+            app:key="dare"
+            android:summary="@string/dare"/>
+        <com.veritas.veritas.Fragments.SettingsFragments.Preferences.BottomSheetDialogPreference
+            app:key="neverEver"
+            android:summary="@string/neverEver"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

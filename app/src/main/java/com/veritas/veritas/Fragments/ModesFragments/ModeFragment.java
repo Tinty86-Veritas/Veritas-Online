@@ -13,6 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
+import com.veritas.veritas.Exceptions.EmptyUsersList;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -36,10 +37,6 @@ public class ModeFragment extends Fragment {
 
     private String mode_name;
 
-    public ModeFragment(String mode_name) {
-        this.mode_name = mode_name;
-    }
-
     public ModeFragment(String mode_name, String game_name) {
         this.game_name = game_name;
         this.mode_name = mode_name;
@@ -49,20 +46,23 @@ public class ModeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
-        aiRequest = new AIRequest(requireContext(), mode_name, game_name);
-
         questionsRecycler = view.findViewById(R.id.questions_recycler);
 
         questionsRecycler.setAdapter(adapter);
 
         pullToRefresh = view.findViewById(R.id.pullToRefresh);
 
-        pullToRefresh.setOnRefreshListener(() -> {
-            APIHandle();
-            pullToRefresh.setRefreshing(true);
-        });
+        try {
+            aiRequest = new AIRequest(requireContext(), mode_name, game_name);
+            pullToRefresh.setOnRefreshListener(() -> {
+                APIHandle();
+                pullToRefresh.setRefreshing(true);
+            });
 
-        APIHandle();
+            APIHandle();
+        } catch (EmptyUsersList e) {
+            Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
+        }
 
         return view;
     }
@@ -78,6 +78,8 @@ public class ModeFragment extends Fragment {
                 while (matcher.find()) {
                     questions.add(matcher.group(1).trim());
                 }
+
+                Log.d(TAG, content);
 
                 requireActivity().runOnUiThread(() -> {
                     if(isAdded()) {

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -35,8 +37,11 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
 
     private final List<String> modes = new ArrayList<>(Arrays.asList(getModes()));
 
-    public NumOfAnswersRecyclerAdapter(Context context) {
+    private String game_name;
+
+    public NumOfAnswersRecyclerAdapter(Context context, String game_name) {
         this.context = context;
+        this.game_name = game_name;
     }
 
     @NonNull
@@ -49,21 +54,52 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
-                context, android.R.layout.simple_spinner_item, new Integer[] {
-                        1, 3, 5, 7, 10, 15, 20, 25, 50
-        });
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        holder.spinner.setAdapter(adapter);
+        GamesDB gamesDB = new GamesDB(context);
 
         String mode = modes.get(position);
         holder.tv.setText(mode);
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
+                context, android.R.layout.simple_spinner_item, new Integer[] {
+                1, 3, 5, 7, 10, 15, 20, 25, 50
+        });
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.spinner.setAdapter(adapter);
+        holder.spinner.setOnItemSelectedListener(null);
+
+        int num_of_answers = gamesDB.selectFromGame(game_name, mode);
+        gamesDB.close();
+
+        int spinnerPosition = adapter.getPosition(num_of_answers);
+        holder.spinner.setSelection(spinnerPosition);
+
+        if (spinnerPosition >= 0) {
+            holder.spinner.setSelection(spinnerPosition, false);
+        } else {
+            holder.spinner.setSelection(0, false);
+        }
+
+        holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Integer selectedItem = (Integer) parent.getItemAtPosition(position);
+
+//                int spinnerPosition = adapter.getPosition(num_of_answers);
+//                holder.spinner.setSelection(spinnerPosition);
+
+                GamesDB gamesDB = new GamesDB(context);
+                gamesDB.updateGame(game_name, mode, selectedItem);
+                gamesDB.close();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
     }
 
     @Override
     public int getItemCount() {
-        return modes.toArray().length;
+        return modes.size();
     }
 }
