@@ -1,15 +1,10 @@
 package com.veritas.veritas.Fragments.Dialog;
 
-import static com.veritas.veritas.Util.PublicVariables.getGames;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,17 +15,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.veritas.veritas.Adapters.NumOfAnswersRecyclerAdapter;
-import com.veritas.veritas.Adapters.RecyclerAdapter;
-import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.R;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class NumOfAnswersBottomSheetDialog extends BottomSheetDialogFragment {
 
-    public interface NumOfAnswersBottomSheetDialogListener {
-        void getNumOfAnswers(String mode, int num);
+    // The keys are identical to the game names so they can be used as game names as well
+    String key;
+
+    public NumOfAnswersBottomSheetDialog(String key) {
+        this.key = key;
     }
 
     @Nullable
@@ -40,7 +33,8 @@ public class NumOfAnswersBottomSheetDialog extends BottomSheetDialogFragment {
 
         RecyclerView numOfAnswersRecyclerView = view.findViewById(R.id.modes_num_of_answers_rv);
 
-        NumOfAnswersRecyclerAdapter num_of_answers_adapter = new NumOfAnswersRecyclerAdapter(requireContext());
+        NumOfAnswersRecyclerAdapter num_of_answers_adapter =
+                new NumOfAnswersRecyclerAdapter(requireContext(), key);
 
         numOfAnswersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 

@@ -7,14 +7,14 @@
             android:summary="@string/user_add_button_text" />
     </PreferenceCategory>
     <PreferenceCategory app:key="num_of_answers" android:title="@string/num_of_answers">
-        <com.veritas.veritas.Fragments.SettingsFragments.BottomSheetDialogPreference
-            app:key="truth_game"
+        <com.veritas.veritas.Fragments.SettingsFragments.Preferences.BottomSheetDialogPreference
+            app:key="truth"
             android:summary="@string/truth"/>
-        <com.veritas.veritas.Fragments.SettingsFragments.BottomSheetDialogPreference
-            app:key="dare_game"
+        <com.veritas.veritas.Fragments.SettingsFragments.Preferences.BottomSheetDialogPreference
+            app:key="dare"
             android:summary="@string/dare"/>
-        <com.veritas.veritas.Fragments.SettingsFragments.BottomSheetDialogPreference
-            app:key="NeverEver_game"
+        <com.veritas.veritas.Fragments.SettingsFragments.Preferences.BottomSheetDialogPreference
+            app:key="neverEver"
             android:summary="@string/neverEver"/>
 
     </PreferenceCategory>

@@ -1,7 +1,6 @@
-package com.veritas.veritas.Fragments.SettingsFragments;
+package com.veritas.veritas.Fragments.SettingsFragments.Preferences;
 
 import android.content.Context;
-import android.util.AttributeSet;
 import android.view.View;
 
 import androidx.appcompat.widget.PopupMenu;

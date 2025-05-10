@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments.SettingsFragments;
+package com.veritas.veritas.Fragments.SettingsFragments.Preferences;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -10,10 +10,7 @@ import androidx.preference.PreferenceViewHolder;
 
 import com.veritas.veritas.Fragments.Dialog.NumOfAnswersBottomSheetDialog;
 
-// TODO: Реализован bottom sheet dialog, но не реализованы взаимодействия с ним и сохраниение результатов взаимодействий
-
-public class BottomSheetDialogPreference extends Preference
-        implements NumOfAnswersBottomSheetDialog.NumOfAnswersBottomSheetDialogListener {
+public class BottomSheetDialogPreference extends Preference {
 
     FragmentManager fm;
 
@@ -27,13 +24,8 @@ public class BottomSheetDialogPreference extends Preference
         super.onBindViewHolder(holder);
 
         holder.itemView.setOnClickListener(v -> {
-            NumOfAnswersBottomSheetDialog bottomSheetDialog = new NumOfAnswersBottomSheetDialog();
+            NumOfAnswersBottomSheetDialog bottomSheetDialog = new NumOfAnswersBottomSheetDialog(getKey());
             bottomSheetDialog.show(fm, "num_of_answers_sheet");
         });
-    }
-
-    @Override
-    public void getNumOfAnswers(String mode, int num) {
-
     }
 }

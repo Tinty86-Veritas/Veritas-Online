@@ -1,13 +1,20 @@
 package com.veritas.veritas.AI;
 
+import static com.veritas.veritas.Util.PublicVariables.DARE;
+import static com.veritas.veritas.Util.PublicVariables.NEVEREVER;
+import static com.veritas.veritas.Util.PublicVariables.TRUTH;
+
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.veritas.veritas.Adapters.entity.User;
+import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.DB.UsersDB;
+import com.veritas.veritas.Exceptions.EmptyUsersList;
 import com.veritas.veritas.R;
 
 import java.io.IOException;
@@ -35,18 +42,28 @@ public class AIRequest {
     private static String prompt;
 
     // developing only
-
-    private final static int answersNum = 5;
-
+//    private final static int answersNum = 5;
     // ---------------
+
+    private int answersNum;
 
     Gson gson = new Gson();
 
-    public AIRequest(Context context, String mode_name, String game_name) {
+    public AIRequest(Context context, String mode_name, String game_name) throws EmptyUsersList {
+
+        GamesDB gamesDB = new GamesDB(context);
+
+        answersNum = gamesDB.selectFromGame(game_name, mode_name);
+
+        Log.d(TAG, String.valueOf(answersNum));
+
+        gamesDB.close();
 
         UsersDB usersDB = new UsersDB(context);
 
         ArrayList<User> users = usersDB.selectAllFromPlayers();
+
+        if (users.isEmpty()) throw new EmptyUsersList(TAG);
 
         usersDB.close();
 
@@ -63,19 +80,21 @@ public class AIRequest {
 
         Log.i(TAG, "participantsJSON:\n" + participants);
 
-        if (game_name != null) {
-            if (game_name.equals("Dare")) {
-                prompt = String.format(context.getString(R.string.dare_prompt).trim(), answersNum)
-                        + "Режим: " + mode_name
-                        + ". Участники и их пола: " + participants;
-            } else if (game_name.equals("NeverEver")) {
-                prompt = String.format(context.getString(R.string.neverEver_prompt).trim(), answersNum)
-                        + "Режим: " + mode_name;
+        switch (game_name) {
+            case TRUTH ->
+                    prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
+                            + "Режим: " + mode_name
+                            + ". Участники и их пола: " + participants;
+            case DARE ->
+                    prompt = String.format(context.getString(R.string.dare_prompt).trim(), answersNum)
+                            + "Режим: " + mode_name
+                            + ". Участники и их пола: " + participants;
+            case NEVEREVER ->
+                    prompt = String.format(context.getString(R.string.neverEver_prompt).trim(), answersNum)
+                            + "Режим: " + mode_name;
+            default -> {
+                Log.e(TAG, "game_name is inappropriate");
             }
-        } else {
-            prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
-                    + "Режим: " + mode_name
-                    + ". Участники и их пола: " + participants;
         }
     }
 

@@ -9,6 +9,10 @@ public class PublicVariables {
             "Truth", "Dare", "NeverEver"
     };
 
+    public static final String TRUTH = "truth";
+    public static final String DARE = "dare";
+    public static final String NEVEREVER = "neverEver";
+
     public static String[] getModes() {
         return modes;
     }

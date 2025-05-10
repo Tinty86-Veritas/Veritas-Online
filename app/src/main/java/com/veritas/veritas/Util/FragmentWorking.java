@@ -1,5 +1,9 @@
 package com.veritas.veritas.Util;
 
+import static com.veritas.veritas.Util.PublicVariables.DARE;
+import static com.veritas.veritas.Util.PublicVariables.NEVEREVER;
+import static com.veritas.veritas.Util.PublicVariables.TRUTH;
+
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,9 +15,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.veritas.veritas.Fragments.AiFragment;
 import com.veritas.veritas.Fragments.ModeSelectionFragment;
 import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
-import com.veritas.veritas.Fragments.SettingsFragment;
-import com.veritas.veritas.Fragments.SettingsFragments.SettingsBDFragment;
-import com.veritas.veritas.Fragments.SettingsFragments.SettingsNumOfAnswersFragment;
 import com.veritas.veritas.Fragments.SettingsFragments.SettingsPrefFragment;
 import com.veritas.veritas.R;
 
@@ -55,10 +56,6 @@ public class FragmentWorking {
         } else if (frag_id == R.id.settings_fragment){
 //            fragment = new SettingsFragment();
             fragment = new SettingsPrefFragment();
-        } else if (frag_id == R.id.settings_bd_fragment){
-            fragment = new SettingsBDFragment();
-        } else if (frag_id == R.id.num_of_answers_fragment){
-            fragment = new SettingsNumOfAnswersFragment();
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();
@@ -78,49 +75,49 @@ public class FragmentWorking {
         Fragment fragment;
         switch (mode_name) {
             case MODE_FUN:
-                fragment = new ModeFragment(MODE_FUN);
+                fragment = new ModeFragment(MODE_FUN, TRUTH);
                 break;
             case MODE_SOFT:
-                fragment = new ModeFragment(MODE_SOFT);
+                fragment = new ModeFragment(MODE_SOFT, TRUTH);
                 break;
             case MODE_HOT:
-                fragment = new ModeFragment(MODE_HOT);
+                fragment = new ModeFragment(MODE_HOT, TRUTH);
                 break;
             case MODE_EXTREME:
-                fragment = new ModeFragment(MODE_EXTREME);
+                fragment = new ModeFragment(MODE_EXTREME, TRUTH);
                 break;
             case MODE_MADNESS:
-                fragment = new ModeFragment(MODE_MADNESS);
+                fragment = new ModeFragment(MODE_MADNESS, TRUTH);
                 break;
             case MODE_FUN_DARE:
-                fragment = new ModeFragment(MODE_FUN_DARE, "Dare");
+                fragment = new ModeFragment(MODE_FUN, DARE);
                 break;
             case MODE_SOFT_DARE:
-                fragment = new ModeFragment(MODE_SOFT_DARE, "Dare");
+                fragment = new ModeFragment(MODE_SOFT, DARE);
                 break;
             case MODE_HOT_DARE:
-                fragment = new ModeFragment(MODE_HOT_DARE, "Dare");
+                fragment = new ModeFragment(MODE_HOT, DARE);
                 break;
             case MODE_EXTREME_DARE:
-                fragment = new ModeFragment(MODE_EXTREME_DARE, "Dare");
+                fragment = new ModeFragment(MODE_EXTREME, DARE);
                 break;
             case MODE_MADNESS_DARE:
-                fragment = new ModeFragment(MODE_MADNESS_DARE, "Dare");
+                fragment = new ModeFragment(MODE_MADNESS, DARE);
                 break;
             case MODE_FUN_NEVEREVER:
-                fragment = new ModeFragment(MODE_FUN_NEVEREVER, "NeverEver");
+                fragment = new ModeFragment(MODE_FUN, NEVEREVER);
                 break;
             case MODE_SOFT_NEVEREVER:
-                fragment = new ModeFragment(MODE_SOFT_NEVEREVER, "NeverEver");
+                fragment = new ModeFragment(MODE_SOFT, NEVEREVER);
                 break;
             case MODE_HOT_NEVEREVER:
-                fragment = new ModeFragment(MODE_HOT_NEVEREVER, "NeverEver");
+                fragment = new ModeFragment(MODE_HOT, NEVEREVER);
                 break;
             case MODE_EXTREME_NEVEREVER:
-                fragment = new ModeFragment(MODE_EXTREME_NEVEREVER, "NeverEver");
+                fragment = new ModeFragment(MODE_EXTREME, NEVEREVER);
                 break;
             case MODE_MADNESS_NEVEREVER:
-                fragment = new ModeFragment(MODE_MADNESS_NEVEREVER, "NeverEver");
+                fragment = new ModeFragment(MODE_MADNESS, NEVEREVER);
                 break;
             default:
                 Log.wtf(TAG, "Method setFragment got inappropriate fragment name");
