@@ -15,6 +15,7 @@ import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.DB.UsersDB;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
+import com.veritas.veritas.Exceptions.NotEnoughPlayers;
 import com.veritas.veritas.R;
 
 import java.io.IOException;
@@ -49,11 +50,12 @@ public class AIRequest {
 
     Gson gson = new Gson();
 
-    public AIRequest(Context context, String mode_name, String game_name) throws EmptyUsersList {
+    public AIRequest(Context context, String mode_name, String game_name)
+            throws EmptyUsersList, NotEnoughPlayers {
 
         GamesDB gamesDB = new GamesDB(context);
 
-        answersNum = gamesDB.selectFromGame(game_name, mode_name);
+        answersNum = gamesDB.getRequestNum(game_name, mode_name);
 
         Log.d(TAG, String.valueOf(answersNum));
 
@@ -63,7 +65,11 @@ public class AIRequest {
 
         ArrayList<User> users = usersDB.selectAllFromPlayers();
 
-        if (users.isEmpty()) throw new EmptyUsersList(TAG);
+        if (users.isEmpty()) {
+            throw new EmptyUsersList(TAG);
+        } else if (users.size() == 1 && !game_name.equals(NEVEREVER)) {
+            throw new NotEnoughPlayers(TAG);
+        }
 
         usersDB.close();
 

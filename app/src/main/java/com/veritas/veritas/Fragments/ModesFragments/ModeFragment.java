@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
+import com.veritas.veritas.Exceptions.NotEnoughPlayers;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -62,6 +63,8 @@ public class ModeFragment extends Fragment {
             APIHandle();
         } catch (EmptyUsersList e) {
             Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
+        } catch (NotEnoughPlayers e) {
+            Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
         }
 
         return view;
