@@ -42,10 +42,6 @@ public class AIRequest {
 
     private static String prompt;
 
-    // developing only
-//    private final static int answersNum = 5;
-    // ---------------
-
     private int answersNum;
 
     Gson gson = new Gson();

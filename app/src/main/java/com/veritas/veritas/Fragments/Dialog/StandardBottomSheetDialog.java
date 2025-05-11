@@ -1,11 +1,11 @@
 package com.veritas.veritas.Fragments.Dialog;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,31 +15,33 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.veritas.veritas.Adapters.NumOfAnswersRecyclerAdapter;
+import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.R;
 
-public class NumOfAnswersBottomSheetDialog extends BottomSheetDialogFragment {
+import java.util.ArrayList;
+import java.util.List;
 
-    // The keys are identical to the game names so they can be used as game names as well
-    String key;
-
-    public NumOfAnswersBottomSheetDialog(String key) {
-        this.key = key;
-    }
+public class StandardBottomSheetDialog extends BottomSheetDialogFragment
+        implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.num_of_answers_bottom_sheet_dialog_fragment, container, false);
+        View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
 
-        RecyclerView numOfAnswersRecyclerView = view.findViewById(R.id.modes_num_of_answers_rv);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
-        NumOfAnswersRecyclerAdapter num_of_answers_adapter =
-                new NumOfAnswersRecyclerAdapter(requireContext(), key);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        numOfAnswersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        ArrayList<String> items = new ArrayList<>(List.of(
+                "Нравится вариант", "Не нравится вариант", "Вариант повторяется"
+        ));
 
-        numOfAnswersRecyclerView.setAdapter(num_of_answers_adapter);
+        RecyclerAdapter adapter = new RecyclerAdapter(items);
+
+        adapter.setOnClickListener(this);
+
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
@@ -57,4 +59,8 @@ public class NumOfAnswersBottomSheetDialog extends BottomSheetDialogFragment {
         }
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(requireContext(), "IT WORKS!!!", Toast.LENGTH_SHORT).show();
+    }
 }

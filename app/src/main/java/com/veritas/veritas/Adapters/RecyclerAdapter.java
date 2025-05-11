@@ -15,14 +15,25 @@ import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    public interface OnItemClickListener {
+    private static final String TAG = "RecyclerAdapter";
+
+    public interface RecyclerAdapterOnItemClickListener {
         void onItemClick(View view, int position);
     }
 
-    private OnItemClickListener listener;
+    public interface RecyclerAdapterOnLongItemClickListener {
+        void onLongItemClick(View view, int position);
+    }
 
-    public void setOnClickListener(OnItemClickListener listener) {
-        this.listener = listener;
+    private RecyclerAdapterOnItemClickListener OnItemClickListener;
+    private RecyclerAdapterOnLongItemClickListener OnLongItemClickListener;
+
+    public void setOnClickListener(RecyclerAdapterOnItemClickListener listener) {
+        OnItemClickListener = listener;
+    }
+
+    public void setOnClickListener(RecyclerAdapterOnLongItemClickListener listener) {
+        OnLongItemClickListener = listener;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -30,13 +41,27 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public ViewHolder(View view) {
             super(view);
             tv = view.findViewById(R.id.item);
-            itemView.setOnClickListener(v -> {
-                Log.i("ClickableRecyclerAdapter", "onClickListener");
-                int pos = getAdapterPosition();
-                if (pos != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onItemClick(v, pos);
-                }
-            });
+
+            if (OnItemClickListener != null) {
+                itemView.setOnClickListener(v -> {
+                    Log.i(TAG, "OnItemClickListener");
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        OnItemClickListener.onItemClick(v, pos);
+                    }
+                });
+            }
+
+            if (OnLongItemClickListener != null) {
+                itemView.setOnLongClickListener(v -> {
+                    Log.i(TAG, "OnLongItemClickListener");
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        OnLongItemClickListener.onLongItemClick(v, pos);
+                    }
+                    return true;
+                });
+            }
         }
     }
 
@@ -62,6 +87,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return items.toArray().length;
+        return items.size();
     }
 }

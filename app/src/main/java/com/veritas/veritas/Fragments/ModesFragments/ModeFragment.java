@@ -15,13 +15,15 @@ import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
 import com.veritas.veritas.Exceptions.NotEnoughPlayers;
+import com.veritas.veritas.Fragments.Dialog.StandardBottomSheetDialog;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ModeFragment extends Fragment {
+public class ModeFragment extends Fragment
+        implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
 
     private static final String TAG = "ModeFragment";
 
@@ -48,6 +50,8 @@ public class ModeFragment extends Fragment {
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
+
+        adapter.setOnClickListener(this);
 
         questionsRecycler.setAdapter(adapter);
 
@@ -86,8 +90,8 @@ public class ModeFragment extends Fragment {
 
                 requireActivity().runOnUiThread(() -> {
                     if(isAdded()) {
-    //                    adapter.notifyItemInserted(questions.size() - 1);
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemInserted(questions.size() - 1);
+//                        adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
                     } else {
                         Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_SHORT).show();
@@ -104,5 +108,11 @@ public class ModeFragment extends Fragment {
                 });
             }
         });
+    }
+
+    @Override
+    public void onLongItemClick(View view, int position) {
+        StandardBottomSheetDialog bottomSheetDialog = new StandardBottomSheetDialog();
+        bottomSheetDialog.show(getParentFragmentManager(), TAG);
     }
 }
