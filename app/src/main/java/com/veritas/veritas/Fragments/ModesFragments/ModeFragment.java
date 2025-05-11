@@ -38,7 +38,7 @@ public class ModeFragment extends Fragment
     ArrayList<String> contentList = new ArrayList<>();
     RecyclerAdapter adapter = new RecyclerAdapter(contentList);
 
-    private String mode_name;
+    private String modeName;
 
     public ModeFragment(String modeName, String gameName) {
         this.gameName = gameName;
@@ -78,34 +78,45 @@ public class ModeFragment extends Fragment
         aiRequest.sendPOST(new AIRequest.ApiCallback() {
             @Override
             public void onSuccess(String content) {
-                Pattern pattern = Pattern.compile("<start>(.*?)<end>", Pattern.DOTALL);
-                Matcher matcher = pattern.matcher(content);
 
-                contentList.clear();
-                while (matcher.find()) {
-                    contentList.add(matcher.group(1).trim());
-                }
+                if(isAdded()) {
+                    Pattern pattern = Pattern.compile("<start>(.*?)<end>", Pattern.DOTALL);
+                    Matcher matcher = pattern.matcher(content);
 
-                Log.d(TAG, content);
-
-                requireActivity().runOnUiThread(() -> {
-                    if(isAdded()) {
-                        adapter.notifyItemInserted(contentList.size() - 1);
-//                        adapter.notifyDataSetChanged();
-                        pullToRefresh.setRefreshing(false);
-                    } else {
-                        Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_SHORT).show();
+                    contentList.clear();
+                    while (matcher.find()) {
+                        contentList.add(matcher.group(1).trim());
                     }
-                });
 
-                Log.i(TAG, contentList.toString());
+                    if (contentList.isEmpty()) {
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_SHORT).show();
+                        });
+                        return;
+                    }
+
+                    Log.d(TAG, content);
+
+                    requireActivity().runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                        pullToRefresh.setRefreshing(false);
+                    });
+
+                    Log.i(TAG, contentList.toString());
+                } else {
+                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onSuccess callback. UI will not be updated.");
+                }
             }
 
             @Override
             public void onFailure(String error) {
-                requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
-                });
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onFailure callback. Toast will not be shown.");
+                }
             }
         });
     }

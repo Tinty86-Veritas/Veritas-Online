@@ -46,14 +46,34 @@ public class AIRequest {
 
     Gson gson = new Gson();
 
-    public AIRequest(Context context, String mode_name, String game_name)
+    public AIRequest(Context context, String modeName, String gameName)
             throws EmptyUsersList, NotEnoughPlayers {
+
+        Map<String, Object[]> reactions = new HashMap<>();
 
         GamesDB gamesDB = new GamesDB(context);
 
-        answersNum = gamesDB.getRequestNum(game_name, mode_name);
+        for (String type : new String[] {"like", "dislike", "recurring"}) {
+            List<String> rawContentList = gamesDB.getReaction(gameName, modeName, type);
+            String[] contentList = new String[rawContentList.size()];
+            contentList = rawContentList.toArray(contentList);
 
-        Log.d(TAG, String.valueOf(answersNum));
+            if (!rawContentList.isEmpty()) {
+                reactions.put(type, contentList);
+            }
+        }
+
+        String reactionsJson;
+
+        if (!reactions.isEmpty()) {
+            reactionsJson = gson.toJson(reactions);
+        } else {
+            reactionsJson = "No reactions";
+        }
+
+        Log.d(TAG, "reactionsJson:\n" + reactionsJson);
+
+        answersNum = gamesDB.getRequestNum(gameName, modeName);
 
         gamesDB.close();
 
@@ -63,7 +83,7 @@ public class AIRequest {
 
         if (users.isEmpty()) {
             throw new EmptyUsersList(TAG);
-        } else if (users.size() == 1 && !game_name.equals(NEVEREVER)) {
+        } else if (users.size() == 1 && !gameName.equals(NEVEREVER)) {
             throw new NotEnoughPlayers(TAG);
         }
 
@@ -82,22 +102,25 @@ public class AIRequest {
 
         Log.i(TAG, "participantsJSON:\n" + participants);
 
-        switch (game_name) {
+        switch (gameName) {
             case TRUTH ->
-                    prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
-                            + "Режим: " + mode_name
+                    prompt = String.format(context.getString(R.string.truth_prompt).trim(),
+                            answersNum, reactionsJson)
+                            + "Режим: " + modeName
                             + ". Участники и их пола: " + participants;
             case DARE ->
-                    prompt = String.format(context.getString(R.string.dare_prompt).trim(), answersNum)
-                            + "Режим: " + mode_name
+                    prompt = String.format(context.getString(R.string.dare_prompt).trim(),
+                            answersNum, reactionsJson)
+                            + "Режим: " + modeName
                             + ". Участники и их пола: " + participants;
             case NEVEREVER ->
-                    prompt = String.format(context.getString(R.string.neverEver_prompt).trim(), answersNum)
-                            + "Режим: " + mode_name;
-            default -> {
-                Log.e(TAG, "game_name is inappropriate");
-            }
+                    prompt = String.format(context.getString(R.string.neverEver_prompt).trim(),
+                            answersNum, reactionsJson)
+                            + "Режим: " + modeName;
+            default -> Log.e(TAG, "gameName is inappropriate");
         }
+
+        Log.d(TAG, "prompt:\n" + prompt);
     }
 
     private String createJSON(String message_content) {

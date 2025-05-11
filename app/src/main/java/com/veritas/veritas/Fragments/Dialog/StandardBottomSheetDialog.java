@@ -1,7 +1,6 @@
 package com.veritas.veritas.Fragments.Dialog;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,12 +73,19 @@ public class StandardBottomSheetDialog extends BottomSheetDialogFragment
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(requireContext(), "IT WORKS!!!", Toast.LENGTH_SHORT).show();
+
+        // TODO: Дать возможность удалять реакцию, например повторным кликом по той же реакции
+
         GamesDB gamesDB = new GamesDB(requireContext());
 
+        if (gamesDB.hasReaction(gameName, modeName, content)) {
+            gamesDB.deleteReaction(gameName, modeName, content);
+        }
+
         switch (position) {
-            case 0 -> gamesDB.addResponse(gameName, modeName, "like", content);
-            case 1 -> gamesDB.addResponse(gameName, modeName, "dislike", content);
-            case 2 -> gamesDB.addResponse(gameName, modeName, "recurring", content);
+            case 0 -> gamesDB.addReaction(gameName, modeName, "like", content);
+            case 1 -> gamesDB.addReaction(gameName, modeName, "dislike", content);
+            case 2 -> gamesDB.addReaction(gameName, modeName, "recurring", content);
         }
     }
 }

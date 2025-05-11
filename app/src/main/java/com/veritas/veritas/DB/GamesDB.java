@@ -12,6 +12,9 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GamesDB extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "games.db";
     private static final int DATABASE_VERSION = 1;
@@ -110,7 +113,6 @@ public class GamesDB extends SQLiteOpenHelper {
             result = c.getInt(c.getColumnIndexOrThrow("request_num"));
         }
         c.close();
-        Log.d("GamesDB", "getRequestNum: " + result);
         return result;
     }
 
@@ -127,7 +129,7 @@ public class GamesDB extends SQLiteOpenHelper {
     }
 
     // Add a like or dislike response
-    public long addResponse(String gameName, String modeName, String type, String text) {
+    public long addReaction(String gameName, String modeName, String type, String text) {
         SQLiteDatabase db = getWritableDatabase();
         // get game_mode_id
         Cursor c = db.rawQuery(
@@ -146,19 +148,96 @@ public class GamesDB extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put("game_mode_id", gameModeId);
         cv.put("type", type);
-        cv.put("response_text", text);
+        cv.put("content", text);
         return db.insert(TABLE_RESPONSES, null, cv);
     }
 
-    // Fetch responses by type
-    public Cursor getResponses(String gameName, String modeName, String type) {
+    public int deleteReaction(String gameName, String modeName, String content) {
+        SQLiteDatabase db = getWritableDatabase();
+        int deletedRows = -1; // Default to -1 if no game_mode_id is found
+
+        // Get the game_mode_id for the given game and mode names
+        Cursor c = db.rawQuery(
+                "SELECT gm.id FROM " + TABLE_GAME_MODES + " gm " +
+                        "JOIN " + TABLE_GAMES + " g ON g.id = gm.game_id " +
+                        "JOIN " + TABLE_MODES + " m ON m.id = gm.mode_id " +
+                        "WHERE g.name = ? AND m.name = ?", new String[]{gameName, modeName}
+        );
+
+        long gameModeId = -1;
+        if (c != null && c.moveToFirst()) {
+            gameModeId = c.getLong(c.getColumnIndexOrThrow("id"));
+            c.close();
+        }
+
+        // If a valid game_mode_id is found, delete the reactions with the specified content
+        if (gameModeId != -1) {
+            deletedRows = db.delete(
+                    TABLE_RESPONSES,
+                    "game_mode_id = ? AND content = ?",
+                    new String[]{String.valueOf(gameModeId), content}
+            );
+        } else {
+            Log.w("GamesDB", "No game_mode_id found for game: " + gameName + " and mode: " + modeName);
+        }
+
+        return deletedRows;
+    }
+
+    public boolean hasReaction(String gameName, String modeName, String content) {
         SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery(
-                "SELECT r.response_text FROM " + TABLE_RESPONSES + " r " +
+        boolean exists = false;
+        Cursor c = null;
+        try {
+            // Query to check for the existence of any reaction for the given game, mode, and content
+            // We only need to select one row if it exists, so LIMIT 1 is efficient
+            c = db.rawQuery(
+                    "SELECT 1 FROM " + TABLE_RESPONSES + " r " +
+                            "JOIN " + TABLE_GAME_MODES + " gm ON gm.id = r.game_mode_id " +
+                            "JOIN " + TABLE_GAMES + " g ON g.id = gm.game_id " +
+                            "JOIN " + TABLE_MODES + " m ON m.id = gm.mode_id " +
+                            "WHERE g.name = ? AND m.name = ? AND r.content = ? LIMIT 1",
+                    new String[]{gameName, modeName, content}
+            );
+
+            // If moveToFirst() returns true, it means at least one row was found
+            if (c != null && c.moveToFirst()) {
+                exists = true;
+            }
+        } catch (Exception e) {
+            Log.e("GamesDB", "Error checking for reaction existence with content", e);
+            // Handle exception if necessary, maybe return false or rethrow
+        } finally {
+            // Always close the cursor
+            if (c != null) {
+                c.close();
+            }
+        }
+        return exists;
+    }
+
+
+    // Fetch responses by type
+    public List<String> getReaction(String gameName, String modeName, String type) {
+        List<String> responses = new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor c = db.rawQuery(
+                "SELECT r.content FROM " + TABLE_RESPONSES + " r " +
                         "JOIN " + TABLE_GAME_MODES + " gm ON gm.id = r.game_mode_id " +
                         "JOIN " + TABLE_GAMES + " g ON g.id = gm.game_id " +
                         "JOIN " + TABLE_MODES + " m ON m.id = gm.mode_id " +
-                        "WHERE g.name = ? AND m.name = ? AND r.type = ?", new String[]{gameName, modeName, type}
+                        "WHERE g.name = ? AND m.name = ? AND r.type = ?",
+                new String[]{gameName, modeName, type}
         );
+
+        if (c.moveToFirst()) {
+            do {
+                responses.add(c.getString(c.getColumnIndexOrThrow("content")));
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return responses;
     }
 }

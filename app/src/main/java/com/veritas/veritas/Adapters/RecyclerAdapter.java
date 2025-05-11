@@ -1,5 +1,7 @@
 package com.veritas.veritas.Adapters;
 
+import static com.veritas.veritas.Util.PublicVariables.TRUTH;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -48,6 +51,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         OnItemClickListener.onItemClick(v, pos);
+
+                        // Debug
+                        GamesDB gamesDB = new GamesDB(view.getContext());
+                        Log.d(TAG, gamesDB.getReaction(TRUTH, "Fun", "like").toString());
+
                     }
                 });
             }
