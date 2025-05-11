@@ -1,6 +1,7 @@
 package com.veritas.veritas.Fragments.Dialog;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
+import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -23,6 +25,16 @@ import java.util.List;
 
 public class StandardBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
+
+    private String gameName;
+    private String modeName;
+    private String content;
+
+    public StandardBottomSheetDialog(String gameName, String modeName, String content) {
+        this.gameName = gameName;
+        this.modeName = modeName;
+        this.content = content;
+    }
 
     @Nullable
     @Override
@@ -62,5 +74,12 @@ public class StandardBottomSheetDialog extends BottomSheetDialogFragment
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(requireContext(), "IT WORKS!!!", Toast.LENGTH_SHORT).show();
+        GamesDB gamesDB = new GamesDB(requireContext());
+
+        switch (position) {
+            case 0 -> gamesDB.addResponse(gameName, modeName, "like", content);
+            case 1 -> gamesDB.addResponse(gameName, modeName, "dislike", content);
+            case 2 -> gamesDB.addResponse(gameName, modeName, "recurring", content);
+        }
     }
 }

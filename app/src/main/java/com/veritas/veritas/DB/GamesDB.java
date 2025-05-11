@@ -19,7 +19,7 @@ public class GamesDB extends SQLiteOpenHelper {
     private static final String TABLE_GAMES = "games";
     private static final String TABLE_MODES = "modes";
     private static final String TABLE_GAME_MODES = "game_modes";
-    private static final String TABLE_RESPONSES = "responses";
+    private static final String TABLE_RESPONSES = "reaction";
 
     private static final String CREATE_TABLE_GAMES =
             "CREATE TABLE IF NOT EXISTS " + TABLE_GAMES + " (" +
@@ -46,8 +46,8 @@ public class GamesDB extends SQLiteOpenHelper {
             "CREATE TABLE IF NOT EXISTS " + TABLE_RESPONSES + " (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "game_mode_id INTEGER NOT NULL REFERENCES " + TABLE_GAME_MODES + "(id) ON DELETE CASCADE, " +
-                    "type TEXT NOT NULL CHECK(type IN ('like','dislike')), " +
-                    "response_text TEXT NOT NULL" +
+                    "type TEXT NOT NULL CHECK(type IN ('like', 'dislike', 'recurring')), " +
+                    "content TEXT NOT NULL" +
                     ");";
 
     public GamesDB(@Nullable Context context) {

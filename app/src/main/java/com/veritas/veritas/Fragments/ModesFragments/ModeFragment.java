@@ -27,7 +27,7 @@ public class ModeFragment extends Fragment
 
     private static final String TAG = "ModeFragment";
 
-    private String game_name;
+    private String gameName;
 
     private AIRequest aiRequest;
 
@@ -35,14 +35,14 @@ public class ModeFragment extends Fragment
 
     private SwipeRefreshLayout pullToRefresh;
 
-    ArrayList<String> questions = new ArrayList<>();
-    RecyclerAdapter adapter = new RecyclerAdapter(questions);
+    ArrayList<String> contentList = new ArrayList<>();
+    RecyclerAdapter adapter = new RecyclerAdapter(contentList);
 
     private String mode_name;
 
-    public ModeFragment(String mode_name, String game_name) {
-        this.game_name = game_name;
-        this.mode_name = mode_name;
+    public ModeFragment(String modeName, String gameName) {
+        this.gameName = gameName;
+        this.modeName = modeName;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,7 +58,7 @@ public class ModeFragment extends Fragment
         pullToRefresh = view.findViewById(R.id.pullToRefresh);
 
         try {
-            aiRequest = new AIRequest(requireContext(), mode_name, game_name);
+            aiRequest = new AIRequest(requireContext(), modeName, gameName);
             pullToRefresh.setOnRefreshListener(() -> {
                 APIHandle();
                 pullToRefresh.setRefreshing(true);
@@ -81,16 +81,16 @@ public class ModeFragment extends Fragment
                 Pattern pattern = Pattern.compile("<start>(.*?)<end>", Pattern.DOTALL);
                 Matcher matcher = pattern.matcher(content);
 
-                questions.clear();
+                contentList.clear();
                 while (matcher.find()) {
-                    questions.add(matcher.group(1).trim());
+                    contentList.add(matcher.group(1).trim());
                 }
 
                 Log.d(TAG, content);
 
                 requireActivity().runOnUiThread(() -> {
                     if(isAdded()) {
-                        adapter.notifyItemInserted(questions.size() - 1);
+                        adapter.notifyItemInserted(contentList.size() - 1);
 //                        adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
                     } else {
@@ -98,7 +98,7 @@ public class ModeFragment extends Fragment
                     }
                 });
 
-                Log.i(TAG, questions.toString());
+                Log.i(TAG, contentList.toString());
             }
 
             @Override
@@ -112,7 +112,9 @@ public class ModeFragment extends Fragment
 
     @Override
     public void onLongItemClick(View view, int position) {
-        StandardBottomSheetDialog bottomSheetDialog = new StandardBottomSheetDialog();
+        String content = contentList.get(position);
+        StandardBottomSheetDialog bottomSheetDialog =
+                new StandardBottomSheetDialog(gameName, modeName, content);
         bottomSheetDialog.show(getParentFragmentManager(), TAG);
     }
 }
