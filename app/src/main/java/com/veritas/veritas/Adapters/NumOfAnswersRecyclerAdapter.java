@@ -68,7 +68,7 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
         holder.spinner.setAdapter(adapter);
         holder.spinner.setOnItemSelectedListener(null);
 
-        int num_of_answers = gamesDB.selectFromGame(game_name, mode);
+        int num_of_answers = gamesDB.getRequestNum(game_name, mode);
         gamesDB.close();
 
         int spinnerPosition = adapter.getPosition(num_of_answers);
@@ -89,7 +89,7 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
 //                holder.spinner.setSelection(spinnerPosition);
 
                 GamesDB gamesDB = new GamesDB(context);
-                gamesDB.updateGame(game_name, mode, selectedItem);
+                gamesDB.updateRequestNum(game_name, mode, selectedItem);
                 gamesDB.close();
             }
 

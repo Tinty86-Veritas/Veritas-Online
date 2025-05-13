@@ -14,17 +14,20 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
+import com.veritas.veritas.Exceptions.NotEnoughPlayers;
+import com.veritas.veritas.Fragments.Dialog.StandardBottomSheetDialog;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ModeFragment extends Fragment {
+public class ModeFragment extends Fragment
+        implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
 
     private static final String TAG = "ModeFragment";
 
-    private String game_name;
+    private String gameName;
 
     private AIRequest aiRequest;
 
@@ -32,14 +35,14 @@ public class ModeFragment extends Fragment {
 
     private SwipeRefreshLayout pullToRefresh;
 
-    ArrayList<String> questions = new ArrayList<>();
-    RecyclerAdapter adapter = new RecyclerAdapter(questions);
+    ArrayList<String> contentList = new ArrayList<>();
+    RecyclerAdapter adapter = new RecyclerAdapter(contentList);
 
-    private String mode_name;
+    private String modeName;
 
-    public ModeFragment(String mode_name, String game_name) {
-        this.game_name = game_name;
-        this.mode_name = mode_name;
+    public ModeFragment(String modeName, String gameName) {
+        this.gameName = gameName;
+        this.modeName = modeName;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,12 +51,14 @@ public class ModeFragment extends Fragment {
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
 
+        adapter.setOnClickListener(this);
+
         questionsRecycler.setAdapter(adapter);
 
         pullToRefresh = view.findViewById(R.id.pullToRefresh);
 
         try {
-            aiRequest = new AIRequest(requireContext(), mode_name, game_name);
+            aiRequest = new AIRequest(requireContext(), modeName, gameName);
             pullToRefresh.setOnRefreshListener(() -> {
                 APIHandle();
                 pullToRefresh.setRefreshing(true);
@@ -62,6 +67,8 @@ public class ModeFragment extends Fragment {
             APIHandle();
         } catch (EmptyUsersList e) {
             Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
+        } catch (NotEnoughPlayers e) {
+            Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
         }
 
         return view;
@@ -71,35 +78,54 @@ public class ModeFragment extends Fragment {
         aiRequest.sendPOST(new AIRequest.ApiCallback() {
             @Override
             public void onSuccess(String content) {
-                Pattern pattern = Pattern.compile("<start>(.*?)<end>", Pattern.DOTALL);
-                Matcher matcher = pattern.matcher(content);
 
-                questions.clear();
-                while (matcher.find()) {
-                    questions.add(matcher.group(1).trim());
-                }
+                if(isAdded()) {
+                    Pattern pattern = Pattern.compile("<start>(.*?)<end>", Pattern.DOTALL);
+                    Matcher matcher = pattern.matcher(content);
 
-                Log.d(TAG, content);
+                    contentList.clear();
+                    while (matcher.find()) {
+                        contentList.add(matcher.group(1).trim());
+                    }
 
-                requireActivity().runOnUiThread(() -> {
-                    if(isAdded()) {
-    //                    adapter.notifyItemInserted(questions.size() - 1);
+                    if (contentList.isEmpty()) {
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_SHORT).show();
+                        });
+                        return;
+                    }
+
+                    Log.d(TAG, content);
+
+                    requireActivity().runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
-                    } else {
-                        Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    });
 
-                Log.i(TAG, questions.toString());
+                    Log.i(TAG, contentList.toString());
+                } else {
+                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onSuccess callback. UI will not be updated.");
+                }
             }
 
             @Override
             public void onFailure(String error) {
-                requireActivity().runOnUiThread(() -> {
-                    Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
-                });
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+                    });
+                } else {
+                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onFailure callback. Toast will not be shown.");
+                }
             }
         });
+    }
+
+    @Override
+    public void onLongItemClick(View view, int position) {
+        String content = contentList.get(position);
+        StandardBottomSheetDialog bottomSheetDialog =
+                new StandardBottomSheetDialog(gameName, modeName, content);
+        bottomSheetDialog.show(getParentFragmentManager(), TAG);
     }
 }

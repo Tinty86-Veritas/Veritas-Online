@@ -15,6 +15,7 @@ import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.DB.UsersDB;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
+import com.veritas.veritas.Exceptions.NotEnoughPlayers;
 import com.veritas.veritas.R;
 
 import java.io.IOException;
@@ -32,6 +33,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+// TODO: нужно отлавливать ошибку вызываемую достиганием порога доступных запросов к нейронке
+
 public class AIRequest {
 
     private static final String TAG = "AIRequest";
@@ -41,21 +44,38 @@ public class AIRequest {
 
     private static String prompt;
 
-    // developing only
-//    private final static int answersNum = 5;
-    // ---------------
-
     private int answersNum;
 
     Gson gson = new Gson();
 
-    public AIRequest(Context context, String mode_name, String game_name) throws EmptyUsersList {
+    public AIRequest(Context context, String modeName, String gameName)
+            throws EmptyUsersList, NotEnoughPlayers {
+
+        Map<String, Object[]> reactions = new HashMap<>();
 
         GamesDB gamesDB = new GamesDB(context);
 
-        answersNum = gamesDB.selectFromGame(game_name, mode_name);
+        for (String type : new String[] {"like", "dislike", "recurring"}) {
+            List<String> rawContentList = gamesDB.getReaction(gameName, modeName, type);
+            String[] contentList = new String[rawContentList.size()];
+            contentList = rawContentList.toArray(contentList);
 
-        Log.d(TAG, String.valueOf(answersNum));
+            if (!rawContentList.isEmpty()) {
+                reactions.put(type, contentList);
+            }
+        }
+
+        String reactionsJson;
+
+        if (!reactions.isEmpty()) {
+            reactionsJson = gson.toJson(reactions);
+        } else {
+            reactionsJson = "No reactions";
+        }
+
+        Log.d(TAG, "reactionsJson:\n" + reactionsJson);
+
+        answersNum = gamesDB.getRequestNum(gameName, modeName);
 
         gamesDB.close();
 
@@ -63,7 +83,11 @@ public class AIRequest {
 
         ArrayList<User> users = usersDB.selectAllFromPlayers();
 
-        if (users.isEmpty()) throw new EmptyUsersList(TAG);
+        if (users.isEmpty()) {
+            throw new EmptyUsersList(TAG);
+        } else if (users.size() == 1 && !gameName.equals(NEVEREVER)) {
+            throw new NotEnoughPlayers(TAG);
+        }
 
         usersDB.close();
 
@@ -80,22 +104,25 @@ public class AIRequest {
 
         Log.i(TAG, "participantsJSON:\n" + participants);
 
-        switch (game_name) {
+        switch (gameName) {
             case TRUTH ->
-                    prompt = String.format(context.getString(R.string.truth_prompt).trim(), answersNum)
-                            + "Режим: " + mode_name
+                    prompt = String.format(context.getString(R.string.truth_prompt).trim(),
+                            answersNum, reactionsJson)
+                            + "Режим: " + modeName
                             + ". Участники и их пола: " + participants;
             case DARE ->
-                    prompt = String.format(context.getString(R.string.dare_prompt).trim(), answersNum)
-                            + "Режим: " + mode_name
+                    prompt = String.format(context.getString(R.string.dare_prompt).trim(),
+                            answersNum, reactionsJson)
+                            + "Режим: " + modeName
                             + ". Участники и их пола: " + participants;
             case NEVEREVER ->
-                    prompt = String.format(context.getString(R.string.neverEver_prompt).trim(), answersNum)
-                            + "Режим: " + mode_name;
-            default -> {
-                Log.e(TAG, "game_name is inappropriate");
-            }
+                    prompt = String.format(context.getString(R.string.neverEver_prompt).trim(),
+                            answersNum, reactionsJson)
+                            + "Режим: " + modeName;
+            default -> Log.e(TAG, "gameName is inappropriate");
         }
+
+        Log.d(TAG, "prompt:\n" + prompt);
     }
 
     private String createJSON(String message_content) {

@@ -12,6 +12,8 @@ import com.veritas.veritas.Fragments.Dialog.NumOfAnswersBottomSheetDialog;
 
 public class BottomSheetDialogPreference extends Preference {
 
+    private static final String TAG = "BottomSheetDialogPreference";
+
     FragmentManager fm;
 
     public BottomSheetDialogPreference(Context context, AttributeSet attrs) {
@@ -25,7 +27,7 @@ public class BottomSheetDialogPreference extends Preference {
 
         holder.itemView.setOnClickListener(v -> {
             NumOfAnswersBottomSheetDialog bottomSheetDialog = new NumOfAnswersBottomSheetDialog(getKey());
-            bottomSheetDialog.show(fm, "num_of_answers_sheet");
+            bottomSheetDialog.show(fm, TAG);
         });
     }
 }
