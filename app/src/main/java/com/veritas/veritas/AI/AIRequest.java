@@ -33,6 +33,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+// TODO: нужно отлавливать ошибку вызываемую достиганием порога доступных запросов к нейронке
+
 public class AIRequest {
 
     private static final String TAG = "AIRequest";
