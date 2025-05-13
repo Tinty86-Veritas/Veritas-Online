@@ -122,5 +122,7 @@
     <string name="dare">Действие</string>
     <string name="truth">Правда</string>
     <string name="neverEver">Никогда не</string>
+    <string name="account">Аккаунт</string>
+    <string name="vk_id_login">Войти через VK ID</string>
 
 </resources>
