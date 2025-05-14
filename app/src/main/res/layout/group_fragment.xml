@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--<androidx.constraintlayout.widget.ConstraintLayout-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:id="@+id/group_fragment"-->
+<!--    android:background="?android:attr/colorBackground"-->
+<!--    android:padding="16dp">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/fragment_title"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Управление группами"-->
+<!--        android:gravity="center"-->
+<!--        android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"-->
+<!--        android:fontFamily="@font/montserrat"-->
+<!--        android:textStyle="bold"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:layout_marginBottom="48dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/join_via_code_bt"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@drawable/system_rounded_gradient_bg"-->
+<!--        android:paddingVertical="16dp"-->
+<!--        android:paddingHorizontal="24dp"-->
+<!--        android:text="@string/join_via_code"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        android:textSize="18sp"-->
+<!--        android:fontFamily="@font/montserrat"-->
+<!--        android:textStyle="bold"-->
+<!--        android:layout_marginTop="0dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/fragment_title"-->
+<!--        app:layout_constraintWidth_percent="0.8"-->
+<!--        />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/group_fragment"
+    android:background="?android:attr/colorBackground"
+    android:padding="16dp">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/join_via_code_bt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="104dp"
+        android:background="@drawable/system_rounded_gradient_bg"
+        android:fontFamily="@font/montserrat"
+
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp"
+        android:text="@string/join_via_code"
+        android:textColor="@android:color/white"
+
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/create_group_bt"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/system_rounded_gradient_bg"
+        android:fontFamily="@font/montserrat"
+
+        android:paddingHorizontal="24dp"
+
+        android:paddingVertical="16dp"
+        android:text="@string/create_group"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/join_via_code_bt"
+        app:layout_constraintWidth_percent="0.8" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:text="Search for a group is under develop"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_group_bt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

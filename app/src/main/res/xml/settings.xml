@@ -16,7 +16,6 @@
         <com.veritas.veritas.Fragments.SettingsFragments.Preferences.BottomSheetDialogPreference
             app:key="neverEver"
             android:summary="@string/neverEver"/>
-
     </PreferenceCategory>
 
 </PreferenceScreen>

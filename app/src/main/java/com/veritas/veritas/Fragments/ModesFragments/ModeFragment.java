@@ -15,7 +15,7 @@ import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
 import com.veritas.veritas.Exceptions.NotEnoughPlayers;
-import com.veritas.veritas.Fragments.Dialog.StandardBottomSheetDialog;
+import com.veritas.veritas.Fragments.Dialog.ReactionsBottomSheetDialog;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -124,8 +124,8 @@ public class ModeFragment extends Fragment
     @Override
     public void onLongItemClick(View view, int position) {
         String content = contentList.get(position);
-        StandardBottomSheetDialog bottomSheetDialog =
-                new StandardBottomSheetDialog(gameName, modeName, content);
+        ReactionsBottomSheetDialog bottomSheetDialog =
+                new ReactionsBottomSheetDialog(gameName, modeName, content);
         bottomSheetDialog.show(getParentFragmentManager(), TAG);
     }
 }

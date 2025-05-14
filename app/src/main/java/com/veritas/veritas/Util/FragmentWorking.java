@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.veritas.veritas.Fragments.AiFragment;
+import com.veritas.veritas.Fragments.GroupFragment;
 import com.veritas.veritas.Fragments.ModeSelectionFragment;
 import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragments.SettingsPrefFragment;
@@ -51,11 +51,10 @@ public class FragmentWorking {
         Fragment fragment;
         if (frag_id == R.id.mode_selection_fragment) {
             fragment = new ModeSelectionFragment();
-        } else if (frag_id == R.id.ai_direct_using_fragment) {
-            fragment = new AiFragment();
-        } else if (frag_id == R.id.settings_fragment){
-//            fragment = new SettingsFragment();
+        } else if (frag_id == R.xml.settings){
             fragment = new SettingsPrefFragment();
+        } else if (frag_id == R.id.group_fragment) {
+            fragment = new GroupFragment();
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();
