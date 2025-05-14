@@ -12,9 +12,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.veritas.veritas.Fragments.GroupFragment;
-import com.veritas.veritas.Fragments.ModeSelectionFragment;
-import com.veritas.veritas.Fragments.ModesFragments.ModeFragment;
+import com.veritas.veritas.Fragments.MainFragments.GroupFragment;
+import com.veritas.veritas.Fragments.MainFragments.ModeSelectionFragment;
+import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
+import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.Fragments.SettingsFragments.SettingsPrefFragment;
 import com.veritas.veritas.R;
 
@@ -47,14 +48,16 @@ public class FragmentWorking {
         this.fm = fm;
     }
 
-    public int setFragment(int frag_id) {
+    public int setFragment(int frag_layout) {
         Fragment fragment;
-        if (frag_id == R.id.mode_selection_fragment) {
+        if (frag_layout == R.layout.mode_selection_fragment) {
             fragment = new ModeSelectionFragment();
-        } else if (frag_id == R.xml.settings){
+        } else if (frag_layout == R.xml.settings){
             fragment = new SettingsPrefFragment();
-        } else if (frag_id == R.id.group_fragment) {
+        } else if (frag_layout == R.layout.group_fragment) {
             fragment = new GroupFragment();
+        } else if (frag_layout == R.layout.lobby_fragment) {
+            fragment = new LobbyFragment();
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();
@@ -67,7 +70,7 @@ public class FragmentWorking {
         ft.addToBackStack(null);
         ft.commit();
 
-        return frag_id;
+        return frag_layout;
     }
 
     public void setFragment(String mode_name) {

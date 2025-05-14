@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentWorking fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager());
 
-        current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
+        current_frag_id = fw.setFragment(R.layout.mode_selection_fragment);
 
         nav.setSelectedItemId(R.id.mode_selection_fragment);
 
@@ -32,10 +32,10 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.fire_id && current_frag_id != R.id.fire_id) {
-                current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
+                current_frag_id = fw.setFragment(R.layout.mode_selection_fragment);
                 return true;
             } else if (id == R.id.group_id && current_frag_id != R.id.group_id) {
-                current_frag_id = fw.setFragment(R.id.group_fragment);
+                current_frag_id = fw.setFragment(R.layout.group_fragment);
                 return true;
             } else if (id == R.id.settings_id && current_frag_id != R.id.settings_id) {
                 current_frag_id = fw.setFragment(R.xml.settings);

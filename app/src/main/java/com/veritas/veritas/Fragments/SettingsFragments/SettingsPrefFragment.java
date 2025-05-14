@@ -6,12 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -19,7 +16,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.UsersDB;
-import com.veritas.veritas.Fragments.Dialog.UserAddDialog;
+import com.veritas.veritas.Fragments.Dialogs.UserAddDialog;
 import com.veritas.veritas.Fragments.SettingsFragments.Preferences.ContextMenuPreference;
 import com.veritas.veritas.R;
 import com.vk.id.AccessToken;
@@ -30,10 +27,7 @@ import com.vk.id.auth.VKIDAuthParams;
 import com.vk.id.onetap.xml.OneTapBottomSheet;
 import com.vk.id.refreshuser.VKIDGetUserParams;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class SettingsPrefFragment extends PreferenceFragmentCompat
         implements UserAddDialog.UserAddDialogListener, ContextMenuPreference.ContextMenuPreferenceListener {

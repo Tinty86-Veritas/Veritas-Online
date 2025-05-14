@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments;
+package com.veritas.veritas.Fragments.MainFragments;
 
 import static com.veritas.veritas.Util.FragmentWorking.MODE_EXTREME_DARE;
 import static com.veritas.veritas.Util.FragmentWorking.MODE_EXTREME_NEVEREVER;
