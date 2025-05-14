@@ -8,7 +8,6 @@ import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
 
 public class MainActivity extends AppCompatActivity {
-
     private final String TAG = "MainActivity";
 
     private BottomNavigationView nav;

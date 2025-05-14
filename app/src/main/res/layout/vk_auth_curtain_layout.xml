@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vk_auth_bs"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp">
+
+    <com.vk.id.onetap.xml.OneTapBottomSheet
+        android:id="@+id/vkid_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:vkid_bottomSheetServiceName="Some xml app"
+        app:vkid_bottomSheetScenario="OrderInService"
+        app:vkid_autoHideOnSuccess="false"
+        />
+
+</FrameLayout>
