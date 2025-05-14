@@ -125,6 +125,7 @@
     <string name="neverEver">Никогда не</string>
     <string name="account">Аккаунт</string>
     <string name="vk_id_login">Войти через VK ID</string>
+
     <string name="join_via_code">Войти по коду</string>
     <string name="create_group">Создать группу</string>
     <string name="enter_code">Введите код</string>

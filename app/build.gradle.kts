@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -5,6 +6,12 @@ plugins {
 android {
     namespace = "com.veritas.veritas"
     compileSdk = 35
+
+    android {
+        compileOptions {
+            isCoreLibraryDesugaringEnabled = true
+        }
+    }
 
     defaultConfig {
         applicationId = "com.veritas.veritas"
@@ -14,6 +21,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        addManifestPlaceholders(
+            mapOf(
+                "VKIDClientID" to "53557156", // ID вашего приложения (app_id).
+                "VKIDClientSecret" to "DKcv7OtfcgaqgybrFk9n", // Ваш защищенный ключ (client_secret).
+                "VKIDRedirectHost" to "vk.com", // Обычно используется vk.com.
+                "VKIDRedirectScheme" to "vk53557156", // Обычно используется vk{ID приложения}.
+            )
+        )
     }
 
     buildTypes {
@@ -43,4 +59,8 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.okhttp)
     implementation(libs.gson)
+    implementation(libs.vkid)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(libs.onetap.xml)
 }
+
