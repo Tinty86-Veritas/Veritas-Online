@@ -34,19 +34,13 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.fire_id && current_frag_id != R.id.fire_id) {
                 current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
                 return true;
-            }
-
-            else if (id == R.id.ai_id && current_frag_id != R.id.ai_id) {
-                current_frag_id = fw.setFragment(R.id.ai_direct_using_fragment);
+            } else if (id == R.id.group_id && current_frag_id != R.id.group_id) {
+                current_frag_id = fw.setFragment(R.id.group_fragment);
                 return true;
-            }
-
-            else if (id == R.id.settings_id && current_frag_id != R.id.settings_id) {
-                current_frag_id = fw.setFragment(R.id.settings_fragment);
+            } else if (id == R.id.settings_id && current_frag_id != R.id.settings_id) {
+                current_frag_id = fw.setFragment(R.xml.settings);
                 return true;
-            }
-
-            else {
+            } else {
                 return false;
             }
         });

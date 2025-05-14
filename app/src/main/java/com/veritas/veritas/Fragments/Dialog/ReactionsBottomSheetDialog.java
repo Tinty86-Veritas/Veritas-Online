@@ -22,14 +22,14 @@ import com.veritas.veritas.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StandardBottomSheetDialog extends BottomSheetDialogFragment
+public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
     private String gameName;
     private String modeName;
     private String content;
 
-    public StandardBottomSheetDialog(String gameName, String modeName, String content) {
+    public ReactionsBottomSheetDialog(String gameName, String modeName, String content) {
         this.gameName = gameName;
         this.modeName = modeName;
         this.content = content;
@@ -38,7 +38,7 @@ public class StandardBottomSheetDialog extends BottomSheetDialogFragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
+        View view = inflater.inflate(R.layout.reactions_bottom_sheet_dialog_fragment, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 

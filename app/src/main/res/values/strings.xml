@@ -2,6 +2,7 @@
     <string name="app_name">Veritas</string>
     <string name="preset_option_text">Режимы</string>
     <string name="direct_ai_using_option_text">ИИ</string>
+    <string name="group_text">Группа</string>
     <string name="settings_text">Настройки</string>
     <string name="user_add_button_text">Добавить игрока</string>
     <string name="name">Имя</string>
@@ -124,5 +125,10 @@
     <string name="neverEver">Никогда не</string>
     <string name="account">Аккаунт</string>
     <string name="vk_id_login">Войти через VK ID</string>
+
+    <string name="join_via_code">Войти по коду</string>
+    <string name="create_group">Создать группу</string>
+    <string name="enter_code">Введите код</string>
+    <string name="code_hint">Например: 123456789</string>
 
 </resources>
