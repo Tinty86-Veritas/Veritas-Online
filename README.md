@@ -1,6 +1,6 @@
 Project Description
 
-This project is being developed for submission to the annual school contest organized by a major IT company — the Samsung Innovation Campus. (This year's contest: 2025; previous year: 2024).
+This project is being developed for submission to the annual school contest organized by a major IT company — the Samsung Innovation Campus. (This year's contest: [2025](https://innovationcampus.ru/school-contest-2025/); previous year: [2024](https://innovationcampus.ru/school-contest-2024/)).
 
 The application is built for Android using Java, in accordance with the contest's technical requirements. It is an android app that uses artificial intelligence to generate questions for three well-known game types:
 
