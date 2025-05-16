@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments.ModesFragments;
+package com.veritas.veritas.Fragments.SpecialFragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,7 +15,7 @@ import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
 import com.veritas.veritas.Exceptions.NotEnoughPlayers;
-import com.veritas.veritas.Fragments.Dialog.ReactionsBottomSheetDialog;
+import com.veritas.veritas.Fragments.Dialogs.ReactionsBottomSheetDialog;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;

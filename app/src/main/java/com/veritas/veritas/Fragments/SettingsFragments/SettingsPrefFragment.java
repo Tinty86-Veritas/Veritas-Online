@@ -16,7 +16,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.UsersDB;
-import com.veritas.veritas.Fragments.Dialog.UserAddDialog;
+import com.veritas.veritas.Fragments.Dialogs.UserAddDialog;
 import com.veritas.veritas.Fragments.SettingsFragments.Preferences.ContextMenuPreference;
 import com.veritas.veritas.R;
 import com.vk.id.AccessToken;
