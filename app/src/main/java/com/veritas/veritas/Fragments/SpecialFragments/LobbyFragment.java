@@ -9,15 +9,75 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.veritas.veritas.Adapters.LobbyRecyclerAdapter;
+import com.veritas.veritas.Adapters.RecyclerAdapter;
+import com.veritas.veritas.DB.Firebase.entity.Group;
+import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
+import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.R;
+import com.veritas.veritas.Util.SharedLobbyViewModel;
+
+import java.util.ArrayList;
 
 public class LobbyFragment extends Fragment {
+    private static final String TAG = "LobbyFragment";
+    private static final String GROUPS_KEY = "Groups";
+
+    private SharedLobbyViewModel sharedViewModel;
+
+    private DatabaseReference fireGroupsRef;
+
+    private Group currentGroup;
+
+    private RecyclerView lobbyQuestionRV;
+    private LobbyRecyclerAdapter adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
+
+        currentGroup = createLobby();
+
+        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedLobbyViewModel.class);
+        sharedViewModel.setCurrentLobby(currentGroup);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.lobby_fragment, container, false);
+
+        init(view);
+
         return view;
+    }
+
+    private void init(View view) {
+        lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
+        adapter = new LobbyRecyclerAdapter(currentGroup.getQuestions());
+        lobbyQuestionRV.setAdapter(adapter);
+    }
+
+    private Group createLobby() {
+        GroupParticipant host = new GroupParticipant("1");
+        ArrayList<GroupParticipant> participants = new ArrayList<>();
+        participants.add(host);
+
+        ArrayList<Question> questions = new ArrayList<>();
+        questions.add(new Question(TAG, "test", "truth"));
+
+        DatabaseReference newLobbyRef = fireGroupsRef.push();
+
+        Group group = new Group(newLobbyRef.getKey(), host, participants, questions);
+        newLobbyRef.setValue(group);
+
+        return group;
     }
 }

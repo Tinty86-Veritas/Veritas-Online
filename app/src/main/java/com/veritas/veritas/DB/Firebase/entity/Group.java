@@ -11,7 +11,7 @@ public class Group {
 
     public Group() {}
 
-    public Group(String id, String joinCode, GroupParticipant host,
+    public Group(String id, GroupParticipant host,
                  ArrayList<GroupParticipant> participants, ArrayList<Question> questions) {
         this.id = id;
         this.host = host;
@@ -20,8 +20,49 @@ public class Group {
         this.questions = questions;
     }
 
-    public String generateJoinCode() {
+    private String generateJoinCode() {
+        // May be it is a good idea to generate join codes based on host id
         // place holder
         return "ABC";
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getJoinCode() {
+        return joinCode;
+    }
+
+    public void setJoinCode(String joinCode) {
+        this.joinCode = joinCode;
+    }
+
+    public GroupParticipant getHost() {
+        return host;
+    }
+
+    public void setHost(GroupParticipant host) {
+        this.host = host;
+    }
+
+    public ArrayList<GroupParticipant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(ArrayList<GroupParticipant> participants) {
+        this.participants = participants;
+    }
+
+    public ArrayList<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(ArrayList<Question> questions) {
+        this.questions = questions;
     }
 }

@@ -16,7 +16,7 @@ import com.veritas.veritas.Fragments.MainFragments.GroupFragment;
 import com.veritas.veritas.Fragments.MainFragments.ModeSelectionFragment;
 import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
-import com.veritas.veritas.Fragments.SettingsFragments.SettingsPrefFragment;
+import com.veritas.veritas.Fragments.MainFragments.SettingsPrefFragment;
 import com.veritas.veritas.R;
 
 public class FragmentWorking {
