@@ -8,12 +8,6 @@
         android:icon="@drawable/fire"
         android:title="@string/preset_option_text" />
 
-    <item
-        android:id="@+id/ai_id"
-        android:enabled="true"
-        android:icon="@drawable/ai"
-        android:title="@string/direct_ai_using_option_text" />
-
     <item android:id="@+id/settings_id"
         android:enabled="true"
         android:icon="@drawable/settings"

@@ -29,25 +29,15 @@ public class MainActivity extends AppCompatActivity {
         nav.setSelectedItemId(R.id.mode_selection_fragment);
 
         nav.setOnItemSelectedListener(item -> {
-
             int id = item.getItemId();
 
             if (id == R.id.fire_id && current_frag_id != R.id.fire_id) {
                 current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
                 return true;
-            }
-
-            else if (id == R.id.ai_id && current_frag_id != R.id.ai_id) {
-                current_frag_id = fw.setFragment(R.id.ai_direct_using_fragment);
-                return true;
-            }
-
-            else if (id == R.id.settings_id && current_frag_id != R.id.settings_id) {
+            } else if (id == R.id.settings_id && current_frag_id != R.id.settings_id) {
                 current_frag_id = fw.setFragment(R.id.settings_fragment);
                 return true;
-            }
-
-            else {
+            } else {
                 return false;
             }
         });
