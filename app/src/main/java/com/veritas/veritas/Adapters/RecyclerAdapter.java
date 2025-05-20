@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tv;
+        final MaterialTextView tv;
         public ViewHolder(View view) {
             super(view);
             tv = view.findViewById(R.id.item);

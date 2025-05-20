@@ -5,12 +5,13 @@
     <item
         android:id="@+id/fire_id"
         android:enabled="true"
-        android:icon="@drawable/fire"
+        android:icon="@drawable/fire_icon_selector"
+
         android:title="@string/preset_option_text" />
 
     <item android:id="@+id/settings_id"
         android:enabled="true"
-        android:icon="@drawable/settings"
+        android:icon="@drawable/settings_icon_selector"
         android:title="@string/settings_text" />
 
 </menu>

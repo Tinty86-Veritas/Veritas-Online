@@ -21,10 +21,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
 
@@ -35,29 +36,28 @@ public class ModeSelectionFragment extends Fragment {
 
     private static final String TAG = "ModeSelectionFragment";
 
-    private ArrayList<String> modes_names;
+    private ArrayList<String> modesNames;
 
-    private ArrayAdapter adapter;
-    private ListView modes_list_view;
+    private RecyclerAdapter adapter;
+    private RecyclerView modesRV;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_selection_fragment, container, false);
 
-        modes_names = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme", "Madness",
+        modesNames = new ArrayList<>(List.of("Fun", "Soft", "Hot", "Extreme", "Madness",
                         "Fun Dare", "Soft Dare", "Hot Dare", "Extreme Dare", "Madness Dare",
                 "Fun NeverEver", "Soft NeverEver", "Hot NeverEver", "Extreme NeverEver", "Madness NeverEver"));
 
         FragmentWorking fw = new FragmentWorking(getContext(), TAG, getParentFragmentManager());
 
-        modes_list_view = view.findViewById(R.id.modes_list);
+        modesRV = view.findViewById(R.id.modes_rv);
 
-        adapter = new ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, modes_names);
+        adapter = new RecyclerAdapter(modesNames);
 
-        modes_list_view.setAdapter(adapter);
-
-        modes_list_view.setOnItemClickListener((adapterView, view1, i, l) -> {
-            String selectedMode = modes_names.get(i);
+        adapter.setOnClickListener((RecyclerAdapter.RecyclerAdapterOnItemClickListener)
+                (v, position) -> {
+            String selectedMode = modesNames.get(position);
             switch (selectedMode) {
                 case MODE_FUN:
                     fw.setFragment(MODE_FUN);
@@ -109,6 +109,7 @@ public class ModeSelectionFragment extends Fragment {
             }
         });
 
+        modesRV.setAdapter(adapter);
 
         return view;
     }

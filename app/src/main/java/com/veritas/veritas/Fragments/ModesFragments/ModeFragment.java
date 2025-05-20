@@ -89,7 +89,7 @@ public class ModeFragment extends Fragment
 
                     if (contentList.isEmpty()) {
                         requireActivity().runOnUiThread(() -> {
-                            Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_LONG).show();
                         });
                         return;
                     }
@@ -112,13 +112,13 @@ public class ModeFragment extends Fragment
                 if (isAdded()) {
                     if (error.equals("code 429")) {
                         requireActivity().runOnUiThread(() -> {
-                            Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_LONG).show();
                         });
                         return;
                     }
 
                     requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show();
                     });
                 } else {
                     Log.w(TAG, "Fragment " + TAG + " not attached to activity on onFailure callback. Toast will not be shown.");
