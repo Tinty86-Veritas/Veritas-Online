@@ -122,5 +122,7 @@
     <string name="dare">Действие</string>
     <string name="truth">Правда</string>
     <string name="neverEver">Никогда не</string>
+    <string name="reaction_saved">Реакция сохранена</string>
+    <string name="reaction_deleted">Реакция удалена</string>
 
 </resources>

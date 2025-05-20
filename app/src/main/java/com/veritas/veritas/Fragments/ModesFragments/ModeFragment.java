@@ -78,7 +78,6 @@ public class ModeFragment extends Fragment
         aiRequest.sendPOST(new AIRequest.ApiCallback() {
             @Override
             public void onSuccess(String content) {
-
                 if(isAdded()) {
                     Pattern pattern = Pattern.compile("<start>(.*?)<end>", Pattern.DOTALL);
                     Matcher matcher = pattern.matcher(content);
@@ -111,6 +110,13 @@ public class ModeFragment extends Fragment
             @Override
             public void onFailure(String error) {
                 if (isAdded()) {
+                    if (error.equals("code 429")) {
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_SHORT).show();
+                        });
+                        return;
+                    }
+
                     requireActivity().runOnUiThread(() -> {
                         Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_SHORT).show();
                     });

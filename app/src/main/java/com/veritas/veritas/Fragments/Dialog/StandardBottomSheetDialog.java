@@ -25,6 +25,8 @@ import java.util.List;
 public class StandardBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
+    private static final String TAG = "StandardBottomSheetDialog";
+
     private String gameName;
     private String modeName;
     private String content;
@@ -72,20 +74,53 @@ public class StandardBottomSheetDialog extends BottomSheetDialogFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(requireContext(), "IT WORKS!!!", Toast.LENGTH_SHORT).show();
-
-        // TODO: Дать возможность удалять реакцию, например повторным кликом по той же реакции
-
         GamesDB gamesDB = new GamesDB(requireContext());
 
+        switch (position) {
+            case 0 -> {
+                final String type = "like";
+                if (!deleteHandle(gamesDB, type)) {
+                    addHandle(gamesDB, type);
+                }
+            }
+            case 1 -> {
+                final String type = "dislike";
+                if (!deleteHandle(gamesDB, type)) {
+                    addHandle(gamesDB, type);
+                }
+            }
+            case 2 -> {
+                final String type = "recurring";
+                if (!deleteHandle(gamesDB, type)) {
+                    addHandle(gamesDB, type);
+                }
+            }
+        }
+        gamesDB.close();
+    }
+
+    private void clearPreviousType(GamesDB gamesDB) {
         if (gamesDB.hasReaction(gameName, modeName, content)) {
             gamesDB.deleteReaction(gameName, modeName, content);
         }
+    }
 
-        switch (position) {
-            case 0 -> gamesDB.addReaction(gameName, modeName, "like", content);
-            case 1 -> gamesDB.addReaction(gameName, modeName, "dislike", content);
-            case 2 -> gamesDB.addReaction(gameName, modeName, "recurring", content);
+    private boolean deleteHandle(GamesDB gamesDB, String currentType) {
+        final String b = gamesDB.getReactionType(gameName, modeName, content);
+        if (b != null) {
+            if (b.equals(currentType)) {
+                gamesDB.deleteReaction(gameName, modeName, content);
+                Toast.makeText(requireContext(), R.string.reaction_deleted, Toast.LENGTH_SHORT).show();
+                return true;
+            }
         }
+        return false;
+    }
+
+    private void addHandle(GamesDB gamesDB, String type) {
+        clearPreviousType(gamesDB);
+        gamesDB.addReaction(gameName, modeName, type, content);
+        Toast.makeText(requireContext(), R.string.reaction_saved, Toast.LENGTH_SHORT).show();
+        dismiss();
     }
 }
