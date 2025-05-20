@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments.SettingsFragments.Preferences;
+package com.veritas.veritas.Fragments.Preferences;
 
 import android.content.Context;
 import android.view.View;

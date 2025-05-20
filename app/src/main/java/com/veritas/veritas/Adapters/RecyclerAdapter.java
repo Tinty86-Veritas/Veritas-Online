@@ -1,11 +1,14 @@
 package com.veritas.veritas.Adapters;
 
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textview.MaterialTextView;
@@ -34,11 +37,35 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         OnLongItemClickListener = listener;
     }
 
+    private final ArrayList<String> items;
+    private boolean centering = true;
+    private Typeface font = null;
+
+    public RecyclerAdapter(ArrayList<String> items) {
+        this.items = items;
+    }
+
+    public RecyclerAdapter(ArrayList<String> items, boolean centering) {
+        this.items = items;
+        this.centering = centering;
+    }
+
+    public RecyclerAdapter(ArrayList<String> items, boolean centering, Typeface font) {
+        this.items = items;
+        this.centering = centering;
+        this.font = font;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         final MaterialTextView tv;
         public ViewHolder(View view) {
             super(view);
             tv = view.findViewById(R.id.item);
+            if (centering) {
+                tv.setGravity(Gravity.CENTER);
+            } if (font != null) {
+                tv.setTypeface(font);
+            }
 
             if (OnItemClickListener != null) {
                 itemView.setOnClickListener(v -> {
@@ -59,12 +86,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 });
             }
         }
-    }
-
-    private final ArrayList<String> items;
-
-    public RecyclerAdapter(ArrayList<String> items) {
-        this.items = items;
     }
 
     @NonNull

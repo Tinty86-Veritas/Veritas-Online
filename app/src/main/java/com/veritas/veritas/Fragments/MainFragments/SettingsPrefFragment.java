@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments.SettingsFragments;
+package com.veritas.veritas.Fragments.MainFragments;
 
 import android.os.Bundle;
 
@@ -8,8 +8,8 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.UsersDB;
-import com.veritas.veritas.Fragments.Dialog.UserAddDialog;
-import com.veritas.veritas.Fragments.SettingsFragments.Preferences.ContextMenuPreference;
+import com.veritas.veritas.Fragments.Dialogs.UserAddDialog;
+import com.veritas.veritas.Fragments.Preferences.ContextMenuPreference;
 import com.veritas.veritas.R;
 
 import java.util.List;

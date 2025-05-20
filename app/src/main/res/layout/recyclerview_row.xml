@@ -21,6 +21,7 @@
         android:padding="16dp"
         android:textAppearance="?attr/textAppearanceTitleMedium"
         android:gravity="center_vertical"
+        android:fontFamily="@font/montserrat_bold"
         android:textColor="?attr/colorOnSurfaceVariant" />
 
 </com.google.android.material.card.MaterialCardView>

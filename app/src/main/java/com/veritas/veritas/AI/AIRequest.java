@@ -120,7 +120,11 @@ public class AIRequest {
                     prompt = String.format(context.getString(R.string.neverEver_prompt).trim(),
                             answersNum, reactionsJson)
                             + "Режим: " + modeName;
-            default -> Log.e(TAG, "gameName is inappropriate");
+            default -> {
+                Log.e(TAG, "gameName is inappropriate");
+                Toast.makeText(context, "gameName is inappropriate", Toast.LENGTH_LONG).show();
+                return;
+            }
         }
 
         Log.d(TAG, "prompt:\n" + prompt);

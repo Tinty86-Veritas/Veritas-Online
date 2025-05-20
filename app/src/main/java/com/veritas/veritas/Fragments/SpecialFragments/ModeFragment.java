@@ -1,5 +1,6 @@
-package com.veritas.veritas.Fragments.ModesFragments;
+package com.veritas.veritas.Fragments.SpecialFragments;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -15,12 +17,14 @@ import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
 import com.veritas.veritas.Exceptions.NotEnoughPlayers;
-import com.veritas.veritas.Fragments.Dialog.StandardBottomSheetDialog;
+import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.ReactionsBottomSheetDialog;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+// TODO: Сделать крутилку пока грузятся ответы от ИИ
 
 public class ModeFragment extends Fragment
         implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
@@ -36,7 +40,7 @@ public class ModeFragment extends Fragment
     private SwipeRefreshLayout pullToRefresh;
 
     ArrayList<String> contentList = new ArrayList<>();
-    RecyclerAdapter adapter = new RecyclerAdapter(contentList);
+    RecyclerAdapter adapter;
 
     private String modeName;
 
@@ -50,6 +54,10 @@ public class ModeFragment extends Fragment
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
+
+        final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
+
+        adapter = new RecyclerAdapter(contentList, false, font);
 
         adapter.setOnClickListener(this);
 
@@ -109,17 +117,18 @@ public class ModeFragment extends Fragment
 
             @Override
             public void onFailure(String error) {
+                Log.w(TAG, "onFailure:\n" + error);
                 if (isAdded()) {
                     if (error.equals("code 429")) {
-                        requireActivity().runOnUiThread(() -> {
-                            Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_LONG).show();
-                        });
-                        return;
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_LONG).show());
+                    } else if (error.equals("timeout")) {
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(requireContext(), "Response time is up", Toast.LENGTH_LONG).show());
+                    } else {
+                        requireActivity().runOnUiThread(() ->
+                                Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show());
                     }
-
-                    requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show();
-                    });
                 } else {
                     Log.w(TAG, "Fragment " + TAG + " not attached to activity on onFailure callback. Toast will not be shown.");
                 }
@@ -130,8 +139,8 @@ public class ModeFragment extends Fragment
     @Override
     public void onLongItemClick(View view, int position) {
         String content = contentList.get(position);
-        StandardBottomSheetDialog bottomSheetDialog =
-                new StandardBottomSheetDialog(gameName, modeName, content);
+        ReactionsBottomSheetDialog bottomSheetDialog =
+                new ReactionsBottomSheetDialog(gameName, modeName, content);
         bottomSheetDialog.show(getParentFragmentManager(), TAG);
     }
 }

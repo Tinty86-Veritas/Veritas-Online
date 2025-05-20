@@ -1,6 +1,7 @@
-package com.veritas.veritas.Fragments.Dialog;
+package com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import com.veritas.veritas.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StandardBottomSheetDialog extends BottomSheetDialogFragment
+public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
     private static final String TAG = "StandardBottomSheetDialog";
@@ -31,7 +32,7 @@ public class StandardBottomSheetDialog extends BottomSheetDialogFragment
     private String modeName;
     private String content;
 
-    public StandardBottomSheetDialog(String gameName, String modeName, String content) {
+    public ReactionsBottomSheetDialog(String gameName, String modeName, String content) {
         this.gameName = gameName;
         this.modeName = modeName;
         this.content = content;
@@ -47,10 +48,10 @@ public class StandardBottomSheetDialog extends BottomSheetDialogFragment
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         ArrayList<String> items = new ArrayList<>(List.of(
-                "Нравится вариант", "Не нравится вариант", "Вариант повторяется"
+                getString(R.string.like_option), getString(R.string.dislike_option), getString(R.string.recurring_option)
         ));
 
-        RecyclerAdapter adapter = new RecyclerAdapter(items);
+        RecyclerAdapter adapter = new RecyclerAdapter(items, true);
 
         adapter.setOnClickListener(this);
 
@@ -106,12 +107,14 @@ public class StandardBottomSheetDialog extends BottomSheetDialogFragment
     }
 
     private boolean deleteHandle(GamesDB gamesDB, String currentType) {
-        final String b = gamesDB.getReactionType(gameName, modeName, content);
-        if (b != null) {
-            if (b.equals(currentType)) {
+        final String type = gamesDB.getReactionType(gameName, modeName, content);
+        if (type != null) {
+            if (type.equals(currentType)) {
                 gamesDB.deleteReaction(gameName, modeName, content);
                 Toast.makeText(requireContext(), R.string.reaction_deleted, Toast.LENGTH_SHORT).show();
                 return true;
+            } else {
+                Log.wtf(TAG, type);
             }
         }
         return false;
