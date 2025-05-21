@@ -5,22 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginTop="40dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     app:strokeColor="?attr/colorOutline"
     app:strokeWidth="1dp"
     android:clickable="true"
     android:focusable="true"
-    android:background="?attr/selectableItemBackground" >
+    android:background="?attr/selectableItemBackground">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:padding="16dp"
         android:textAppearance="?attr/textAppearanceTitleMedium"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:fontFamily="@font/montserrat_bold"
         android:textColor="?attr/colorOnSurfaceVariant" />
 

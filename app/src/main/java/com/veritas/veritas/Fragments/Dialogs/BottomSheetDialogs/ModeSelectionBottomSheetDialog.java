@@ -49,7 +49,7 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        RecyclerAdapter adapter = new RecyclerAdapter(items, true);
+        RecyclerAdapter adapter = new RecyclerAdapter(items);
 
         adapter.setOnClickListener(this);
 

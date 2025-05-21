@@ -51,7 +51,7 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
                 getString(R.string.like_option), getString(R.string.dislike_option), getString(R.string.recurring_option)
         ));
 
-        RecyclerAdapter adapter = new RecyclerAdapter(items, true);
+        RecyclerAdapter adapter = new RecyclerAdapter(items);
 
         adapter.setOnClickListener(this);
 

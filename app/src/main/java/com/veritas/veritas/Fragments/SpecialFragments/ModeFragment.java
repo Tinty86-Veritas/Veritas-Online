@@ -97,6 +97,7 @@ public class ModeFragment extends Fragment
 
                     if (contentList.isEmpty()) {
                         requireActivity().runOnUiThread(() -> {
+                            pullToRefresh.setRefreshing(false);
                             Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_LONG).show();
                         });
                         return;
