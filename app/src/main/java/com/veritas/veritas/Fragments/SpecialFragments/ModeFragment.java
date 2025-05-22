@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
@@ -23,8 +24,6 @@ import com.veritas.veritas.R;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-// TODO: Сделать крутилку пока грузятся ответы от ИИ
 
 public class ModeFragment extends Fragment
         implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
@@ -38,45 +37,57 @@ public class ModeFragment extends Fragment
     private RecyclerView questionsRecycler;
 
     private SwipeRefreshLayout pullToRefresh;
+    private CircularProgressIndicator initialLoadingIndicator;
 
     ArrayList<String> contentList = new ArrayList<>();
     RecyclerAdapter adapter;
 
     private String modeName;
+    private boolean isFirstLoad = true;
 
     public ModeFragment(String modeName, String gameName) {
         this.gameName = gameName;
         this.modeName = modeName;
     }
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
+        initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
 
         final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
 
         adapter = new RecyclerAdapter(contentList, false, font);
-
         adapter.setOnClickListener(this);
-
         questionsRecycler.setAdapter(adapter);
 
         pullToRefresh = view.findViewById(R.id.pullToRefresh);
 
         try {
             aiRequest = new AIRequest(requireContext(), modeName, gameName);
-            pullToRefresh.setOnRefreshListener(() -> {
-                APIHandle();
-                pullToRefresh.setRefreshing(true);
-            });
+            pullToRefresh.setOnRefreshListener(this::APIHandle);
 
+            if (isFirstLoad) {
+                initialLoadingIndicator.setVisibility(View.VISIBLE);
+                pullToRefresh.setEnabled(false);
+            }
             APIHandle();
+
         } catch (EmptyUsersList e) {
             Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
+            if (isFirstLoad) {
+                initialLoadingIndicator.setVisibility(View.GONE);
+                pullToRefresh.setEnabled(true);
+            }
         } catch (NotEnoughPlayers e) {
             Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
+            if (isFirstLoad) {
+                initialLoadingIndicator.setVisibility(View.GONE);
+                pullToRefresh.setEnabled(true);
+            }
         }
 
         return view;
@@ -86,7 +97,7 @@ public class ModeFragment extends Fragment
         aiRequest.sendPOST(new AIRequest.ApiCallback() {
             @Override
             public void onSuccess(String content) {
-                if(isAdded()) {
+                if (isAdded()) {
                     Pattern pattern = Pattern.compile("<start>(.*?)<end>", Pattern.DOTALL);
                     Matcher matcher = pattern.matcher(content);
 
@@ -98,6 +109,12 @@ public class ModeFragment extends Fragment
                     if (contentList.isEmpty()) {
                         requireActivity().runOnUiThread(() -> {
                             pullToRefresh.setRefreshing(false);
+
+                            if (isFirstLoad) {
+                                initialLoadingIndicator.setVisibility(View.GONE);
+                                isFirstLoad = false;
+                                pullToRefresh.setEnabled(true);
+                            }
                             Toast.makeText(requireContext(), "Please refresh the list", Toast.LENGTH_LONG).show();
                         });
                         return;
@@ -108,6 +125,11 @@ public class ModeFragment extends Fragment
                     requireActivity().runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
+                        if (isFirstLoad) {
+                            initialLoadingIndicator.setVisibility(View.GONE);
+                            isFirstLoad = false;
+                            pullToRefresh.setEnabled(true);
+                        }
                     });
 
                     Log.i(TAG, contentList.toString());
@@ -129,6 +151,12 @@ public class ModeFragment extends Fragment
                     } else {
                         requireActivity().runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show());
+                    }
+                    pullToRefresh.setRefreshing(false);
+                    if (isFirstLoad) {
+                        initialLoadingIndicator.setVisibility(View.GONE);
+                        isFirstLoad = false;
+                        pullToRefresh.setEnabled(true);
                     }
                 } else {
                     Log.w(TAG, "Fragment " + TAG + " not attached to activity on onFailure callback. Toast will not be shown.");
