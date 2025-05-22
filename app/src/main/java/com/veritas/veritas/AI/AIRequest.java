@@ -39,8 +39,8 @@ public class AIRequest {
 
     private static final String TAG = "AIRequest";
 
-    private static final String API_KEY = ____;
-    private static final String API_URL = ____;
+    private static final String API_KEY = "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";
+    private static final String API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
     private static String prompt;
 
