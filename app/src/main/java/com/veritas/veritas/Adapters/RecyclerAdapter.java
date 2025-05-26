@@ -1,24 +1,20 @@
 package com.veritas.veritas.Adapters;
 
-import static com.veritas.veritas.Util.PublicVariables.TRUTH;
-
-import android.util.Log;
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.veritas.veritas.DB.GamesDB;
+import com.google.android.material.textview.MaterialTextView;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-
-    private static final String TAG = "RecyclerAdapter";
 
     public interface RecyclerAdapterOnItemClickListener {
         void onItemClick(View view, int position);
@@ -39,30 +35,48 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         OnLongItemClickListener = listener;
     }
 
+    private final ArrayList<String> items;
+    private boolean centering = true;
+    private Typeface font = null;
+    private int layout = R.layout.standard_button;
+
+    public RecyclerAdapter(ArrayList<String> items) {
+        this.items = items;
+    }
+
+    public RecyclerAdapter(ArrayList<String> items, int layout) {
+        this.items = items;
+        this.layout = layout;
+    }
+
+    public RecyclerAdapter(ArrayList<String> items, boolean centering, Typeface font) {
+        this.items = items;
+        this.centering = centering;
+        this.font = font;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tv;
+        final MaterialTextView tv;
         public ViewHolder(View view) {
             super(view);
             tv = view.findViewById(R.id.item);
+            if (centering) {
+                tv.setGravity(Gravity.CENTER);
+            } if (font != null) {
+                tv.setTypeface(font);
+            }
 
             if (OnItemClickListener != null) {
                 itemView.setOnClickListener(v -> {
-                    Log.i(TAG, "OnItemClickListener");
                     int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         OnItemClickListener.onItemClick(v, pos);
-
-                        // Debug
-                        GamesDB gamesDB = new GamesDB(view.getContext());
-                        Log.d(TAG, gamesDB.getReaction(TRUTH, "Fun", "like").toString());
-
                     }
                 });
             }
 
             if (OnLongItemClickListener != null) {
                 itemView.setOnLongClickListener(v -> {
-                    Log.i(TAG, "OnLongItemClickListener");
                     int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         OnLongItemClickListener.onLongItemClick(v, pos);
@@ -73,17 +87,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         }
     }
 
-    private final ArrayList<String> items;
-
-    public RecyclerAdapter(ArrayList<String> items) {
-        this.items = items;
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_row, parent, false);
+                .inflate(layout, parent, false);
         return new ViewHolder(v);
     }
 

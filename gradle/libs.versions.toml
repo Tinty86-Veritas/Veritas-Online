@@ -1,22 +1,18 @@
 [versions]
-agp = "8.8.0"
-fragmentKtx = "1.8.6"
-gson = "2.10.1"
+agp = "8.10.0"
+gson = "2.11.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.10.0"
-constraintlayout = "2.2.0"
-multidex = "2.0.1"
-okhttp = "4.10.0"
-preferenceVersion = "1.1.0"
+activity = "1.10.1"
+constraintlayout = "2.2.1"
+okhttp = "4.12.0"
+preferenceVersion = "1.2.1"
 swiperefreshlayout = "1.1.0"
-preference = "1.2.1"
 
 [libraries]
-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -25,11 +21,9 @@ appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "a
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-multidex = { module = "com.android.support:multidex", version.ref = "multidex" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 preference-v110 = { module = "androidx.preference:preference", version.ref = "preferenceVersion" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

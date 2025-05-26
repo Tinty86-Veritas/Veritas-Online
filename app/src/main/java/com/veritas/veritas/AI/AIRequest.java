@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,7 +36,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// TODO: нужно отлавливать ошибку вызываемую достиганием порога доступных запросов к нейронке
+// Added 429 error (limit exceeded) handler, so now app won't crash by this reason
 
 public class AIRequest {
 
@@ -121,7 +122,11 @@ public class AIRequest {
                     prompt = String.format(context.getString(R.string.neverEver_prompt).trim(),
                             answersNum, reactionsJson)
                             + "Режим: " + modeName;
-            default -> Log.e(TAG, "gameName is inappropriate");
+            default -> {
+                Log.e(TAG, "gameName is inappropriate");
+                Toast.makeText(context, "gameName is inappropriate", Toast.LENGTH_LONG).show();
+                return;
+            }
         }
 
         Log.d(TAG, "prompt:\n" + prompt);
@@ -180,6 +185,21 @@ public class AIRequest {
                         Log.i(TAG, "API Response:\n" + responseData);
 
                         Map<String, Object> root = gson.fromJson(responseData, Map.class);
+
+                        if (root.containsKey("error")) {
+                            Log.w(TAG, "Response contains error");
+                            Map<String, Object> error = (Map<String, Object>) root.get("error");
+                            assert error != null;
+                            if (error.containsKey("code")) {
+                                if (Objects.equals(error.get("code"), 429)) {
+                                    callback.onFailure("code 429");
+                                    return;
+                                }
+                            } else {
+                                Log.wtf(TAG, "Response contains error but somehow is not contains code");
+                                return;
+                            }
+                        }
 
                         List<Map<String, Object>> choices = (List<Map<String, Object>>) root.get("choices");
 

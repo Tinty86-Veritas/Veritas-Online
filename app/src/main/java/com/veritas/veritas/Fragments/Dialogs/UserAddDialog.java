@@ -1,7 +1,6 @@
-package com.veritas.veritas.Fragments.Dialog;
+package com.veritas.veritas.Fragments.Dialogs;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
