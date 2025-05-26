@@ -45,8 +45,11 @@ public class MainActivity extends AppCompatActivity
                     fw.reviveSavedFragment(modeFragment);
                 }
                 return true;
+            } else if (id == R.id.group_id && currentFragId != R.id.group_id) {
+                currentFragId = fw.setFragment(R.id.group_fragment);
+                return true;
             } else if (id == R.id.settings_id && currentFragId != R.id.settings_id) {
-                currentFragId = fw.setFragment(R.id.settings_fragment);
+                currentFragId = fw.setFragment(R.xml.settings);
                 return true;
             } else {
                 return false;

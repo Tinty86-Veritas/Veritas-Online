@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments;
+package com.veritas.veritas.Fragments.MainFragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

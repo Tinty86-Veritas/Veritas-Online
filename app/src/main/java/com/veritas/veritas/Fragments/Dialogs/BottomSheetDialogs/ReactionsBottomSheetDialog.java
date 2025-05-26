@@ -26,7 +26,7 @@ import java.util.List;
 public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
-    private static final String TAG = "StandardBottomSheetDialog";
+    private static final String TAG = "ReactionsBottomSheetDialog";
 
     private String gameName;
     private String modeName;

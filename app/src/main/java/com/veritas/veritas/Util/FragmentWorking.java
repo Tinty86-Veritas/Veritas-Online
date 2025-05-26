@@ -1,9 +1,5 @@
 package com.veritas.veritas.Util;
 
-import static com.veritas.veritas.Util.PublicVariables.DARE;
-import static com.veritas.veritas.Util.PublicVariables.NEVEREVER;
-import static com.veritas.veritas.Util.PublicVariables.TRUTH;
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,7 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.veritas.veritas.Fragments.GroupFragment;
+import com.veritas.veritas.Fragments.MainFragments.GroupFragment;
 import com.veritas.veritas.Fragments.MainFragments.GameSelectionFragment;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.Fragments.MainFragments.SettingsPrefFragment;
@@ -49,7 +45,7 @@ public class FragmentWorking {
         Fragment fragment;
         if (fragId == R.id.mode_selection_fragment) {
             fragment = new GameSelectionFragment();
-        } else if (fragId == R.id.settings_fragment){
+        } else if (fragId == R.xml.settings){
             fragment = new SettingsPrefFragment();
         } else if (fragId == R.id.group_fragment) {
             fragment = new GroupFragment();

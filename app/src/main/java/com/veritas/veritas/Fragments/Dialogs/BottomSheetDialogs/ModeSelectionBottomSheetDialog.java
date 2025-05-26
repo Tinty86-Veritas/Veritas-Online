@@ -28,29 +28,21 @@ import com.veritas.veritas.Util.FragmentWorking;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<<< HEAD:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ReactionsBottomSheetDialog.java
-public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
-========
 public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
->>>>>>>> upstream/main:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ModeSelectionBottomSheetDialog.java
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
     private static final String TAG = "ModeSelectionBottomSheetDialog";
 
     private String gameName;
     private ArrayList<String> items;
 
-<<<<<<<< HEAD:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ReactionsBottomSheetDialog.java
-    public ReactionsBottomSheetDialog(String gameName, String modeName, String content) {
-========
     public ModeSelectionBottomSheetDialog(String gameName) {
->>>>>>>> upstream/main:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ModeSelectionBottomSheetDialog.java
         this.gameName = gameName;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.reactions_bottom_sheet_dialog_fragment, container, false);
+        View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
 
         items = new ArrayList<>(List.of(
                 MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME, MODE_MADNESS
