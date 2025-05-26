@@ -25,6 +25,7 @@ import com.vk.id.auth.AuthCodeData;
 import com.vk.id.auth.VKIDAuthCallback;
 import com.vk.id.auth.VKIDAuthParams;
 import com.vk.id.onetap.xml.OneTapBottomSheet;
+
 import com.vk.id.refreshuser.VKIDGetUserParams;
 
 import java.util.List;

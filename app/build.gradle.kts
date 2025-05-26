@@ -1,6 +1,8 @@
 
 plugins {
     alias(libs.plugins.android.application)
+
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -62,5 +64,9 @@ dependencies {
     implementation(libs.vkid)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.onetap.xml)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.database)
 }
 
