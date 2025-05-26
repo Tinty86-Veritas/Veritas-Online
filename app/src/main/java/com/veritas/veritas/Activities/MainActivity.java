@@ -1,10 +1,9 @@
 package com.veritas.veritas.Activities;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
@@ -36,15 +35,7 @@ public class MainActivity extends AppCompatActivity
         currentFragId = fw.setFragment(R.id.mode_selection_fragment);
 
         nav.setSelectedItemId(R.id.mode_selection_fragment);
-
-        /*
-         Не работает.
-         Хз почему.
-         Это все, конечно, проблемы будущего меня.
-         ...
-         Бедный будщий я...
-         */
-
+        
         nav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -52,7 +43,7 @@ public class MainActivity extends AppCompatActivity
                 if (modeFragment == null) {
                     currentFragId = fw.setFragment(R.id.mode_selection_fragment);
                 } else {
-                    showFragment(modeFragment);
+                    fw.reviveSavedFragment(modeFragment);
                 }
                 return true;
             } else if (id == R.id.settings_id && currentFragId != R.id.settings_id) {
@@ -64,24 +55,9 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void showFragment(Fragment fragment) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-        ft.show(fragment);
-
-        ft.commit();
-    }
-
-//    private void hideFragment(Fragment fragment) {
-//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-//
-//        ft.hide(fragment);
-//
-//        ft.commit();
-//    }
-
     @Override
     public void getModeFragment(ModeFragment modeFragment) {
+        Log.d(TAG, "getModeFragment");
         this.modeFragment = modeFragment;
     }
 }

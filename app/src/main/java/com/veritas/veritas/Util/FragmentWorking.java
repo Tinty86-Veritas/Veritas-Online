@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,6 +59,7 @@ public class FragmentWorking {
 
     public void setFragment(String gameName, String modeName) {
         if (callback != null) {
+            Log.d(TAG, "callback is not null");
             modeFragment = new ModeFragment(modeName, gameName);
 
             Fragment fragment = modeFragment;
@@ -68,9 +68,16 @@ public class FragmentWorking {
 
             callback.getModeFragment(modeFragment);
         } else {
+            Log.d(TAG, "callback is null");
             Fragment fragment = new ModeFragment(modeName, gameName);
             transaction(fragment);
         }
+    }
+
+    public void reviveSavedFragment(Fragment fragment) {
+        transaction(fragment);
+        //
+        ((ModeFragment) fragment).setIsRevived(true);
     }
 
     private void transaction(Fragment fragment) {

@@ -69,5 +69,17 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
             updatePlayersCat();
         }
     }
+
+    /*
+    * I did not think a lot on that solution so I do not know is it a suitable solving but I hope so...
+    * ...
+    * ... unfortunately as always
+    */
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        usersDB.close();
+    }
 }
 
