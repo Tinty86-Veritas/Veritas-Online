@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments.Dialogs;
+package com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

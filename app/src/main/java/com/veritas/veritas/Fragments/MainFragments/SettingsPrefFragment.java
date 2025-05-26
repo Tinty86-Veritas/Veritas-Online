@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.UsersDB;
 import com.veritas.veritas.Fragments.Dialogs.UserAddDialog;
-import com.veritas.veritas.Preferences.SettingsPreferences.ContextMenuPreference;
+import com.veritas.veritas.Fragments.Preferences.ContextMenuPreference;
 import com.veritas.veritas.R;
 import com.vk.id.AccessToken;
 import com.vk.id.VKIDAuthFail;
@@ -25,6 +25,8 @@ import com.vk.id.auth.AuthCodeData;
 import com.vk.id.auth.VKIDAuthCallback;
 import com.vk.id.auth.VKIDAuthParams;
 import com.vk.id.onetap.xml.OneTapBottomSheet;
+
+import com.vk.id.refreshuser.VKIDGetUserParams;
 
 import java.util.List;
 
@@ -149,6 +151,18 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
         if (status) {
             updatePlayersCat();
         }
+    }
+
+    /*
+    * I did not think a lot on that solution so I do not know is it a suitable solving but I hope so...
+    * ...
+    * ... unfortunately as always
+    */
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        usersDB.close();
     }
 }
 
