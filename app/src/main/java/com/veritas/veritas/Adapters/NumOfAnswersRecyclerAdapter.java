@@ -8,12 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textview.MaterialTextView;
 import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.R;
 
@@ -24,12 +26,12 @@ import java.util.List;
 public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswersRecyclerAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView tv;
-        final AppCompatSpinner spinner;
+        final MaterialTextView tv;
+        final AutoCompleteTextView autoCompleteTV;
         public ViewHolder(View view) {
             super(view);
             tv = view.findViewById(R.id.mode);
-            spinner = view.findViewById(R.id.num_of_answers_spinner);
+            autoCompleteTV = view.findViewById(R.id.num_of_answers_auto_complete_tv);
         }
     }
 
@@ -61,40 +63,27 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
         holder.tv.setText(mode);
 
         ArrayAdapter<Integer> adapter = new ArrayAdapter<>(
-                context, android.R.layout.simple_spinner_item, new Integer[] {
+                context,  android.R.layout.simple_dropdown_item_1line, new Integer[] {
                 1, 3, 5, 7, 10, 15, 20, 25, 50
         });
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.spinner.setAdapter(adapter);
-        holder.spinner.setOnItemSelectedListener(null);
 
-        int num_of_answers = gamesDB.getRequestNum(game_name, mode);
+        holder.autoCompleteTV.setAdapter(adapter);
+
+        int numOfAnswers = gamesDB.getRequestNum(game_name, mode);
         gamesDB.close();
 
-        int spinnerPosition = adapter.getPosition(num_of_answers);
-        holder.spinner.setSelection(spinnerPosition);
+        holder.autoCompleteTV.setText(String.valueOf(numOfAnswers), false);
 
-        if (spinnerPosition >= 0) {
-            holder.spinner.setSelection(spinnerPosition, false);
-        } else {
-            holder.spinner.setSelection(0, false);
-        }
-
-        holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Integer selectedItem = (Integer) parent.getItemAtPosition(position);
+        holder.autoCompleteTV.setOnItemClickListener(
+                (parent, view, position1, id) -> {
+            Integer selectedItem = (Integer) parent.getItemAtPosition(position1);
 
 //                int spinnerPosition = adapter.getPosition(num_of_answers);
 //                holder.spinner.setSelection(spinnerPosition);
 
-                GamesDB gamesDB = new GamesDB(context);
-                gamesDB.updateRequestNum(game_name, mode, selectedItem);
-                gamesDB.close();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            GamesDB gamesDB1 = new GamesDB(context);
+            gamesDB1.updateRequestNum(game_name, mode, selectedItem);
+            gamesDB1.close();
         });
     }
 

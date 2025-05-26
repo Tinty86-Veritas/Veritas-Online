@@ -1,11 +1,16 @@
-package com.veritas.veritas.Fragments.Dialog;
+package com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs;
+
+import static com.veritas.veritas.Util.PublicVariables.MODE_EXTREME;
+import static com.veritas.veritas.Util.PublicVariables.MODE_FUN;
+import static com.veritas.veritas.Util.PublicVariables.MODE_HOT;
+import static com.veritas.veritas.Util.PublicVariables.MODE_MADNESS;
+import static com.veritas.veritas.Util.PublicVariables.MODE_SOFT;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,24 +20,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
-import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.R;
+import com.veritas.veritas.Util.FragmentWorking;
 
 import java.util.ArrayList;
 import java.util.List;
 
+<<<<<<<< HEAD:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ReactionsBottomSheetDialog.java
 public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
+========
+public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
+>>>>>>>> upstream/main:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ModeSelectionBottomSheetDialog.java
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
+    private static final String TAG = "ModeSelectionBottomSheetDialog";
 
     private String gameName;
-    private String modeName;
-    private String content;
+    private ArrayList<String> items;
 
+<<<<<<<< HEAD:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ReactionsBottomSheetDialog.java
     public ReactionsBottomSheetDialog(String gameName, String modeName, String content) {
+========
+    public ModeSelectionBottomSheetDialog(String gameName) {
+>>>>>>>> upstream/main:app/src/main/java/com/veritas/veritas/Fragments/Dialogs/BottomSheetDialogs/ModeSelectionBottomSheetDialog.java
         this.gameName = gameName;
-        this.modeName = modeName;
-        this.content = content;
     }
 
     @Nullable
@@ -40,13 +52,13 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.reactions_bottom_sheet_dialog_fragment, container, false);
 
+        items = new ArrayList<>(List.of(
+                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME, MODE_MADNESS
+        ));
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        ArrayList<String> items = new ArrayList<>(List.of(
-                "Нравится вариант", "Не нравится вариант", "Вариант повторяется"
-        ));
 
         RecyclerAdapter adapter = new RecyclerAdapter(items);
 
@@ -72,20 +84,24 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(requireContext(), "IT WORKS!!!", Toast.LENGTH_SHORT).show();
 
-        // TODO: Дать возможность удалять реакцию, например повторным кликом по той же реакции
+        final FragmentWorking fw;
 
-        GamesDB gamesDB = new GamesDB(requireContext());
+        /*
+        "It is never a bad idea to make code as safe" - someone (probably me :D)
+        So the followed piece of code is for safety ->
+        -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
+        */
 
-        if (gamesDB.hasReaction(gameName, modeName, content)) {
-            gamesDB.deleteReaction(gameName, modeName, content);
+        if (getActivity() instanceof MainActivity) {
+            fw = new FragmentWorking(requireContext(),
+                    TAG, getParentFragmentManager(), (MainActivity) getActivity());
+        } else {
+            fw = new FragmentWorking(requireContext(),
+                    TAG, getParentFragmentManager());
         }
 
-        switch (position) {
-            case 0 -> gamesDB.addReaction(gameName, modeName, "like", content);
-            case 1 -> gamesDB.addReaction(gameName, modeName, "dislike", content);
-            case 2 -> gamesDB.addReaction(gameName, modeName, "recurring", content);
-        }
+        fw.setFragment(gameName, items.get(position));
+        dismiss();
     }
 }

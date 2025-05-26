@@ -1,4 +1,4 @@
-package com.veritas.veritas.Fragments.SettingsFragments.Preferences;
+package com.veritas.veritas.Fragments.Preferences;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
-import com.veritas.veritas.Fragments.Dialog.NumOfAnswersBottomSheetDialog;
+import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.NumOfAnswersBottomSheetDialog;
 
 public class BottomSheetDialogPreference extends Preference {
 

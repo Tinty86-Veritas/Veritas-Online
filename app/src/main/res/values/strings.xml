@@ -130,5 +130,10 @@
     <string name="create_group">Создать группу</string>
     <string name="enter_code">Введите код</string>
     <string name="code_hint">Например: 123456789</string>
+    <string name="reaction_saved">Реакция сохранена</string>
+    <string name="reaction_deleted">Реакция удалена</string>
+    <string name="like_option">Нравится вариант</string>
+    <string name="dislike_option">Не нравится вариант</string>
+    <string name="recurring_option">Вариант повторяется</string>
 
 </resources>

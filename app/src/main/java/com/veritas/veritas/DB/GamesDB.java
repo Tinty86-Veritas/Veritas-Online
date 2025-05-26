@@ -98,7 +98,6 @@ public class GamesDB extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // Retrieve request_num for a given game and mode
     public int getRequestNum(String gameName, String modeName) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery(
@@ -116,7 +115,6 @@ public class GamesDB extends SQLiteOpenHelper {
         return result;
     }
 
-    // Update request_num using explicit WHERE
     public void updateRequestNum(String gameName, String modeName, int num) {
         Log.d("GamesDB", String.format(
                 "updateRequestNum: gameName=%s, modeName=%s, num=%d", gameName, modeName, num
@@ -128,7 +126,6 @@ public class GamesDB extends SQLiteOpenHelper {
         db.execSQL(sql, new Object[] {num, gameName, modeName});
     }
 
-    // Add a like or dislike response
     public long addReaction(String gameName, String modeName, String type, String text) {
         SQLiteDatabase db = getWritableDatabase();
         // get game_mode_id
@@ -154,9 +151,8 @@ public class GamesDB extends SQLiteOpenHelper {
 
     public int deleteReaction(String gameName, String modeName, String content) {
         SQLiteDatabase db = getWritableDatabase();
-        int deletedRows = -1; // Default to -1 if no game_mode_id is found
+        int deletedRows = -1;
 
-        // Get the game_mode_id for the given game and mode names
         Cursor c = db.rawQuery(
                 "SELECT gm.id FROM " + TABLE_GAME_MODES + " gm " +
                         "JOIN " + TABLE_GAMES + " g ON g.id = gm.game_id " +
@@ -170,7 +166,6 @@ public class GamesDB extends SQLiteOpenHelper {
             c.close();
         }
 
-        // If a valid game_mode_id is found, delete the reactions with the specified content
         if (gameModeId != -1) {
             deletedRows = db.delete(
                     TABLE_RESPONSES,
@@ -189,8 +184,6 @@ public class GamesDB extends SQLiteOpenHelper {
         boolean exists = false;
         Cursor c = null;
         try {
-            // Query to check for the existence of any reaction for the given game, mode, and content
-            // We only need to select one row if it exists, so LIMIT 1 is efficient
             c = db.rawQuery(
                     "SELECT 1 FROM " + TABLE_RESPONSES + " r " +
                             "JOIN " + TABLE_GAME_MODES + " gm ON gm.id = r.game_mode_id " +
@@ -200,15 +193,12 @@ public class GamesDB extends SQLiteOpenHelper {
                     new String[]{gameName, modeName, content}
             );
 
-            // If moveToFirst() returns true, it means at least one row was found
             if (c != null && c.moveToFirst()) {
                 exists = true;
             }
         } catch (Exception e) {
             Log.e("GamesDB", "Error checking for reaction existence with content", e);
-            // Handle exception if necessary, maybe return false or rethrow
         } finally {
-            // Always close the cursor
             if (c != null) {
                 c.close();
             }
@@ -216,8 +206,6 @@ public class GamesDB extends SQLiteOpenHelper {
         return exists;
     }
 
-
-    // Fetch responses by type
     public List<String> getReaction(String gameName, String modeName, String type) {
         List<String> responses = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -240,4 +228,28 @@ public class GamesDB extends SQLiteOpenHelper {
         c.close();
         return responses;
     }
+
+    public String getReactionType(String gameName, String modeName, String content) {
+        SQLiteDatabase db = getReadableDatabase();
+        String type = null;
+
+        String sql =
+                "SELECT r.type FROM reaction r " +
+                        "JOIN game_modes gm ON r.game_mode_id = gm.id " +
+                        "JOIN games g ON gm.game_id = g.id " +
+                        "JOIN modes m ON gm.mode_id = m.id " +
+                        "WHERE g.name = ? AND m.name = ? AND r.content = ? " +
+                        "LIMIT 1";
+
+        Cursor c = db.rawQuery(sql, new String[]{ gameName, modeName, content });
+        if (c != null) {
+            if (c.moveToFirst()) {
+                type = c.getString(c.getColumnIndexOrThrow("type"));
+            }
+            c.close();
+        }
+
+        return type;
+    }
+
 }
