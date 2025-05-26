@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
@@ -29,6 +30,8 @@ import java.util.List;
 
 public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
+    private static final String TAG = "ModeSelectionBottomSheetDialog";
+
     private String gameName;
     private ArrayList<String> items;
 
@@ -73,8 +76,22 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        FragmentWorking fw = new FragmentWorking(requireContext(),
-                "ModeSelectionBottomSheetDialog", getParentFragmentManager());
+
+        final FragmentWorking fw;
+
+        /*
+        "It is never a bad idea to make code as safe" - someone (probably me :D)
+        So the followed piece of code is for safety ->
+        -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
+        */
+
+        if (getActivity() instanceof MainActivity) {
+            fw = new FragmentWorking(requireContext(),
+                    TAG, getParentFragmentManager(), (MainActivity) getActivity());
+        } else {
+            fw = new FragmentWorking(requireContext(),
+                    TAG, getParentFragmentManager());
+        }
 
         fw.setFragment(gameName, items.get(position));
         dismiss();

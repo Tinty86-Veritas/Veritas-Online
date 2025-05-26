@@ -45,6 +45,8 @@ public class ModeFragment extends Fragment
     private String modeName;
     private boolean isFirstLoad = true;
 
+    private boolean isRevived = false;
+
     public ModeFragment(String modeName, String gameName) {
         this.gameName = gameName;
         this.modeName = modeName;
@@ -55,39 +57,37 @@ public class ModeFragment extends Fragment
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mode_fragment, container, false);
 
-        questionsRecycler = view.findViewById(R.id.questions_recycler);
-        initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
+        init(view);
 
-        final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
+        recyclerViewHandle();
 
-        adapter = new RecyclerAdapter(contentList, false, font);
-        adapter.setOnClickListener(this);
-        questionsRecycler.setAdapter(adapter);
+        if (!isRevived) {
+            try {
+                aiRequest = new AIRequest(requireContext(), modeName, gameName);
+                pullToRefresh.setOnRefreshListener(this::APIHandle);
 
-        pullToRefresh = view.findViewById(R.id.pullToRefresh);
+                if (isFirstLoad) {
+                    initialLoadingIndicator.setVisibility(View.VISIBLE);
+                    pullToRefresh.setEnabled(false);
+                }
 
-        try {
-            aiRequest = new AIRequest(requireContext(), modeName, gameName);
+                APIHandle();
+
+            } catch (EmptyUsersList e) {
+                Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
+                if (isFirstLoad) {
+                    initialLoadingIndicator.setVisibility(View.GONE);
+                    pullToRefresh.setEnabled(true);
+                }
+            } catch (NotEnoughPlayers e) {
+                Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
+                if (isFirstLoad) {
+                    initialLoadingIndicator.setVisibility(View.GONE);
+                    pullToRefresh.setEnabled(true);
+                }
+            }
+        } else {
             pullToRefresh.setOnRefreshListener(this::APIHandle);
-
-            if (isFirstLoad) {
-                initialLoadingIndicator.setVisibility(View.VISIBLE);
-                pullToRefresh.setEnabled(false);
-            }
-            APIHandle();
-
-        } catch (EmptyUsersList e) {
-            Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
-            if (isFirstLoad) {
-                initialLoadingIndicator.setVisibility(View.GONE);
-                pullToRefresh.setEnabled(true);
-            }
-        } catch (NotEnoughPlayers e) {
-            Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
-            if (isFirstLoad) {
-                initialLoadingIndicator.setVisibility(View.GONE);
-                pullToRefresh.setEnabled(true);
-            }
         }
 
         return view;
@@ -171,5 +171,24 @@ public class ModeFragment extends Fragment
         ReactionsBottomSheetDialog bottomSheetDialog =
                 new ReactionsBottomSheetDialog(gameName, modeName, content);
         bottomSheetDialog.show(getParentFragmentManager(), TAG);
+    }
+
+    public void setIsRevived(boolean isRevived) {
+        this.isRevived = isRevived;
+    }
+
+    private void init(View view) {
+        questionsRecycler = view.findViewById(R.id.questions_recycler);
+        initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
+
+        pullToRefresh = view.findViewById(R.id.pullToRefresh);
+    }
+
+    private void recyclerViewHandle() {
+        final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
+
+        adapter = new RecyclerAdapter(contentList, false, font);
+        adapter.setOnClickListener(this);
+        questionsRecycler.setAdapter(adapter);
     }
 }

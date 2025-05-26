@@ -1,19 +1,27 @@
 package com.veritas.veritas.Activities;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements FragmentWorking.ModeFragmentCallback {
 
-    private final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
 
     private BottomNavigationView nav;
 
-    private int current_frag_id;
+    private ModeFragment modeFragment = null;
+
+    private FragmentWorking fw;
+
+    private int currentFragId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,24 +30,34 @@ public class MainActivity extends AppCompatActivity {
 
         nav = findViewById(R.id.bottom_navigation);
 
-        FragmentWorking fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager());
+        fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager(), this);
 
-        current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
+        currentFragId = fw.setFragment(R.id.mode_selection_fragment);
 
         nav.setSelectedItemId(R.id.mode_selection_fragment);
-
+        
         nav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.fire_id && current_frag_id != R.id.fire_id) {
-                current_frag_id = fw.setFragment(R.id.mode_selection_fragment);
+            if (id == R.id.fire_id && currentFragId != R.id.fire_id) {
+                if (modeFragment == null) {
+                    currentFragId = fw.setFragment(R.id.mode_selection_fragment);
+                } else {
+                    fw.reviveSavedFragment(modeFragment);
+                }
                 return true;
-            } else if (id == R.id.settings_id && current_frag_id != R.id.settings_id) {
-                current_frag_id = fw.setFragment(R.id.settings_fragment);
+            } else if (id == R.id.settings_id && currentFragId != R.id.settings_id) {
+                currentFragId = fw.setFragment(R.id.settings_fragment);
                 return true;
             } else {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void getModeFragment(ModeFragment modeFragment) {
+        Log.d(TAG, "getModeFragment");
+        this.modeFragment = modeFragment;
     }
 }
