@@ -11,7 +11,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.veritas.veritas.Fragments.Dialogs.JoinViaCodeBottomSheetDialog;
+import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.JoinViaCodeBottomSheetDialog;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 
