@@ -35,7 +35,7 @@ public class LobbyRecyclerAdapter extends RecyclerView.Adapter<LobbyRecyclerAdap
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_row, parent, false);
+                .inflate(R.layout.standard_button, parent, false);
         return new ViewHolder(view);
     }
 

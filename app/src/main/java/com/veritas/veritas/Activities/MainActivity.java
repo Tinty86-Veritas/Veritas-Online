@@ -4,52 +4,81 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.veritas.veritas.Fragments.MainFragments.GameSelectionFragment;
+import com.veritas.veritas.Fragments.MainFragments.GroupFragment;
+import com.veritas.veritas.Fragments.MainFragments.SettingsPrefFragment;
+import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
 
 public class MainActivity extends AppCompatActivity
-        implements FragmentWorking.ModeFragmentCallback {
+        implements FragmentWorking.FragmentCallback {
 
     private static final String TAG = "MainActivity";
 
     private BottomNavigationView nav;
 
+    private Fragment currentMainFragment;
+
+    private GameSelectionFragment gameSelectionFragment;
+    private GroupFragment groupFragment;
+    private SettingsPrefFragment settingsPrefFragment;
+
     private ModeFragment modeFragment = null;
+    private LobbyFragment lobbyFragment = null;
 
     private FragmentWorking fw;
-
-    private int currentFragLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        init();
+
+        navConfigure();
+    }
+
+    private void init() {
         nav = findViewById(R.id.bottom_navigation);
 
         fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager(), this);
 
-        currentFragLayout= fw.setFragment(R.layout.mode_selection_fragment);
+        gameSelectionFragment = new GameSelectionFragment();
+        groupFragment = new GroupFragment();
+        settingsPrefFragment = new SettingsPrefFragment();
 
+        currentMainFragment = fw.setFragment(gameSelectionFragment);
+    }
+
+    private void navConfigure() {
         nav.setSelectedItemId(R.id.mode_selection_fragment);
 
         nav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
 
-            if (id == R.id.fire_id && currentFragLayout != R.id.fire_id) {
+            if (id == R.id.fire_id) {
                 if (modeFragment == null) {
-                    currentFragLayout = fw.setFragment(R.layout.mode_selection_fragment);
+                    currentMainFragment = fw.setFragment(gameSelectionFragment);
                 } else {
                     fw.reviveSavedFragment(modeFragment);
                 }
                 return true;
-            } else if (id == R.id.group_id && currentFragLayout != R.id.group_id) {
-                currentFragLayout = fw.setFragment(R.layout.group_fragment);
+
+            } else if (id == R.id.group_id) {
+                if (lobbyFragment == null) {
+                    currentMainFragment = fw.setFragment(groupFragment);
+                } else {
+                    fw.reviveSavedFragment(lobbyFragment);
+                }
                 return true;
-            } else if (id == R.id.settings_id && currentFragLayout != R.id.settings_id) {
-                currentFragLayout = fw.setFragment(R.xml.settings);
+
+            } else if (id == R.id.settings_id) {
+                currentMainFragment = fw.setFragment(settingsPrefFragment);
                 return true;
             } else {
                 return false;
@@ -58,8 +87,27 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void getModeFragment(ModeFragment modeFragment) {
-        Log.d(TAG, "getModeFragment");
+    public void getFragment(Fragment fragment) {
+        if (fragment instanceof ModeFragment) {
+            this.modeFragment = (ModeFragment) fragment;
+        } else if (fragment instanceof LobbyFragment) {
+            this.lobbyFragment = (LobbyFragment) fragment;
+        }
+    }
+
+    public void setModeFragment(ModeFragment modeFragment) {
         this.modeFragment = modeFragment;
+    }
+
+    public void setLobbyFragment(LobbyFragment lobbyFragment) {
+        this.lobbyFragment = lobbyFragment;
+    }
+
+    public GameSelectionFragment getGameSelectionFragment() {
+        return gameSelectionFragment;
+    }
+
+    public GroupFragment getGroupFragment() {
+        return groupFragment;
     }
 }

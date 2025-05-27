@@ -22,6 +22,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
+import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 
@@ -80,7 +81,7 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         final FragmentWorking fw;
 
         /*
-        "It is never a bad idea to make code as safe" - someone (probably me :D)
+        "It is never a bad idea to make code as safe as you can" - someone (probably me :D)
         So the followed piece of code is for safety ->
         -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
         */
@@ -93,7 +94,9 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
                     TAG, getParentFragmentManager());
         }
 
-        fw.setFragment(gameName, items.get(position));
+        ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));
+
+        fw.setFragment(modeFragment);
         dismiss();
     }
 }

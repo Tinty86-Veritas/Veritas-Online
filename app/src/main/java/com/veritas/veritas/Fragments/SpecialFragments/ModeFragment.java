@@ -8,19 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.veritas.veritas.AI.AIRequest;
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Exceptions.EmptyUsersList;
 import com.veritas.veritas.Exceptions.NotEnoughPlayers;
 import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.ReactionsBottomSheetDialog;
 import com.veritas.veritas.R;
+import com.veritas.veritas.Util.FragmentWorking;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -30,6 +34,10 @@ public class ModeFragment extends Fragment
         implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
 
     private static final String TAG = "ModeFragment";
+
+    private OnBackPressedCallback customOnBackPressedCallback;
+
+    private FragmentWorking fw;
 
     private String gameName;
 
@@ -48,7 +56,7 @@ public class ModeFragment extends Fragment
 
     private boolean isRevived = false;
 
-    public ModeFragment(String modeName, String gameName) {
+    public ModeFragment(String gameName, String modeName) {
         this.gameName = gameName;
         this.modeName = modeName;
     }
@@ -92,6 +100,47 @@ public class ModeFragment extends Fragment
         }
 
         return view;
+    }
+
+    @Override
+    public void onLongItemClick(View view, int position) {
+        String content = contentList.get(position);
+        ReactionsBottomSheetDialog bottomSheetDialog =
+                new ReactionsBottomSheetDialog(gameName, modeName, content);
+        bottomSheetDialog.show(getParentFragmentManager(), TAG);
+    }
+
+    public void setIsRevived(boolean isRevived) {
+        this.isRevived = isRevived;
+    }
+
+    private void init(View view) {
+        fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+
+        questionsRecycler = view.findViewById(R.id.questions_recycler);
+        initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
+
+        pullToRefresh = view.findViewById(R.id.pullToRefresh);
+
+        customOnBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getActivity() instanceof MainActivity main) {
+                    main.setModeFragment(null);
+                    fw.setFragment(main.getGameSelectionFragment());
+                }
+            }
+        };
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+    }
+
+    private void recyclerViewHandle() {
+        final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
+
+        adapter = new RecyclerAdapter(contentList, false, font);
+        adapter.setOnClickListener(this);
+        questionsRecycler.setAdapter(adapter);
     }
 
     private void APIHandle() {
@@ -164,32 +213,5 @@ public class ModeFragment extends Fragment
                 }
             }
         });
-    }
-
-    @Override
-    public void onLongItemClick(View view, int position) {
-        String content = contentList.get(position);
-        ReactionsBottomSheetDialog bottomSheetDialog =
-                new ReactionsBottomSheetDialog(gameName, modeName, content);
-        bottomSheetDialog.show(getParentFragmentManager(), TAG);
-    }
-
-    public void setIsRevived(boolean isRevived) {
-        this.isRevived = isRevived;
-    }
-
-    private void init(View view) {
-        questionsRecycler = view.findViewById(R.id.questions_recycler);
-        initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
-
-        pullToRefresh = view.findViewById(R.id.pullToRefresh);
-    }
-
-    private void recyclerViewHandle() {
-        final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
-
-        adapter = new RecyclerAdapter(contentList, false, font);
-        adapter.setOnClickListener(this);
-        questionsRecycler.setAdapter(adapter);
     }
 }

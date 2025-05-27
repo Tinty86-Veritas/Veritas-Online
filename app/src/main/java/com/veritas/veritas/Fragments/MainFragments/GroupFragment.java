@@ -11,7 +11,9 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.JoinViaCodeBottomSheetDialog;
+import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 
@@ -28,7 +30,14 @@ public class GroupFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.group_fragment, container, false);
 
-        fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+        // I think it is better to check is current activity an instance of MainActivity
+
+        if (getActivity() instanceof MainActivity) {
+            fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager(),
+                    (MainActivity) getActivity());
+        } else {
+            fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+        }
 
         joinViaCodeBt = view.findViewById(R.id.join_via_code_bt);
         createGroupBt = view.findViewById(R.id.create_group_bt);
@@ -40,7 +49,8 @@ public class GroupFragment extends Fragment {
         });
 
         createGroupBt.setOnClickListener(v -> {
-            fw.setFragment(R.layout.lobby_fragment);
+//            fw.setFragment(R.layout.lobby_fragment);
+            fw.setFragment(new LobbyFragment());
         });
 
         return view;
