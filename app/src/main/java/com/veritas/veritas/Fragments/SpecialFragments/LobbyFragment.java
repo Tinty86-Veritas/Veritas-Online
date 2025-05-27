@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -12,17 +13,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.LobbyRecyclerAdapter;
 import com.veritas.veritas.DB.Firebase.entity.Group;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.R;
+import com.veritas.veritas.Util.FragmentWorking;
 
 import java.util.ArrayList;
 
 public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
     private static final String GROUPS_KEY = "Groups";
+
+    private FragmentWorking fw;
+
+    private OnBackPressedCallback customOnBackPressedCallback;
 
     private DatabaseReference fireGroupsRef;
 
@@ -55,9 +62,23 @@ public class LobbyFragment extends Fragment {
     }
 
     private void init(View view) {
+        fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+
         lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
         adapter = new LobbyRecyclerAdapter(currentGroup.getQuestions());
         lobbyQuestionRV.setAdapter(adapter);
+
+        customOnBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getActivity() instanceof MainActivity main) {
+                    main.setLobbyFragment(null);
+                    fw.setFragment(main.getGroupFragment());
+                }
+            }
+        };
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
     }
 
     private Group createLobby() {

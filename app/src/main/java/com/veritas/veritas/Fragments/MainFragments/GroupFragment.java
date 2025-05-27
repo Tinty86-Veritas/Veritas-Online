@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.JoinViaCodeBottomSheetDialog;
+import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 
@@ -48,7 +49,8 @@ public class GroupFragment extends Fragment {
         });
 
         createGroupBt.setOnClickListener(v -> {
-            fw.setFragment(R.layout.lobby_fragment);
+//            fw.setFragment(R.layout.lobby_fragment);
+            fw.setFragment(new LobbyFragment());
         });
 
         return view;

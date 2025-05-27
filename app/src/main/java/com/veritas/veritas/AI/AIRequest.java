@@ -122,7 +122,7 @@ public class AIRequest {
                             + "Режим: " + modeName;
             default -> {
                 Log.e(TAG, "gameName is inappropriate");
-                Toast.makeText(context, "gameName is inappropriate", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "gameName is inappropriate: " + gameName, Toast.LENGTH_LONG).show();
                 return;
             }
         }
