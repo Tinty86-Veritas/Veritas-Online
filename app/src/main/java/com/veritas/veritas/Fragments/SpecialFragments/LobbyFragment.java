@@ -33,7 +33,7 @@ public class LobbyFragment extends Fragment {
 
     private DatabaseReference fireGroupsRef;
 
-    private Group currentGroup;
+    private Group currentGroup = null;
 
     private RecyclerView lobbyQuestionRV;
     private LobbyRecyclerAdapter adapter;
@@ -46,9 +46,9 @@ public class LobbyFragment extends Fragment {
 
         fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
 
-        if (!isRevived) {
-            currentGroup = createLobby();
-        }
+//        if (!isRevived) {
+//            currentGroup = createLobby();
+//        }
     }
 
     @Nullable
@@ -65,7 +65,12 @@ public class LobbyFragment extends Fragment {
         fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
 
         lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
-        adapter = new LobbyRecyclerAdapter(currentGroup.getQuestions());
+        if (currentGroup != null) {
+            adapter = new LobbyRecyclerAdapter(currentGroup.getQuestions());
+        } else {
+            adapter = new LobbyRecyclerAdapter(new ArrayList<>());
+        }
+
         lobbyQuestionRV.setAdapter(adapter);
 
         customOnBackPressedCallback = new OnBackPressedCallback(true) {
