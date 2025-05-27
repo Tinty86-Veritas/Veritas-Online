@@ -1,9 +1,5 @@
 package com.veritas.veritas.Util;
 
-import static com.veritas.veritas.Util.PublicVariables.DARE;
-import static com.veritas.veritas.Util.PublicVariables.NEVEREVER;
-import static com.veritas.veritas.Util.PublicVariables.TRUTH;
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,17 +17,18 @@ import com.veritas.veritas.R;
 
 public class FragmentWorking {
 
-    public interface ModeFragmentCallback {
-        void getModeFragment(ModeFragment modeFragment);
+    public interface FragmentCallback {
+        void getFragment(Fragment fragment);
     }
 
     private final String TAG;
     private final Context context;
 
     private FragmentManager fm;
-    private ModeFragmentCallback callback;
+    private FragmentCallback callback;
 
     private ModeFragment modeFragment;
+    private LobbyFragment lobbyFragment;
 
     public FragmentWorking(Context context, String TAG, FragmentManager fm) {
         this.TAG = TAG;
@@ -39,7 +36,7 @@ public class FragmentWorking {
         this.fm = fm;
     }
 
-    public FragmentWorking(Context context, String TAG, FragmentManager fm, ModeFragmentCallback callback) {
+    public FragmentWorking(Context context, String TAG, FragmentManager fm, FragmentCallback callback) {
         this.TAG = TAG;
         this.context = context;
         this.fm = fm;
@@ -56,6 +53,10 @@ public class FragmentWorking {
             fragment = new GroupFragment();
         } else if (fragLayout == R.layout.lobby_fragment) {
             fragment = new LobbyFragment();
+            if (callback != null) {
+                lobbyFragment = (LobbyFragment) fragment;
+                callback.getFragment(lobbyFragment);
+            }
         } else {
             Log.wtf(TAG, "Method setFragment got inappropriate fragment id");
             Toast.makeText(context, "Method setFragment got inappropriate fragment id", Toast.LENGTH_SHORT).show();
@@ -68,26 +69,22 @@ public class FragmentWorking {
     }
 
     public void setFragment(String gameName, String modeName) {
+        ModeFragment fragment = new ModeFragment(modeName, gameName);
         if (callback != null) {
-            Log.d(TAG, "callback is not null");
-            modeFragment = new ModeFragment(modeName, gameName);
-
-            Fragment fragment = modeFragment;
-
-            transaction(fragment);
-
-            callback.getModeFragment(modeFragment);
-        } else {
-            Log.d(TAG, "callback is null");
-            Fragment fragment = new ModeFragment(modeName, gameName);
-            transaction(fragment);
+            modeFragment = fragment;
+            callback.getFragment(modeFragment);
         }
+
+        transaction(fragment);
     }
 
     public void reviveSavedFragment(Fragment fragment) {
         transaction(fragment);
-        //
-        ((ModeFragment) fragment).setIsRevived(true);
+        if (fragment instanceof ModeFragment) {
+            ((ModeFragment) fragment).setIsRevived(true);
+        } else if (fragment instanceof LobbyFragment) {
+            ((LobbyFragment) fragment).setIsRevived(true);
+        }
     }
 
     private void transaction(Fragment fragment) {
@@ -96,6 +93,5 @@ public class FragmentWorking {
         ft.replace(R.id.place_holder, fragment);
         ft.addToBackStack(null);
         ft.commit();
-
     }
 }

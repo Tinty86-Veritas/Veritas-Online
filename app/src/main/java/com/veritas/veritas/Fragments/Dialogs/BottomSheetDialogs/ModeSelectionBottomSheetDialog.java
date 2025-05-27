@@ -93,7 +93,8 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
                     TAG, getParentFragmentManager());
         }
 
-        fw.setFragment(gameName, items.get(position));
+//        fw.setFragment(gameName, items.get(position));
+        fw.showFragment(fw.getGameSelectionFragment(), fw.getModeFragment());
         dismiss();
     }
 }

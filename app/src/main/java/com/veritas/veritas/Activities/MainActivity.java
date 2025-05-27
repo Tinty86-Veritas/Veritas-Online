@@ -4,19 +4,23 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
 
 public class MainActivity extends AppCompatActivity
-        implements FragmentWorking.ModeFragmentCallback {
+        implements FragmentWorking.FragmentCallback {
 
     private static final String TAG = "MainActivity";
 
     private BottomNavigationView nav;
 
     private ModeFragment modeFragment = null;
+    private LobbyFragment lobbyFragment = null;
 
     private FragmentWorking fw;
 
@@ -46,7 +50,11 @@ public class MainActivity extends AppCompatActivity
                 }
                 return true;
             } else if (id == R.id.group_id && currentFragLayout != R.id.group_id) {
-                currentFragLayout = fw.setFragment(R.layout.group_fragment);
+                if (lobbyFragment == null) {
+                    currentFragLayout = fw.setFragment(R.layout.group_fragment);
+                } else {
+                    fw.reviveSavedFragment(lobbyFragment);
+                }
                 return true;
             } else if (id == R.id.settings_id && currentFragLayout != R.id.settings_id) {
                 currentFragLayout = fw.setFragment(R.xml.settings);
@@ -58,8 +66,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void getModeFragment(ModeFragment modeFragment) {
-        Log.d(TAG, "getModeFragment");
-        this.modeFragment = modeFragment;
+    public void getFragment(Fragment fragment) {
+        if (fragment instanceof ModeFragment) {
+            this.modeFragment = (ModeFragment) fragment;
+        } else if (fragment instanceof LobbyFragment) {
+            this.lobbyFragment = (LobbyFragment) fragment;
+        }
     }
 }

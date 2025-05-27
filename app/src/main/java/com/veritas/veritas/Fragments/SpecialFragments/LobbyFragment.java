@@ -4,31 +4,25 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.veritas.veritas.Adapters.LobbyRecyclerAdapter;
-import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.DB.Firebase.entity.Group;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.R;
-import com.veritas.veritas.Util.SharedLobbyViewModel;
 
 import java.util.ArrayList;
 
 public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
     private static final String GROUPS_KEY = "Groups";
-
-    private SharedLobbyViewModel sharedViewModel;
 
     private DatabaseReference fireGroupsRef;
 
@@ -37,16 +31,17 @@ public class LobbyFragment extends Fragment {
     private RecyclerView lobbyQuestionRV;
     private LobbyRecyclerAdapter adapter;
 
+    private boolean isRevived = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
 
-        currentGroup = createLobby();
-
-        sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedLobbyViewModel.class);
-        sharedViewModel.setCurrentLobby(currentGroup);
+        if (!isRevived) {
+            currentGroup = createLobby();
+        }
     }
 
     @Nullable
@@ -79,5 +74,9 @@ public class LobbyFragment extends Fragment {
         newLobbyRef.setValue(group);
 
         return group;
+    }
+
+    public void setIsRevived(boolean revived) {
+        isRevived = revived;
     }
 }
