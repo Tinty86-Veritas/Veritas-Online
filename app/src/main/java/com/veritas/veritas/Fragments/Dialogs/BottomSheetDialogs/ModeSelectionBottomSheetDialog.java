@@ -7,6 +7,7 @@ import static com.veritas.veritas.Util.PublicVariables.MODE_MADNESS;
 import static com.veritas.veritas.Util.PublicVariables.MODE_SOFT;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,11 +88,11 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         */
 
         if (getActivity() instanceof MainActivity) {
-            fw = new FragmentWorking(requireContext(),
+            fw = new FragmentWorking(
                     TAG, getParentFragmentManager(), (MainActivity) getActivity());
         } else {
-            fw = new FragmentWorking(requireContext(),
-                    TAG, getParentFragmentManager());
+            Log.wtf(TAG, "MainActivity somehow is not current Activity");
+            throw new RuntimeException("MainActivity is not current Activity");
         }
 
         ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));

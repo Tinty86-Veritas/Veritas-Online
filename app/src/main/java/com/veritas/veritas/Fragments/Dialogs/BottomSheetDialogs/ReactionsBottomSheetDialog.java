@@ -48,7 +48,7 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         ArrayList<String> items = new ArrayList<>(List.of(
-                getString(R.string.like_option), getString(R.string.dislike_option), getString(R.string.recurring_option)
+                getString(R.string.share_with_lobby), getString(R.string.like_option), getString(R.string.dislike_option), getString(R.string.recurring_option)
         ));
 
         RecyclerAdapter adapter = new RecyclerAdapter(items);
@@ -95,6 +95,9 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
                 if (!deleteHandle(gamesDB, type)) {
                     addHandle(gamesDB, type);
                 }
+            }
+            case 3 -> {
+                // logic for adding and deleting question to Realtime Database
             }
         }
         gamesDB.close();

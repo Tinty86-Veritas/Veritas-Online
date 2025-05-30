@@ -17,12 +17,17 @@ public class Question {
 
     public Question(String TAG, String text, String type) {
         boolean isTypeCorrect = false;
-        for (String rawType : getGames()) {
-            if (rawType.equals(type)) {
-                isTypeCorrect = true;
-                break;
+        if (type.equals("init")) {
+            isTypeCorrect = true;
+        } else {
+            for (String rawType : getGames()) {
+                if (rawType.equals(type)) {
+                    isTypeCorrect = true;
+                    break;
+                }
             }
         }
+
         if (isTypeCorrect) {
             this.text = text;
             this.type = type;

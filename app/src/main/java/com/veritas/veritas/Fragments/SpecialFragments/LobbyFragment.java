@@ -1,6 +1,7 @@
 package com.veritas.veritas.Fragments.SpecialFragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
     private static final String GROUPS_KEY = "Groups";
 
+    private static Question INIT_QUESTION;
+
     private FragmentWorking fw;
 
     private OnBackPressedCallback customOnBackPressedCallback;
@@ -43,12 +46,14 @@ public class LobbyFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "OnCreate");
 
         fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
 
-//        if (!isRevived) {
-//            currentGroup = createLobby();
-//        }
+        if (!isRevived) {
+            INIT_QUESTION = new Question(TAG, getString(R.string.init_session_message), "init");
+            currentGroup = createLobby();
+        }
     }
 
     @Nullable
@@ -62,11 +67,24 @@ public class LobbyFragment extends Fragment {
     }
 
     private void init(View view) {
-        fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+        fw = new FragmentWorking(TAG, getParentFragmentManager());
 
         lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
         if (currentGroup != null) {
-            adapter = new LobbyRecyclerAdapter(currentGroup.getQuestions());
+            ArrayList<Question> questions = currentGroup.getQuestions();
+            if (questions.size() == 1 && questions.contains(INIT_QUESTION)) {
+                adapter = new LobbyRecyclerAdapter(requireContext(), currentGroup.getQuestions(), true);
+            }
+            /*
+            * This else is actually redundant to my mind
+            * because it seems like init() can be called only with INIT_QUESTION
+            * because LobbyFragment won't be created with pre-added questions
+             */
+            else {
+                Log.d(TAG, "Somehow init() has been reached unreachable else");
+                adapter = new LobbyRecyclerAdapter(currentGroup.getQuestions());
+            }
+
         } else {
             adapter = new LobbyRecyclerAdapter(new ArrayList<>());
         }
@@ -92,7 +110,7 @@ public class LobbyFragment extends Fragment {
         participants.add(host);
 
         ArrayList<Question> questions = new ArrayList<>();
-        questions.add(new Question(TAG, "test", "truth"));
+        questions.add(INIT_QUESTION);
 
         DatabaseReference newLobbyRef = fireGroupsRef.push();
 

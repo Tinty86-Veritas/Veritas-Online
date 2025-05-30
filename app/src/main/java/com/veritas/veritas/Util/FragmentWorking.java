@@ -17,7 +17,6 @@ public class FragmentWorking {
     }
 
     private final String TAG;
-    private final Context context;
 
     private FragmentManager fm;
     private FragmentCallback callback;
@@ -25,15 +24,13 @@ public class FragmentWorking {
     private ModeFragment modeFragment;
     private LobbyFragment lobbyFragment;
 
-    public FragmentWorking(Context context, String TAG, FragmentManager fm) {
+    public FragmentWorking(String TAG, FragmentManager fm) {
         this.TAG = TAG;
-        this.context = context;
         this.fm = fm;
     }
 
-    public FragmentWorking(Context context, String TAG, FragmentManager fm, FragmentCallback callback) {
+    public FragmentWorking(String TAG, FragmentManager fm, FragmentCallback callback) {
         this.TAG = TAG;
-        this.context = context;
         this.fm = fm;
         this.callback = callback;
     }

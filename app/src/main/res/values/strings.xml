@@ -135,5 +135,7 @@
     <string name="like_option">Нравится вариант</string>
     <string name="dislike_option">Не нравится вариант</string>
     <string name="recurring_option">Вариант повторяется</string>
+    <string name="share_with_lobby">Отправить в группу</string>
+    <string name="init_session_message">Для того чтобы начать сессию, выберите понравившийся сгенерированный вопрос и отправьте его в группу</string>
 
 </resources>

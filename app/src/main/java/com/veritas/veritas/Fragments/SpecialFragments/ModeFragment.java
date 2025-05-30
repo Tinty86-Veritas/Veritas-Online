@@ -115,7 +115,7 @@ public class ModeFragment extends Fragment
     }
 
     private void init(View view) {
-        fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+        fw = new FragmentWorking(TAG, getParentFragmentManager());
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
         initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);

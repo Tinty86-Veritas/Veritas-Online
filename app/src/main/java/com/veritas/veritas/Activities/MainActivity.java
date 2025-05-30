@@ -22,8 +22,6 @@ public class MainActivity extends AppCompatActivity
 
     private BottomNavigationView nav;
 
-    private Fragment currentMainFragment;
-
     private GameSelectionFragment gameSelectionFragment;
     private GroupFragment groupFragment;
     private SettingsPrefFragment settingsPrefFragment;
@@ -46,13 +44,13 @@ public class MainActivity extends AppCompatActivity
     private void init() {
         nav = findViewById(R.id.bottom_navigation);
 
-        fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager(), this);
+        fw = new FragmentWorking(TAG, getSupportFragmentManager(), this);
 
         gameSelectionFragment = new GameSelectionFragment();
         groupFragment = new GroupFragment();
         settingsPrefFragment = new SettingsPrefFragment();
 
-        currentMainFragment = fw.setFragment(gameSelectionFragment);
+        fw.setFragment(gameSelectionFragment);
     }
 
     private void navConfigure() {
@@ -63,7 +61,7 @@ public class MainActivity extends AppCompatActivity
 
             if (id == R.id.fire_id) {
                 if (modeFragment == null) {
-                    currentMainFragment = fw.setFragment(gameSelectionFragment);
+                    fw.setFragment(gameSelectionFragment);
                 } else {
                     fw.reviveSavedFragment(modeFragment);
                 }
@@ -71,14 +69,14 @@ public class MainActivity extends AppCompatActivity
 
             } else if (id == R.id.group_id) {
                 if (lobbyFragment == null) {
-                    currentMainFragment = fw.setFragment(groupFragment);
+                    fw.setFragment(groupFragment);
                 } else {
                     fw.reviveSavedFragment(lobbyFragment);
                 }
                 return true;
 
             } else if (id == R.id.settings_id) {
-                currentMainFragment = fw.setFragment(settingsPrefFragment);
+                fw.setFragment(settingsPrefFragment);
                 return true;
             } else {
                 return false;

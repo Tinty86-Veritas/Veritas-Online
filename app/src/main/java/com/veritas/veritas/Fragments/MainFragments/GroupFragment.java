@@ -1,6 +1,7 @@
 package com.veritas.veritas.Fragments.MainFragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +34,11 @@ public class GroupFragment extends Fragment {
         // I think it is better to check is current activity an instance of MainActivity
 
         if (getActivity() instanceof MainActivity) {
-            fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager(),
+            fw = new FragmentWorking(TAG, getParentFragmentManager(),
                     (MainActivity) getActivity());
         } else {
-            fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+            Log.wtf(TAG, "MainActivity somehow is not current Activity");
+            throw new RuntimeException("MainActivity is not current Activity");
         }
 
         joinViaCodeBt = view.findViewById(R.id.join_via_code_bt);
