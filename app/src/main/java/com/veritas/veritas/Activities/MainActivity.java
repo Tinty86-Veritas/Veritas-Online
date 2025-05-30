@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.Fragments.MainFragments.GameSelectionFragment;
 import com.veritas.veritas.Fragments.MainFragments.GroupFragment;
 import com.veritas.veritas.Fragments.MainFragments.SettingsPrefFragment;
@@ -28,6 +29,8 @@ public class MainActivity extends AppCompatActivity
 
     private ModeFragment modeFragment = null;
     private LobbyFragment lobbyFragment = null;
+
+    private FirebaseManager firebaseManager = null;
 
     private FragmentWorking fw;
 
@@ -101,11 +104,23 @@ public class MainActivity extends AppCompatActivity
         this.lobbyFragment = lobbyFragment;
     }
 
+    public LobbyFragment getLobbyFragment() {
+        return lobbyFragment;
+    }
+
     public GameSelectionFragment getGameSelectionFragment() {
         return gameSelectionFragment;
     }
 
     public GroupFragment getGroupFragment() {
         return groupFragment;
+    }
+
+    public FirebaseManager getFirebaseManager() {
+        return firebaseManager;
+    }
+
+    public void setFirebaseManager(FirebaseManager firebaseManager) {
+        this.firebaseManager = firebaseManager;
     }
 }

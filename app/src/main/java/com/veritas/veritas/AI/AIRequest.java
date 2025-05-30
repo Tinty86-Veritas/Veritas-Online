@@ -16,8 +16,8 @@ import com.google.gson.Gson;
 import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.DB.UsersDB;
-import com.veritas.veritas.Exceptions.EmptyUsersList;
-import com.veritas.veritas.Exceptions.NotEnoughPlayers;
+import com.veritas.veritas.Exceptions.EmptyUsersListException;
+import com.veritas.veritas.Exceptions.NotEnoughPlayersException;
 import com.veritas.veritas.R;
 
 import java.io.IOException;
@@ -50,7 +50,7 @@ public class AIRequest {
     Gson gson = new Gson();
 
     public AIRequest(Context context, String modeName, String gameName)
-            throws EmptyUsersList, NotEnoughPlayers {
+            throws EmptyUsersListException, NotEnoughPlayersException {
 
         Map<String, Object[]> reactions = new HashMap<>();
 
@@ -85,9 +85,9 @@ public class AIRequest {
         ArrayList<User> users = usersDB.selectAllFromPlayers();
 
         if (users.isEmpty()) {
-            throw new EmptyUsersList(TAG);
+            throw new EmptyUsersListException(TAG);
         } else if (users.size() == 1 && !gameName.equals(NEVEREVER)) {
-            throw new NotEnoughPlayers(TAG);
+            throw new NotEnoughPlayersException(TAG);
         }
 
         usersDB.close();

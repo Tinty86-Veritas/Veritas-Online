@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.LobbyRecyclerAdapter;
+import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.Group;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.DB.Firebase.entity.Question;
@@ -28,13 +29,14 @@ public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
     private static final String GROUPS_KEY = "Groups";
 
-    private static Question INIT_QUESTION;
+    private Question INIT_MESSAGE;
 
     private FragmentWorking fw;
 
     private OnBackPressedCallback customOnBackPressedCallback;
 
     private DatabaseReference fireGroupsRef;
+    private FirebaseManager firebaseManager;
 
     private Group currentGroup = null;
 
@@ -51,8 +53,16 @@ public class LobbyFragment extends Fragment {
         fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
 
         if (!isRevived) {
-            INIT_QUESTION = new Question(TAG, getString(R.string.init_session_message), "init");
+            INIT_MESSAGE = new Question(TAG, getString(R.string.init_session_message), "init");
             currentGroup = createLobby();
+
+            firebaseManager = new FirebaseManager(currentGroup.getId());
+            if (getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).setFirebaseManager(firebaseManager);
+            } else {
+                Log.wtf(TAG, "MainActivity somehow is not current Activity");
+                throw new RuntimeException("MainActivity is not current Activity");
+            }
         }
     }
 
@@ -72,7 +82,7 @@ public class LobbyFragment extends Fragment {
         lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
         if (currentGroup != null) {
             ArrayList<Question> questions = currentGroup.getQuestions();
-            if (questions.size() == 1 && questions.contains(INIT_QUESTION)) {
+            if (questions.size() == 1 && questions.contains(INIT_MESSAGE)) {
                 adapter = new LobbyRecyclerAdapter(requireContext(), currentGroup.getQuestions(), true);
             }
             /*
@@ -110,7 +120,7 @@ public class LobbyFragment extends Fragment {
         participants.add(host);
 
         ArrayList<Question> questions = new ArrayList<>();
-        questions.add(INIT_QUESTION);
+        questions.add(INIT_MESSAGE);
 
         DatabaseReference newLobbyRef = fireGroupsRef.push();
 
@@ -122,5 +132,9 @@ public class LobbyFragment extends Fragment {
 
     public void setIsRevived(boolean revived) {
         isRevived = revived;
+    }
+
+    public Question getINIT_MESSAGE() {
+        return INIT_MESSAGE;
     }
 }

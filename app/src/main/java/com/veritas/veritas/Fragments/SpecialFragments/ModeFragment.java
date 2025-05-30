@@ -10,9 +10,7 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -20,8 +18,8 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
-import com.veritas.veritas.Exceptions.EmptyUsersList;
-import com.veritas.veritas.Exceptions.NotEnoughPlayers;
+import com.veritas.veritas.Exceptions.EmptyUsersListException;
+import com.veritas.veritas.Exceptions.NotEnoughPlayersException;
 import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.ReactionsBottomSheetDialog;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
@@ -82,13 +80,13 @@ public class ModeFragment extends Fragment
 
                 APIHandle();
 
-            } catch (EmptyUsersList e) {
+            } catch (EmptyUsersListException e) {
                 Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
                 if (isFirstLoad) {
                     initialLoadingIndicator.setVisibility(View.GONE);
                     pullToRefresh.setEnabled(true);
                 }
-            } catch (NotEnoughPlayers e) {
+            } catch (NotEnoughPlayersException e) {
                 Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
                 if (isFirstLoad) {
                     initialLoadingIndicator.setVisibility(View.GONE);

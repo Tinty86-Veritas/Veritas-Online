@@ -16,8 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
+import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
+import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.DB.GamesDB;
+import com.veritas.veritas.Exceptions.AddQuestionFailedException;
+import com.veritas.veritas.Exceptions.InitMessageUpdateFailedException;
+import com.veritas.veritas.Exceptions.LobbyIsNullException;
+import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.R;
 
 import java.util.ArrayList;
@@ -76,31 +83,108 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
     @Override
     public void onItemClick(View view, int position) {
         GamesDB gamesDB = new GamesDB(requireContext());
-
         switch (position) {
+            // Почему-то не работает
             case 0 -> {
+                if (getActivity() instanceof MainActivity) {
+                    boolean isError = false;
+                    FirebaseManager firebaseManager = ((MainActivity) getActivity()).getFirebaseManager();
+                    if (firebaseManager == null) {
+                        Log.w(TAG, "firebaseManager is null");
+                        Toast.makeText(requireContext(), R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    try {
+                        updateInitMessage(firebaseManager);
+                    } catch (InitMessageUpdateFailedException e) {
+                        if (e.getMessage().equals("question does not equals to INIT_MESSAGE")) {
+                            try {
+                                addQuestion(firebaseManager);
+                            } catch (AddQuestionFailedException ignored) {
+                                isError = true;
+                                Toast.makeText(requireContext(), "Firebase error", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                    if (!isError) {
+                        Toast.makeText(requireContext(), "Успешно отправлено в группу", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.wtf(TAG, "MainActivity somehow is not current Activity");
+                    throw new RuntimeException("MainActivity is not current Activity");
+                }
+            }
+            case 1 -> {
                 final String type = "like";
                 if (!deleteHandle(gamesDB, type)) {
                     addHandle(gamesDB, type);
                 }
             }
-            case 1 -> {
+            case 2 -> {
                 final String type = "dislike";
                 if (!deleteHandle(gamesDB, type)) {
                     addHandle(gamesDB, type);
                 }
             }
-            case 2 -> {
+            case 3 -> {
                 final String type = "recurring";
                 if (!deleteHandle(gamesDB, type)) {
                     addHandle(gamesDB, type);
                 }
             }
-            case 3 -> {
-                // logic for adding and deleting question to Realtime Database
-            }
         }
         gamesDB.close();
+    }
+
+    private void addQuestion(FirebaseManager firebaseManager) throws AddQuestionFailedException {
+        Question newQuestion = new Question(TAG, content, gameName);
+        firebaseManager.addQuestion(newQuestion, new FirebaseManager.OnQuestionsUpdatedListener() {
+            @Override
+            public void onSuccess() {}
+
+            @Override
+            public void onFailure(String error) {
+                Log.e(TAG, error);
+                throw new AddQuestionFailedException(error);
+            }
+        });
+    }
+
+    private void updateInitMessage(FirebaseManager firebaseManager) throws LobbyIsNullException,
+            InitMessageUpdateFailedException {
+        firebaseManager.getQuestionByIndex(0, new FirebaseManager.OnQuestionGotListener() {
+            @Override
+            public void onSuccess(Question question) {
+                LobbyFragment lobbyFragment = ((MainActivity) getActivity()).getLobbyFragment();
+                if (lobbyFragment == null) {
+                    Log.w(TAG, "Cannot share question with lobby because lobbyFragment is null");
+                    Toast.makeText(requireContext(), R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
+                    throw new LobbyIsNullException(null);
+                }
+                Question INIT_MESSAGE = lobbyFragment.getINIT_MESSAGE();
+                if (question.equals(INIT_MESSAGE)) {
+                    Question newQuestion = new Question(TAG, content, gameName);
+                    firebaseManager.updateQuestionByIndex(0, newQuestion,
+                            new FirebaseManager.OnQuestionsUpdatedListener() {
+                        @Override
+                        public void onSuccess() {}
+
+                        @Override
+                        public void onFailure(String error) {
+                            Log.e(TAG, error);
+                            throw new InitMessageUpdateFailedException("OnQuestionsUpdatedListener onFailure");
+                        }
+                    });
+                } else {
+                    throw new InitMessageUpdateFailedException("question does not equals to INIT_MESSAGE");
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Log.d(TAG, error);
+            }
+        });
     }
 
     private void clearPreviousType(GamesDB gamesDB) {
