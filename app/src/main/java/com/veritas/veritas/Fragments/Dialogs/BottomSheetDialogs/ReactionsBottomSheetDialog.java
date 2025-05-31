@@ -1,5 +1,6 @@
 package com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,9 +23,6 @@ import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.DB.GamesDB;
-import com.veritas.veritas.Exceptions.AddQuestionFailedException;
-import com.veritas.veritas.Exceptions.InitMessageUpdateFailedException;
-import com.veritas.veritas.Exceptions.LobbyIsNullException;
 import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.R;
 
@@ -35,9 +34,14 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
 
     private static final String TAG = "ReactionsBottomSheetDialog";
 
+    private FragmentActivity activity;
+    private Context context;
+
     private String gameName;
     private String modeName;
     private String content;
+
+    private LobbyFragment lobbyFragment;
 
     public ReactionsBottomSheetDialog(String gameName, String modeName, String content) {
         this.gameName = gameName;
@@ -50,9 +54,20 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
 
+        init(view);
+
+        return view;
+    }
+
+    private void init(View view) {
+        activity = requireActivity();
+        context = requireContext();
+
+        lobbyFragment = ((MainActivity) activity).getLobbyFragment();
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         ArrayList<String> items = new ArrayList<>(List.of(
                 getString(R.string.share_with_lobby), getString(R.string.like_option), getString(R.string.dislike_option), getString(R.string.recurring_option)
@@ -63,8 +78,6 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         adapter.setOnClickListener(this);
 
         recyclerView.setAdapter(adapter);
-
-        return view;
     }
 
     @Override
@@ -82,33 +95,17 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
 
     @Override
     public void onItemClick(View view, int position) {
-        GamesDB gamesDB = new GamesDB(requireContext());
+        GamesDB gamesDB = new GamesDB(context);
         switch (position) {
-            // Почему-то не работает
             case 0 -> {
-                if (getActivity() instanceof MainActivity) {
-                    boolean isError = false;
-                    FirebaseManager firebaseManager = ((MainActivity) getActivity()).getFirebaseManager();
+                if (activity instanceof MainActivity) {
+                    FirebaseManager firebaseManager = ((MainActivity) activity).getFirebaseManager();
                     if (firebaseManager == null) {
                         Log.w(TAG, "firebaseManager is null");
-                        Toast.makeText(requireContext(), R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
                         break;
                     }
-                    try {
-                        updateInitMessage(firebaseManager);
-                    } catch (InitMessageUpdateFailedException e) {
-                        if (e.getMessage().equals("question does not equals to INIT_MESSAGE")) {
-                            try {
-                                addQuestion(firebaseManager);
-                            } catch (AddQuestionFailedException ignored) {
-                                isError = true;
-                                Toast.makeText(requireContext(), "Firebase error", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                    if (!isError) {
-                        Toast.makeText(requireContext(), "Успешно отправлено в группу", Toast.LENGTH_SHORT).show();
-                    }
+                    shareWithLobby(firebaseManager);
                 } else {
                     Log.wtf(TAG, "MainActivity somehow is not current Activity");
                     throw new RuntimeException("MainActivity is not current Activity");
@@ -136,53 +133,60 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         gamesDB.close();
     }
 
-    private void addQuestion(FirebaseManager firebaseManager) throws AddQuestionFailedException {
-        Question newQuestion = new Question(TAG, content, gameName);
-        firebaseManager.addQuestion(newQuestion, new FirebaseManager.OnQuestionsUpdatedListener() {
-            @Override
-            public void onSuccess() {}
-
-            @Override
-            public void onFailure(String error) {
-                Log.e(TAG, error);
-                throw new AddQuestionFailedException(error);
-            }
-        });
-    }
-
-    private void updateInitMessage(FirebaseManager firebaseManager) throws LobbyIsNullException,
-            InitMessageUpdateFailedException {
+    private void shareWithLobby(FirebaseManager firebaseManager) {
         firebaseManager.getQuestionByIndex(0, new FirebaseManager.OnQuestionGotListener() {
             @Override
             public void onSuccess(Question question) {
-                LobbyFragment lobbyFragment = ((MainActivity) getActivity()).getLobbyFragment();
                 if (lobbyFragment == null) {
                     Log.w(TAG, "Cannot share question with lobby because lobbyFragment is null");
-                    Toast.makeText(requireContext(), R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
-                    throw new LobbyIsNullException(null);
+                    Toast.makeText(context, R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
                 Question INIT_MESSAGE = lobbyFragment.getINIT_MESSAGE();
+                Question newQuestion = new Question(TAG, content, gameName);
                 if (question.equals(INIT_MESSAGE)) {
-                    Question newQuestion = new Question(TAG, content, gameName);
                     firebaseManager.updateQuestionByIndex(0, newQuestion,
                             new FirebaseManager.OnQuestionsUpdatedListener() {
+                                @Override
+                                public void onSuccess() {
+                                    Toast.makeText(context, "Успешно отправлено в группу", Toast.LENGTH_SHORT).show();
+                                    dismiss();
+                                }
+
+                                @Override
+                                public void onFailure(String error) {
+                                    Log.e(TAG, "Failed to update INIT_MESSAGE: " + error);
+                                    Toast.makeText(context, "Ошибка при обновлении: " + error, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                } else {
+                    firebaseManager.addQuestion(newQuestion, new FirebaseManager.OnQuestionsUpdatedListener() {
                         @Override
-                        public void onSuccess() {}
+                        public void onSuccess() {
+                            Toast.makeText(context, "Успешно отправлено в группу", Toast.LENGTH_SHORT).show();
+                            dismiss();
+                        }
 
                         @Override
                         public void onFailure(String error) {
-                            Log.e(TAG, error);
-                            throw new InitMessageUpdateFailedException("OnQuestionsUpdatedListener onFailure");
+                            if (error.equals("duplicating question")) {
+                                Log.w(TAG, "duplicating question");
+                                Toast.makeText(context, "Уже добавлено", Toast.LENGTH_LONG).show();
+                            } else {
+                                Log.e(TAG, "Failed to add question: " + error);
+                                Toast.makeText(context, "Ошибка при добавлении: " + error, Toast.LENGTH_SHORT).show();
+                            }
+
                         }
                     });
-                } else {
-                    throw new InitMessageUpdateFailedException("question does not equals to INIT_MESSAGE");
                 }
             }
 
             @Override
             public void onFailure(String error) {
-                Log.d(TAG, error);
+                Log.e(TAG, "Failed to get question by index: " + error);
+                Toast.makeText(context, "Ошибка при получении данных: " + error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -198,7 +202,7 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         if (type != null) {
             if (type.equals(currentType)) {
                 gamesDB.deleteReaction(gameName, modeName, content);
-                Toast.makeText(requireContext(), R.string.reaction_deleted, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.reaction_deleted, Toast.LENGTH_SHORT).show();
                 return true;
             } else {
                 Log.wtf(TAG, type);
@@ -210,7 +214,7 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
     private void addHandle(GamesDB gamesDB, String type) {
         clearPreviousType(gamesDB);
         gamesDB.addReaction(gameName, modeName, type, content);
-        Toast.makeText(requireContext(), R.string.reaction_saved, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.reaction_saved, Toast.LENGTH_SHORT).show();
         dismiss();
     }
 }

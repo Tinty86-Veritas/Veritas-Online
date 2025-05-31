@@ -74,11 +74,23 @@ public class LobbyRecyclerAdapter extends RecyclerView.Adapter<LobbyRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Question item = questions.get(position);
-        holder.text.setText(item.getText());
+        holder.text.setText(item.getContent());
     }
 
     @Override
     public int getItemCount() {
         return questions.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        // Определяем тип элемента для правильного отображения init message
+        if (position < questions.size()) {
+            Question question = questions.get(position);
+            if (question != null && "init".equals(question.getType())) {
+                return 1; // Init message type
+            }
+        }
+        return 0; // Regular message type
     }
 }

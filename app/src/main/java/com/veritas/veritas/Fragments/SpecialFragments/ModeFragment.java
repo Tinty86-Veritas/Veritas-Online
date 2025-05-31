@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -32,6 +33,8 @@ public class ModeFragment extends Fragment
         implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
 
     private static final String TAG = "ModeFragment";
+
+    private FragmentActivity activity;
 
     private OnBackPressedCallback customOnBackPressedCallback;
 
@@ -113,6 +116,8 @@ public class ModeFragment extends Fragment
     }
 
     private void init(View view) {
+        activity = requireActivity();
+
         fw = new FragmentWorking(TAG, getParentFragmentManager());
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
@@ -123,14 +128,14 @@ public class ModeFragment extends Fragment
         customOnBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (getActivity() instanceof MainActivity main) {
+                if (activity instanceof MainActivity main) {
                     main.setModeFragment(null);
                     fw.setFragment(main.getGameSelectionFragment());
                 }
             }
         };
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
     }
 
     private void recyclerViewHandle() {
@@ -155,7 +160,7 @@ public class ModeFragment extends Fragment
                     }
 
                     if (contentList.isEmpty()) {
-                        requireActivity().runOnUiThread(() -> {
+                        activity.runOnUiThread(() -> {
                             pullToRefresh.setRefreshing(false);
 
                             if (isFirstLoad) {
@@ -170,7 +175,7 @@ public class ModeFragment extends Fragment
 
                     Log.d(TAG, content);
 
-                    requireActivity().runOnUiThread(() -> {
+                    activity.runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
                         if (isFirstLoad) {
@@ -191,13 +196,13 @@ public class ModeFragment extends Fragment
                 Log.w(TAG, "onFailure:\n" + error);
                 if (isAdded()) {
                     if (error.equals("code 429")) {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_LONG).show());
                     } else if (error.equals("timeout")) {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Response time is up", Toast.LENGTH_LONG).show());
                     } else {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show());
                     }
                     pullToRefresh.setRefreshing(false);

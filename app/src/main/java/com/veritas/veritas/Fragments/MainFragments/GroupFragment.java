@@ -33,9 +33,9 @@ public class GroupFragment extends Fragment {
 
         // I think it is better to check is current activity an instance of MainActivity
 
-        if (getActivity() instanceof MainActivity) {
+        if (requireActivity() instanceof MainActivity) {
             fw = new FragmentWorking(TAG, getParentFragmentManager(),
-                    (MainActivity) getActivity());
+                    (MainActivity) requireActivity());
         } else {
             Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");

@@ -119,8 +119,12 @@ public class FirebaseManager {
         getGroupQuestions(new OnQuestionsRetrievedListener() {
             @Override
             public void onSuccess(ArrayList<Question> questions) {
-                Question question = questions.get(questionIndex);
-                listener.onSuccess(question);
+                if (questionIndex >= 0 && questionIndex < questions.size()) {
+                    Question question = questions.get(questionIndex);
+                    listener.onSuccess(question);
+                } else {
+                    listener.onFailure("Некорректный индекс вопроса: " + questionIndex + ", размер списка: " + questions.size());
+                }
             }
 
             @Override
@@ -129,6 +133,8 @@ public class FirebaseManager {
             }
         });
     }
+
+    // TODO: Check for question duplicate before adding it
 
     /**
      * Добавить новый вопрос к существующему списку
@@ -141,11 +147,15 @@ public class FirebaseManager {
         getGroupQuestions(new OnQuestionsRetrievedListener() {
             @Override
             public void onSuccess(ArrayList<Question> currentQuestions) {
-                // Добавляем новый вопрос
-                currentQuestions.add(newQuestion);
+                if (currentQuestions.contains(newQuestion)) {
+                    listener.onFailure("duplicating question");
+                } else {
+                    // Добавляем новый вопрос
+                    currentQuestions.add(newQuestion);
 
-                // Обновляем в базе данных
-                updateGroupQuestions(currentQuestions, listener);
+                    // Обновляем в базе данных
+                    updateGroupQuestions(currentQuestions, listener);
+                }
             }
 
             @Override
