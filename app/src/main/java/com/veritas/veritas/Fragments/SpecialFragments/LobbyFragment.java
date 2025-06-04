@@ -32,11 +32,10 @@ import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.vk.id.AccessToken;
-import com.vk.id.VKIDUser;
-import com.vk.id.refreshuser.VKIDGetUserCallback;
-import com.vk.id.refreshuser.VKIDGetUserFail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /* TODO:
     Обратите внимание
@@ -45,6 +44,7 @@ import java.util.ArrayList;
 public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
     private static final String GROUPS_KEY = "groups";
+    private static final String GROUPS_MAP_KEY = "groupsMap";
 
     private Question INIT_MESSAGE;
 
@@ -53,6 +53,7 @@ public class LobbyFragment extends Fragment {
     private OnBackPressedCallback customOnBackPressedCallback;
 
     private DatabaseReference fireGroupsRef;
+    private DatabaseReference fireGroupsMapRef;
     private FirebaseManager firebaseManager;
     private DatabaseReference currentGroupRef;
 
@@ -99,6 +100,7 @@ public class LobbyFragment extends Fragment {
         currentQuestions = new ArrayList<>();
 
         fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
+        fireGroupsMapRef = FirebaseDatabase.getInstance().getReference(GROUPS_MAP_KEY);
 
         if (!isRevived) {
             INIT_MESSAGE = new Question(TAG, getString(R.string.init_session_message), "init");
@@ -150,6 +152,15 @@ public class LobbyFragment extends Fragment {
                 .addOnSuccessListener(ignored -> {
                     Log.d(TAG, "Group successfully saved to Firebase with ID: " + groupId);
                     initializeFirebaseManager(groupId);
+                    Map<String, Object> update = new HashMap<>();
+                    update.put(code, groupId);
+                    fireGroupsMapRef.updateChildren(update)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("Firebase", "Данные успешно добавлены");
+                            })
+                            .addOnFailureListener(exception -> {
+                                Log.e("Firebase", "Ошибка при добавлении данных", exception);
+                            });
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to save group to Firebase", e);
