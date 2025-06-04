@@ -10,9 +10,8 @@ import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -20,8 +19,8 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.veritas.veritas.AI.AIRequest;
 import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
-import com.veritas.veritas.Exceptions.EmptyUsersList;
-import com.veritas.veritas.Exceptions.NotEnoughPlayers;
+import com.veritas.veritas.Exceptions.EmptyUsersListException;
+import com.veritas.veritas.Exceptions.NotEnoughPlayersException;
 import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.ReactionsBottomSheetDialog;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
@@ -34,6 +33,8 @@ public class ModeFragment extends Fragment
         implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
 
     private static final String TAG = "ModeFragment";
+
+    private FragmentActivity activity;
 
     private OnBackPressedCallback customOnBackPressedCallback;
 
@@ -82,13 +83,13 @@ public class ModeFragment extends Fragment
 
                 APIHandle();
 
-            } catch (EmptyUsersList e) {
+            } catch (EmptyUsersListException e) {
                 Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
                 if (isFirstLoad) {
                     initialLoadingIndicator.setVisibility(View.GONE);
                     pullToRefresh.setEnabled(true);
                 }
-            } catch (NotEnoughPlayers e) {
+            } catch (NotEnoughPlayersException e) {
                 Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
                 if (isFirstLoad) {
                     initialLoadingIndicator.setVisibility(View.GONE);
@@ -115,7 +116,9 @@ public class ModeFragment extends Fragment
     }
 
     private void init(View view) {
-        fw = new FragmentWorking(requireContext(), TAG, getParentFragmentManager());
+        activity = requireActivity();
+
+        fw = new FragmentWorking(TAG, getParentFragmentManager());
 
         questionsRecycler = view.findViewById(R.id.questions_recycler);
         initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
@@ -125,14 +128,14 @@ public class ModeFragment extends Fragment
         customOnBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (getActivity() instanceof MainActivity main) {
+                if (activity instanceof MainActivity main) {
                     main.setModeFragment(null);
                     fw.setFragment(main.getGameSelectionFragment());
                 }
             }
         };
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
     }
 
     private void recyclerViewHandle() {
@@ -157,7 +160,7 @@ public class ModeFragment extends Fragment
                     }
 
                     if (contentList.isEmpty()) {
-                        requireActivity().runOnUiThread(() -> {
+                        activity.runOnUiThread(() -> {
                             pullToRefresh.setRefreshing(false);
 
                             if (isFirstLoad) {
@@ -172,7 +175,7 @@ public class ModeFragment extends Fragment
 
                     Log.d(TAG, content);
 
-                    requireActivity().runOnUiThread(() -> {
+                    activity.runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
                         if (isFirstLoad) {
@@ -193,13 +196,13 @@ public class ModeFragment extends Fragment
                 Log.w(TAG, "onFailure:\n" + error);
                 if (isAdded()) {
                     if (error.equals("code 429")) {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_LONG).show());
                     } else if (error.equals("timeout")) {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Response time is up", Toast.LENGTH_LONG).show());
                     } else {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show());
                     }
                     pullToRefresh.setRefreshing(false);

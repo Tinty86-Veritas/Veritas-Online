@@ -7,6 +7,7 @@ import static com.veritas.veritas.Util.PublicVariables.MODE_MADNESS;
 import static com.veritas.veritas.Util.PublicVariables.MODE_SOFT;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +35,8 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
     private static final String TAG = "ModeSelectionBottomSheetDialog";
 
+    private FragmentActivity activity;
+
     private String gameName;
     private ArrayList<String> items;
 
@@ -44,6 +48,14 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
+
+        init(view);
+
+        return view;
+    }
+
+    private void init(View view) {
+        activity = requireActivity();
 
         items = new ArrayList<>(List.of(
                 MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME, MODE_MADNESS
@@ -58,8 +70,6 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         adapter.setOnClickListener(this);
 
         recyclerView.setAdapter(adapter);
-
-        return view;
     }
 
     @Override
@@ -86,12 +96,12 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
         */
 
-        if (getActivity() instanceof MainActivity) {
-            fw = new FragmentWorking(requireContext(),
-                    TAG, getParentFragmentManager(), (MainActivity) getActivity());
+        if (activity instanceof MainActivity) {
+            fw = new FragmentWorking(
+                    TAG, getParentFragmentManager(), (MainActivity) activity);
         } else {
-            fw = new FragmentWorking(requireContext(),
-                    TAG, getParentFragmentManager());
+            Log.wtf(TAG, "MainActivity somehow is not current Activity");
+            throw new RuntimeException("MainActivity is not current Activity");
         }
 
         ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));

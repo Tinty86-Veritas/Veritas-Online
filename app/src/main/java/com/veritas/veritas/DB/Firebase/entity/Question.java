@@ -6,25 +6,32 @@ import static com.veritas.veritas.Util.PublicVariables.getGames;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Question {
-    private String text;
+    private String key;
+    private String content;
     private String type;
     private String timeStamp;
     private ArrayList<Answer> answers;
 
     public Question() {}
 
-    public Question(String TAG, String text, String type) {
+    public Question(String TAG, String content, String type) {
         boolean isTypeCorrect = false;
-        for (String rawType : getGames()) {
-            if (rawType.equals(type)) {
-                isTypeCorrect = true;
-                break;
+        if (type.equals("init")) {
+            isTypeCorrect = true;
+        } else {
+            for (String rawType : getGames()) {
+                if (rawType.equals(type)) {
+                    isTypeCorrect = true;
+                    break;
+                }
             }
         }
+
         if (isTypeCorrect) {
-            this.text = text;
+            this.content = content;
             this.type = type;
             timeStamp = getCurrentTimeStamp();
             answers = new ArrayList<>();
@@ -34,16 +41,36 @@ public class Question {
 
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return Objects.equals(content, question.content) && Objects.equals(type, question.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content, type);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public void addAnswer(Answer answer) {
         answers.add(answer);
     }
 
-    public String getText() {
-        return text;
+    public String getContent() {
+        return content;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getType() {

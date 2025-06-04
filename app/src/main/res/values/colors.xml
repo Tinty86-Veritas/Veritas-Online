@@ -2,10 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="yellow">#FFDE21</color>
-    <color name="blue">#2142FF</color>
-    <color name="teal">#00CEC8</color>
-    <color name="red">#CE0006</color>
-    <color name="green">#00CE61</color>
     <color name="grey">#666666</color>
+    <color name="initMessageStroke">#189DF0</color>
 </resources>

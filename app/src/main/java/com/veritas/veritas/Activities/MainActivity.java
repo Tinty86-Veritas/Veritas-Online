@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.Fragments.MainFragments.GameSelectionFragment;
 import com.veritas.veritas.Fragments.MainFragments.GroupFragment;
 import com.veritas.veritas.Fragments.MainFragments.SettingsPrefFragment;
@@ -22,14 +23,14 @@ public class MainActivity extends AppCompatActivity
 
     private BottomNavigationView nav;
 
-    private Fragment currentMainFragment;
-
     private GameSelectionFragment gameSelectionFragment;
     private GroupFragment groupFragment;
     private SettingsPrefFragment settingsPrefFragment;
 
     private ModeFragment modeFragment = null;
     private LobbyFragment lobbyFragment = null;
+
+    private FirebaseManager firebaseManager = null;
 
     private FragmentWorking fw;
 
@@ -46,13 +47,13 @@ public class MainActivity extends AppCompatActivity
     private void init() {
         nav = findViewById(R.id.bottom_navigation);
 
-        fw = new FragmentWorking(getApplicationContext(), TAG, getSupportFragmentManager(), this);
+        fw = new FragmentWorking(TAG, getSupportFragmentManager(), this);
 
         gameSelectionFragment = new GameSelectionFragment();
         groupFragment = new GroupFragment();
         settingsPrefFragment = new SettingsPrefFragment();
 
-        currentMainFragment = fw.setFragment(gameSelectionFragment);
+        fw.setFragment(gameSelectionFragment);
     }
 
     private void navConfigure() {
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity
 
             if (id == R.id.fire_id) {
                 if (modeFragment == null) {
-                    currentMainFragment = fw.setFragment(gameSelectionFragment);
+                    fw.setFragment(gameSelectionFragment);
                 } else {
                     fw.reviveSavedFragment(modeFragment);
                 }
@@ -71,14 +72,14 @@ public class MainActivity extends AppCompatActivity
 
             } else if (id == R.id.group_id) {
                 if (lobbyFragment == null) {
-                    currentMainFragment = fw.setFragment(groupFragment);
+                    fw.setFragment(groupFragment);
                 } else {
                     fw.reviveSavedFragment(lobbyFragment);
                 }
                 return true;
 
             } else if (id == R.id.settings_id) {
-                currentMainFragment = fw.setFragment(settingsPrefFragment);
+                fw.setFragment(settingsPrefFragment);
                 return true;
             } else {
                 return false;
@@ -103,11 +104,23 @@ public class MainActivity extends AppCompatActivity
         this.lobbyFragment = lobbyFragment;
     }
 
+    public LobbyFragment getLobbyFragment() {
+        return lobbyFragment;
+    }
+
     public GameSelectionFragment getGameSelectionFragment() {
         return gameSelectionFragment;
     }
 
     public GroupFragment getGroupFragment() {
         return groupFragment;
+    }
+
+    public FirebaseManager getFirebaseManager() {
+        return firebaseManager;
+    }
+
+    public void setFirebaseManager(FirebaseManager firebaseManager) {
+        this.firebaseManager = firebaseManager;
     }
 }

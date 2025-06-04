@@ -19,7 +19,7 @@ public class App extends Application {
         VKID.Companion vkid = VKID.Companion;
         vkid.init(this);
         vkid.getInstance().setLocale(new Locale("ru"));
-        vkid.setLogsEnabled(true);
+//        vkid.setLogsEnabled(true);
     }
 
     public static VKID.Companion getVKID() {
