@@ -65,6 +65,6 @@ public class FragmentWorking {
     private void transaction(Fragment fragment) {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.place_holder, fragment);
-        ft.commit();
+        ft.commitNow();
     }
 }

@@ -1,6 +1,7 @@
 package com.veritas.veritas.Fragments.MainFragments;
 
 import static com.veritas.veritas.Application.App.getVKID;
+import static com.veritas.veritas.Application.App.setAccessToken;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -99,6 +100,7 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
             public void onAuth(@NonNull AccessToken accessToken) {
                 // Авторизация успешна. Обработайте результат (например, сохраните токен)
                 Log.d(TAG, "onAuth");
+                setAccessToken(accessToken);
             }
 
             @Override
@@ -119,7 +121,6 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
 
 
         getVKID().getInstance().authorize(authBottomSheetDialog, authCallback, authParams);
-
     }
 
     private void updatePlayersCat() {

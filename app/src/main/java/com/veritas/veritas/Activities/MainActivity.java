@@ -1,5 +1,7 @@
 package com.veritas.veritas.Activities;
 
+import static com.veritas.veritas.Application.App.getAccessToken;
+
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,6 +17,7 @@ import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
+import com.vk.id.AccessToken;
 
 public class MainActivity extends AppCompatActivity
         implements FragmentWorking.FragmentCallback {
@@ -85,6 +88,13 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+    }
+
+    // TODO: If returns false may be app should automatically call OneTap auth menu
+    public boolean canCreateLobby() {
+        // Проверяем accessToken перед созданием лобби
+        AccessToken accessToken = getAccessToken(this, getApplicationContext());
+        return accessToken != null;
     }
 
     @Override

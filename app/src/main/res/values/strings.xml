@@ -138,5 +138,6 @@
     <string name="share_with_lobby">Отправить в группу</string>
     <string name="init_session_message">Для того чтобы начать сессию, выберите понравившийся сгенерированный вопрос и отправьте его в группу</string>
     <string name="lobby_have_not_created_yet">Лобби ещё не создано</string>
+    <string name="user_not_authorized">Вы не авторизованы</string>
 
 </resources>

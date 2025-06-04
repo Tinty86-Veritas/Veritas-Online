@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +33,6 @@ public class GroupFragment extends Fragment {
         View view = inflater.inflate(R.layout.group_fragment, container, false);
 
         // I think it is better to check is current activity an instance of MainActivity
-
         if (requireActivity() instanceof MainActivity) {
             fw = new FragmentWorking(TAG, getParentFragmentManager(),
                     (MainActivity) requireActivity());
@@ -51,7 +51,13 @@ public class GroupFragment extends Fragment {
         });
 
         createGroupBt.setOnClickListener(v -> {
-//            fw.setFragment(R.layout.lobby_fragment);
+            MainActivity mainActivity = (MainActivity) requireActivity();
+
+            if (!mainActivity.canCreateLobby()) {
+                Toast.makeText(requireContext(), R.string.user_not_authorized, Toast.LENGTH_LONG).show();
+                return;
+            }
+
             fw.setFragment(new LobbyFragment());
         });
 

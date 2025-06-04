@@ -1,5 +1,7 @@
 package com.veritas.veritas.Fragments.SpecialFragments;
 
+import static com.veritas.veritas.Application.App.getAccessToken;
+import static com.veritas.veritas.Application.App.getVKID;
 import static com.veritas.veritas.Util.CodeGenerator.generateCode;
 
 import android.os.Bundle;
@@ -29,8 +31,16 @@ import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
+import com.vk.id.AccessToken;
+import com.vk.id.VKIDUser;
+import com.vk.id.refreshuser.VKIDGetUserCallback;
+import com.vk.id.refreshuser.VKIDGetUserFail;
 
 import java.util.ArrayList;
+
+/* TODO:
+    Обратите внимание
+    Возможности обмена кода подтверждения на токены зависят от архитектуры вашего приложения и от того, какие параметры для поддержки PKCE сервис передал в SDK. */
 
 public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
@@ -59,19 +69,6 @@ public class LobbyFragment extends Fragment {
     private boolean isRevived = false;
     private boolean isDataLoaded = false;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        currentQuestions = new ArrayList<>();
-
-        fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
-
-        if (!isRevived) {
-            INIT_MESSAGE = new Question(TAG, getString(R.string.init_session_message), "init");
-            currentGroup = createLobby();
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -84,43 +81,9 @@ public class LobbyFragment extends Fragment {
 
     private void init(View view) {
         activity = requireActivity();
-
         fw = new FragmentWorking(TAG, getParentFragmentManager());
 
-        lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
-        layoutManager.setReverseLayout(true);
-        layoutManager.setStackFromEnd(true);
-        lobbyQuestionRV.setLayoutManager(layoutManager);
-
-//        if (currentGroup != null) {
-//            ArrayList<Question> questions = currentGroup.getQuestions();
-//            if (questions.size() == 1 && questions.contains(INIT_MESSAGE)) {
-//                adapter = new LobbyRecyclerAdapter(requireContext(), currentGroup.getQuestions(), true);
-//            }
-//            /*
-//            * This else is actually redundant to my mind
-//            * because it seems like init() can be called only with INIT_QUESTION
-//            * because LobbyFragment won't be created with pre-added questions
-//             */
-//            else {
-//                Log.d(TAG, "Somehow init() has been reached unreachable else");
-//                adapter = new LobbyRecyclerAdapter(currentGroup.getQuestions());
-//            }
-//
-//        } else {
-//            adapter = new LobbyRecyclerAdapter(new ArrayList<>());
-//        }
-
-        if (currentGroup != null && !isDataLoaded) {
-            currentQuestions.clear();
-            currentQuestions.add(INIT_MESSAGE);
-            isDataLoaded = true;
-        }
-
-        adapter = new LobbyRecyclerAdapter(requireContext(), currentQuestions, true);
-        lobbyQuestionRV.setAdapter(adapter);
-
+        // TODO: It should work in a different way
         customOnBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -133,14 +96,44 @@ public class LobbyFragment extends Fragment {
 
         activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
 
+        currentQuestions = new ArrayList<>();
+
+        fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
+
+        if (!isRevived) {
+            INIT_MESSAGE = new Question(TAG, getString(R.string.init_session_message), "init");
+            currentGroup = createLobby();
+        }
+
+        lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
+        layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
+        lobbyQuestionRV.setLayoutManager(layoutManager);
+
+        if (currentGroup != null && !isDataLoaded) {
+            currentQuestions.clear();
+            currentQuestions.add(INIT_MESSAGE);
+            isDataLoaded = true;
+        }
+
+        adapter = new LobbyRecyclerAdapter(requireContext(), currentQuestions, true);
+        lobbyQuestionRV.setAdapter(adapter);
+
         setupChildEventListener();
     }
 
     private Group createLobby() {
+        AccessToken accessToken = getAccessToken(getViewLifecycleOwner(), requireContext());
+
+        // LobbyFragment won't be called if accessToken is null
+        long userId = accessToken.getUserID();
+        Log.d(TAG, "userId: " + userId);
+
         String code = generateCode();
         Log.d(TAG, code);
 
-        GroupParticipant host = new GroupParticipant("1");
+        GroupParticipant host = new GroupParticipant(userId);
         ArrayList<GroupParticipant> participants = new ArrayList<>();
         participants.add(host);
 

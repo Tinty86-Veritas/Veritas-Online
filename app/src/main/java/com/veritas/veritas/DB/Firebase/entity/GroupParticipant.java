@@ -1,19 +1,19 @@
 package com.veritas.veritas.DB.Firebase.entity;
 
 public class GroupParticipant {
-    private String id;
+    private long id;
 
     public GroupParticipant() {}
 
-    public GroupParticipant(String id) {
+    public GroupParticipant(long id) {
         this.id = id;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 }
