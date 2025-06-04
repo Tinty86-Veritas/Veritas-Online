@@ -2,6 +2,8 @@ package com.veritas.veritas.Fragments.SpecialFragments;
 
 import static com.veritas.veritas.Application.App.getAccessToken;
 import static com.veritas.veritas.Application.App.getVKID;
+import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_KEY;
+import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_MAP_KEY;
 import static com.veritas.veritas.Util.CodeGenerator.generateCode;
 
 import android.os.Bundle;
@@ -43,8 +45,6 @@ import java.util.Map;
 
 public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
-    private static final String GROUPS_KEY = "groups";
-    private static final String GROUPS_MAP_KEY = "groupsMap";
 
     private Question INIT_MESSAGE;
 

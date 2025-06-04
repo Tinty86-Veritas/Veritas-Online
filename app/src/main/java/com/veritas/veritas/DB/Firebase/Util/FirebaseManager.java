@@ -17,15 +17,20 @@ import java.util.ArrayList;
 public class FirebaseManager {
     private static final String TAG = "FirebaseManager";
 
-    private DatabaseReference databaseReference;
+    public static final String GROUPS_KEY = "groups";
+    public static final String GROUPS_MAP_KEY = "groupsMap";
+    public static final String PARTICIPANTS_KEY = "participants";
+
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();;
 
     private String groupId;
+
+    public FirebaseManager() {}
 
     /**
      * @param groupId groupId of the currently connected group
      */
     public FirebaseManager(String groupId) {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
         this.groupId = groupId;
     }
 
@@ -309,7 +314,7 @@ public class FirebaseManager {
         }
 
         // ОСНОВНОЙ ЗАПРОС: Поиск в индексе group_codes
-        databaseReference.child("group_codes").child(groupCode.trim())
+        databaseReference.child(GROUPS_MAP_KEY).child(groupCode.trim())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

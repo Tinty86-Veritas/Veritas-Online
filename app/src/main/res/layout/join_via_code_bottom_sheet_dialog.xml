@@ -28,6 +28,8 @@
         android:layout_marginTop="12dp"
         android:background="?attr/colorOnSurfaceVariant" />
 
+    <!-- TODO: EditText should require upper case letters by default -->
+
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
@@ -39,7 +41,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/code_hint"
-            android:inputType="number"
             android:fontFamily="@font/montserrat" />
     </com.google.android.material.textfield.TextInputLayout>
 
