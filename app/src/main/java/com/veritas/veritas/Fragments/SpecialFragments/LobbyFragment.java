@@ -1,5 +1,7 @@
 package com.veritas.veritas.Fragments.SpecialFragments;
 
+import static com.veritas.veritas.Util.CodeGenerator.generateCode;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,6 +137,8 @@ public class LobbyFragment extends Fragment {
     }
 
     private Group createLobby() {
+        String code = generateCode();
+        Log.d(TAG, code);
 
         GroupParticipant host = new GroupParticipant("1");
         ArrayList<GroupParticipant> participants = new ArrayList<>();
@@ -147,9 +151,10 @@ public class LobbyFragment extends Fragment {
         String groupId = currentGroupRef.getKey();
 
         Group group = new Group(groupId, host, participants, questions);
+        group.setJoinCode(code);
 
         currentGroupRef.setValue(group)
-                .addOnSuccessListener(aVoid -> {
+                .addOnSuccessListener(ignored -> {
                     Log.d(TAG, "Group successfully saved to Firebase with ID: " + groupId);
                     initializeFirebaseManager(groupId);
                 })
@@ -170,6 +175,7 @@ public class LobbyFragment extends Fragment {
         }
     }
 
+    // TODO: Переписать и перепроверить код этой функции.
     private void setupChildEventListener() {
         childEventListener = new ChildEventListener() {
 
