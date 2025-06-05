@@ -70,10 +70,7 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
                 @Override
                 public void onValidCode(String groupId) {
                     addParticipant(groupId);
-                    DatabaseReference currentGroupRef = FirebaseDatabase.getInstance()
-                            .getReference(GROUPS_KEY)
-                            .child(groupId);
-                    fw.setFragment(new LobbyFragment(false, currentGroupRef));
+                    fw.setFragment(new LobbyFragment(false, groupId));
                     dismiss();
                 }
 

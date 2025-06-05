@@ -2,6 +2,7 @@ package com.veritas.veritas.Fragments.SpecialFragments;
 
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_KEY;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_MAP_KEY;
+import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.JOIN_CODE_KEY;
 import static com.veritas.veritas.Util.CodeGenerator.generateCode;
 
 import android.os.Bundle;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -24,6 +27,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.LobbyRecyclerAdapter;
 import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
@@ -70,21 +74,31 @@ public class LobbyFragment extends Fragment {
 
     private MaterialButton exitBT;
 
+    private long participantsCount;
+    private TextView participantsCountTV;
+
     private FragmentActivity activity;
 
-    private boolean isHost = false;
+    private boolean isHost;
 
     private boolean isRevived = false;
 
-    private String groupCode;
+    private String joinCode;
+
+    private String groupId;
 
     public LobbyFragment(boolean isHost) {
         this.isHost = isHost;
     }
 
-    public LobbyFragment(boolean isHost, DatabaseReference currentGroupRef) {
+    public LobbyFragment(boolean isHost, String groupId) {
         this.isHost = isHost;
-        this.currentGroupRef = currentGroupRef;
+
+        this.currentGroupRef = FirebaseDatabase.getInstance()
+                .getReference(GROUPS_KEY)
+                .child(groupId);
+
+        this.groupId = groupId;
     }
 
     @Nullable
@@ -102,17 +116,16 @@ public class LobbyFragment extends Fragment {
         fw = new FragmentWorking(TAG, getParentFragmentManager());
 
         // !!!!!!DEV ONLY!!!!!!
-        customOnBackPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (activity instanceof MainActivity main) {
-                    main.setLobbyFragment(null);
-                    fw.setFragment(main.getGroupFragment());
-                }
-            }
-        };
-
-        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+//        customOnBackPressedCallback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                if (activity instanceof MainActivity main) {
+//                    main.setLobbyFragment(null);
+//                    fw.setFragment(main.getGroupFragment());
+//                }
+//            }
+//        };
+//        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
 
         currentQuestions = new ArrayList<>();
 
@@ -124,10 +137,32 @@ public class LobbyFragment extends Fragment {
             isRevived = args.getBoolean("REVIVED_MODE", false);
         }
 
+        if (!isHost) {
+            initializeFirebaseManager(groupId);
+            currentGroupRef.child(JOIN_CODE_KEY).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        joinCode = snapshot.getValue(String.class);
+                        Log.d(TAG, "joinCode:\n" + joinCode);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e(TAG, error.getMessage());
+                }
+            });
+        }
+
         if (!isRevived && isHost) {
             INIT_MESSAGE = new Question(TAG, getString(R.string.init_session_message), "init");
             currentGroup = createLobby();
         }
+
+        // !!!workaround!!!
+        TextView lobbyText = view.findViewById(R.id.lobby_title);
+        lobbyText.setText(joinCode);
 
         lobbyQuestionRV = view.findViewById(R.id.lobby_questions_rv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
@@ -144,14 +179,18 @@ public class LobbyFragment extends Fragment {
         exitBT.setOnClickListener(v -> {
             // Removing current group from Realtime Database
             currentGroupRef.removeValue();
-            fireGroupsMapRef.child(groupCode).removeValue();
+            if (joinCode == null) {
+                Toast.makeText(activity, "Попробуйте позже", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            fireGroupsMapRef.child(joinCode).removeValue();
             if (activity instanceof MainActivity main) {
                 main.setLobbyFragment(null);
                 fw.setFragment(main.getGroupFragment());
             }
         });
-
-        // Participants count fetch
+        participantsCountTV = view.findViewById(R.id.participants_count);
+        participantsCountTV.setText(String.valueOf(participantsCount));
     }
 
     private Group createLobby() {
@@ -160,8 +199,8 @@ public class LobbyFragment extends Fragment {
         // LobbyFragment won't be called if accessToken is null
         long userId = tokenStorage.getUserId();
 
-        groupCode = generateCode();
-        Log.d(TAG, groupCode);
+        joinCode = generateCode();
+        Log.d(TAG, joinCode);
 
         GroupParticipant host = new GroupParticipant(userId);
         ArrayList<GroupParticipant> participants = new ArrayList<>();
@@ -174,14 +213,14 @@ public class LobbyFragment extends Fragment {
         String groupId = currentGroupRef.getKey();
 
         Group group = new Group(groupId, host, participants, questions);
-        group.setJoinCode(groupCode);
+        group.setJoinCode(joinCode);
 
         currentGroupRef.setValue(group)
                 .addOnSuccessListener(ignored -> {
                     Log.d(TAG, "Group successfully saved to Firebase with ID: " + groupId);
                     initializeFirebaseManager(groupId);
                     Map<String, Object> update = new HashMap<>();
-                    update.put(groupCode, groupId);
+                    update.put(joinCode, groupId);
                     fireGroupsMapRef.updateChildren(update)
                             .addOnSuccessListener(aVoid -> {
                                 Log.d("Firebase", "Данные успешно добавлены");
@@ -205,6 +244,20 @@ public class LobbyFragment extends Fragment {
             Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");
         }
+
+        // Participants count fetch
+        firebaseManager.startTracking(groupId, new FirebaseManager.OnCountUpdateListener() {
+            @Override
+            public void onCountUpdated(long count) {
+                participantsCount = count;
+                participantsCountTV.setText(String.valueOf(count));
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, error);
+            }
+        });
     }
 
     // TODO: Переписать и перепроверить код этой функции.
@@ -295,6 +348,7 @@ public class LobbyFragment extends Fragment {
         if (childEventListener != null && currentGroupRef != null) {
             currentGroupRef.child("questions").removeEventListener(childEventListener);
         }
+        firebaseManager.stopTracking();
         super.onDestroyView();
     }
 

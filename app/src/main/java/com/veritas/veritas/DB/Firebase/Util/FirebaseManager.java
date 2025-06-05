@@ -8,6 +8,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.veritas.veritas.DB.Firebase.entity.Group;
 import com.veritas.veritas.DB.Firebase.entity.Question;
@@ -20,8 +21,11 @@ public class FirebaseManager {
     public static final String GROUPS_KEY = "groups";
     public static final String GROUPS_MAP_KEY = "groupsMap";
     public static final String PARTICIPANTS_KEY = "participants";
+    public static final String JOIN_CODE_KEY = "joinCode";
 
-    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();;
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+    private ValueEventListener shallowListener;
 
     private String groupId;
 
@@ -395,56 +399,49 @@ public class FirebaseManager {
                 });
     }
 
-    /**
-     * Проверяет, содержит ли строка символы, недопустимые в Firebase ключах
-     *
-     * Firebase ключи не могут содержать: . $ # [ ] /
-     * Также рекомендуется избегать пробелов и специальных символов
-     *
-     * @param code Код для проверки
-     * @return true если содержит недопустимые символы
-     */
-    private boolean containsInvalidFirebaseChars(String code) {
-        // Список недопустимых символов для Firebase ключей
-        char[] invalidChars = {'.', '$', '#', '[', ']', '/'};
+    public void startTracking(String groupId, OnCountUpdateListener listener) {
+        DatabaseReference nodeRef = databaseReference
+                .child(GROUPS_KEY)
+                .child(groupId)
+                .child(PARTICIPANTS_KEY);
 
-        for (char invalidChar : invalidChars) {
-            if (code.indexOf(invalidChar) != -1) {
-                return true;
+        shallowListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // При shallow запросе мы получаем только ключи
+                long count = dataSnapshot.getChildrenCount();
+
+                if (listener != null) {
+                    listener.onCountUpdated(count);
+                }
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                if (listener != null) {
+                    listener.onError(databaseError.getMessage());
+                }
+            }
+        };
+
+        // Делаем shallow запрос - получаем только ключи, не содержимое
+        Query shallowQuery = nodeRef.orderByKey().limitToLast(Integer.MAX_VALUE);
+
+        // Альтернативный способ для shallow запроса
+        // Можно использовать параметр shallow=true в URL, но это требует REST API
+        nodeRef.addValueEventListener(shallowListener);
+    }
+
+    public void stopTracking() {
+        if (shallowListener != null) {
+            databaseReference.child(GROUPS_KEY).child(PARTICIPANTS_KEY).removeEventListener(shallowListener);
+            shallowListener = null;
         }
-
-        // Дополнительная проверка на пробелы (хотя технически допустимы, но не рекомендуются)
-        return code.contains(" ");
     }
 
-    // ПРИМЕР ИСПОЛЬЗОВАНИЯ (можно удалить в production коде):
-    /*
-    public void exampleUsage() {
-        validateGroupCode("ABC123", new OnGroupCodeValidationListener() {
-            @Override
-            public void onValidCode(String groupId) {
-                // Код валиден, можно подключаться к группе
-                Log.d(TAG, "Подключаемся к группе: " + groupId);
-                // Здесь можно создать новый FirebaseManager с полученным groupId
-                // FirebaseManager groupManager = new FirebaseManager(groupId);
-            }
-
-            @Override
-            public void onInvalidCode() {
-                // Код не найден
-                Log.d(TAG, "Код группы не найден");
-                // Показать пользователю сообщение об ошибке
-            }
-
-            @Override
-            public void onError(String error) {
-                // Произошла ошибка при валидации
-                Log.e(TAG, "Ошибка валидации: " + error);
-                // Показать пользователю сообщение об ошибке
-            }
-        });
+    public interface OnCountUpdateListener {
+        void onCountUpdated(long count);
+        void onError(String error);
     }
-    */
 }
 
