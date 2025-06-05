@@ -36,6 +36,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+// TODO: If app in online mode AIrequest class should automatically fetch participants
+
 public class AIRequest {
 
     private static final String TAG = "AIRequest";

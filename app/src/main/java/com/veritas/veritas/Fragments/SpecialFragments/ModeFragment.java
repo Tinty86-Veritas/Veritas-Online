@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO: Recall progress indicator after reviving
+
 public class ModeFragment extends Fragment
         implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
 

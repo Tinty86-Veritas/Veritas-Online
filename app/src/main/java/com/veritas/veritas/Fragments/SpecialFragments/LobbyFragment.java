@@ -53,7 +53,7 @@ public class LobbyFragment extends Fragment {
 
     private FragmentWorking fw;
 
-//    private OnBackPressedCallback customOnBackPressedCallback;
+    private OnBackPressedCallback customOnBackPressedCallback;
 
     private DatabaseReference fireGroupsRef;
     private DatabaseReference fireGroupsMapRef;
@@ -72,9 +72,20 @@ public class LobbyFragment extends Fragment {
 
     private FragmentActivity activity;
 
+    private boolean isHost = false;
+
     private boolean isRevived = false;
 
     private String groupCode;
+
+    public LobbyFragment(boolean isHost) {
+        this.isHost = isHost;
+    }
+
+    public LobbyFragment(boolean isHost, DatabaseReference currentGroupRef) {
+        this.isHost = isHost;
+        this.currentGroupRef = currentGroupRef;
+    }
 
     @Nullable
     @Override
@@ -87,22 +98,21 @@ public class LobbyFragment extends Fragment {
     }
 
     private void init(View view) {
-
         activity = requireActivity();
         fw = new FragmentWorking(TAG, getParentFragmentManager());
 
-//        // TODO: It should work in a different way
-//        customOnBackPressedCallback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                if (activity instanceof MainActivity main) {
-//                    main.setLobbyFragment(null);
-//                    fw.setFragment(main.getGroupFragment());
-//                }
-//            }
-//        };
+        // !!!!!!DEV ONLY!!!!!!
+        customOnBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (activity instanceof MainActivity main) {
+                    main.setLobbyFragment(null);
+                    fw.setFragment(main.getGroupFragment());
+                }
+            }
+        };
 
-//        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
 
         currentQuestions = new ArrayList<>();
 
@@ -114,7 +124,7 @@ public class LobbyFragment extends Fragment {
             isRevived = args.getBoolean("REVIVED_MODE", false);
         }
 
-        if (!isRevived) {
+        if (!isRevived && isHost) {
             INIT_MESSAGE = new Question(TAG, getString(R.string.init_session_message), "init");
             currentGroup = createLobby();
         }
@@ -130,7 +140,6 @@ public class LobbyFragment extends Fragment {
 
         setupChildEventListener();
 
-        // TODO: Implement the group and key-value pair from Firebase deletion
         exitBT = view.findViewById(R.id.exit_lobby);
         exitBT.setOnClickListener(v -> {
             // Removing current group from Realtime Database
@@ -141,6 +150,8 @@ public class LobbyFragment extends Fragment {
                 fw.setFragment(main.getGroupFragment());
             }
         });
+
+        // Participants count fetch
     }
 
     private Group createLobby() {

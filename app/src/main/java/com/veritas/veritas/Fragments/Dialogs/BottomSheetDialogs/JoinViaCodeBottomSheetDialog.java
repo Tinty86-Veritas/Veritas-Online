@@ -26,11 +26,15 @@ import com.google.firebase.database.Transaction;
 import com.veritas.veritas.Application.App;
 import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
+import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.R;
+import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.Util.TokenStorage;
 
 public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
+    private static final String TAG = "JoinViaCodeBottomSheetDialog";
     private FirebaseManager firebaseManager;
+    private FragmentWorking fw;
 
     private MaterialButton trueJoinViaCodeBt;
     private TextInputEditText inputCodeEt;
@@ -47,6 +51,7 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
 
     private void init(View view) {
         firebaseManager = new FirebaseManager();
+        fw = new FragmentWorking(TAG, getParentFragmentManager());
 
         trueJoinViaCodeBt = view.findViewById(R.id.true_join_via_code_bt);
         inputCodeEt = view.findViewById(R.id.input_code_et);
@@ -64,8 +69,12 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
                     new FirebaseManager.OnGroupCodeValidationListener() {
                 @Override
                 public void onValidCode(String groupId) {
-                    Toast.makeText(requireContext(), "VALID!!!", Toast.LENGTH_SHORT).show();
                     addParticipant(groupId);
+                    DatabaseReference currentGroupRef = FirebaseDatabase.getInstance()
+                            .getReference(GROUPS_KEY)
+                            .child(groupId);
+                    fw.setFragment(new LobbyFragment(false, currentGroupRef));
+                    dismiss();
                 }
 
                 @Override
@@ -89,8 +98,9 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
                 .child(groupId);
 
         groupRef.child(PARTICIPANTS_KEY).runTransaction(new Transaction.Handler() {
+            @NonNull
             @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
+            public Transaction.Result doTransaction(@NonNull MutableData mutableData) {
                 // Находим следующий доступный индекс
                 int nextIndex = 0;
 
