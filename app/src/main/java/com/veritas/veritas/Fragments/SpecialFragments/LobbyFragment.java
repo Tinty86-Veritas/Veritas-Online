@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,7 +53,7 @@ public class LobbyFragment extends Fragment {
 
     private FragmentWorking fw;
 
-    private OnBackPressedCallback customOnBackPressedCallback;
+//    private OnBackPressedCallback customOnBackPressedCallback;
 
     private DatabaseReference fireGroupsRef;
     private DatabaseReference fireGroupsMapRef;
@@ -67,9 +68,13 @@ public class LobbyFragment extends Fragment {
     private LobbyRecyclerAdapter adapter;
     private ArrayList<Question> currentQuestions;
 
+    private MaterialButton exitBT;
+
     private FragmentActivity activity;
 
     private boolean isRevived = false;
+
+    private String groupCode;
 
     @Nullable
     @Override
@@ -82,21 +87,22 @@ public class LobbyFragment extends Fragment {
     }
 
     private void init(View view) {
+
         activity = requireActivity();
         fw = new FragmentWorking(TAG, getParentFragmentManager());
 
-        // TODO: It should work in a different way
-        customOnBackPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (activity instanceof MainActivity main) {
-                    main.setLobbyFragment(null);
-                    fw.setFragment(main.getGroupFragment());
-                }
-            }
-        };
+//        // TODO: It should work in a different way
+//        customOnBackPressedCallback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                if (activity instanceof MainActivity main) {
+//                    main.setLobbyFragment(null);
+//                    fw.setFragment(main.getGroupFragment());
+//                }
+//            }
+//        };
 
-        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+//        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
 
         currentQuestions = new ArrayList<>();
 
@@ -123,6 +129,18 @@ public class LobbyFragment extends Fragment {
         lobbyQuestionRV.setAdapter(adapter);
 
         setupChildEventListener();
+
+        // TODO: Implement the group and key-value pair from Firebase deletion
+        exitBT = view.findViewById(R.id.exit_lobby);
+        exitBT.setOnClickListener(v -> {
+            // Removing current group from Realtime Database
+            currentGroupRef.removeValue();
+            fireGroupsMapRef.child(groupCode).removeValue();
+            if (activity instanceof MainActivity main) {
+                main.setLobbyFragment(null);
+                fw.setFragment(main.getGroupFragment());
+            }
+        });
     }
 
     private Group createLobby() {
@@ -131,8 +149,8 @@ public class LobbyFragment extends Fragment {
         // LobbyFragment won't be called if accessToken is null
         long userId = tokenStorage.getUserId();
 
-        String code = generateCode();
-        Log.d(TAG, code);
+        groupCode = generateCode();
+        Log.d(TAG, groupCode);
 
         GroupParticipant host = new GroupParticipant(userId);
         ArrayList<GroupParticipant> participants = new ArrayList<>();
@@ -145,14 +163,14 @@ public class LobbyFragment extends Fragment {
         String groupId = currentGroupRef.getKey();
 
         Group group = new Group(groupId, host, participants, questions);
-        group.setJoinCode(code);
+        group.setJoinCode(groupCode);
 
         currentGroupRef.setValue(group)
                 .addOnSuccessListener(ignored -> {
                     Log.d(TAG, "Group successfully saved to Firebase with ID: " + groupId);
                     initializeFirebaseManager(groupId);
                     Map<String, Object> update = new HashMap<>();
-                    update.put(code, groupId);
+                    update.put(groupCode, groupId);
                     fireGroupsMapRef.updateChildren(update)
                             .addOnSuccessListener(aVoid -> {
                                 Log.d("Firebase", "Данные успешно добавлены");
