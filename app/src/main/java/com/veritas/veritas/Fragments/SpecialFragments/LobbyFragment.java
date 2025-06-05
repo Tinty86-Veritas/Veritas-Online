@@ -1,7 +1,5 @@
 package com.veritas.veritas.Fragments.SpecialFragments;
 
-import static com.veritas.veritas.Application.App.getAccessToken;
-import static com.veritas.veritas.Application.App.getVKID;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_KEY;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_MAP_KEY;
 import static com.veritas.veritas.Util.CodeGenerator.generateCode;
@@ -33,7 +31,7 @@ import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.DB.Firebase.entity.Question;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
-import com.vk.id.AccessToken;
+import com.veritas.veritas.Util.TokenStorage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,10 +124,16 @@ public class LobbyFragment extends Fragment {
     }
 
     private Group createLobby() {
-        AccessToken accessToken = getAccessToken(getViewLifecycleOwner(), requireContext());
+        TokenStorage tokenStorage = new TokenStorage(requireContext());
 
         // LobbyFragment won't be called if accessToken is null
-        long userId = accessToken.getUserID();
+        long userId;
+        try {
+            userId = tokenStorage.getUserId();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         Log.d(TAG, "userId: " + userId);
 
         String code = generateCode();

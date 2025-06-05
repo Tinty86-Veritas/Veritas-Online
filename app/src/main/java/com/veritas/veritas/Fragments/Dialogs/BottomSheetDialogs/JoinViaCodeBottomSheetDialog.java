@@ -1,6 +1,5 @@
 package com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs;
 
-import static com.veritas.veritas.Application.App.getAccessToken;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_KEY;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.PARTICIPANTS_KEY;
 
@@ -28,6 +27,7 @@ import com.veritas.veritas.Application.App;
 import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.R;
+import com.veritas.veritas.Util.TokenStorage;
 
 public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
     private FirebaseManager firebaseManager;
@@ -82,7 +82,8 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
     }
 
     private void addParticipant(String groupId) {
-        long userId = getAccessToken(getViewLifecycleOwner(), requireContext()).getUserID();
+        TokenStorage tokenStorage = new TokenStorage(requireContext());
+        long userId = tokenStorage.getUserId();
         GroupParticipant newParticipant = new GroupParticipant(userId);
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY)
                 .child(groupId);

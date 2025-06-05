@@ -1,7 +1,8 @@
 package com.veritas.veritas.Fragments.MainFragments;
 
 import static com.veritas.veritas.Application.App.getVKID;
-import static com.veritas.veritas.Application.App.setAccessToken;
+import static com.veritas.veritas.Util.PublicVariables.getAuthCallback;
+import static com.veritas.veritas.Util.PublicVariables.getAuthParams;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -90,37 +91,10 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
         authBottomSheetDialog.setContentView(bottomSheet);
         OneTapBottomSheet vkIdBottomSheet = bottomSheet.findViewById(R.id.vkid_bottom_sheet);
 
-        VKIDAuthCallback authCallback = new VKIDAuthCallback() {
-            @Override
-            public void onAuthCode(@NonNull AuthCodeData authCodeData, boolean b) {
-                Log.d(TAG, "onAuthCode");
-            }
-
-            @Override
-            public void onAuth(@NonNull AccessToken accessToken) {
-                // Авторизация успешна. Обработайте результат (например, сохраните токен)
-                Log.d(TAG, "onAuth");
-                setAccessToken(accessToken);
-            }
-
-            @Override
-            public void onFail(@NonNull VKIDAuthFail authFail) {
-                Log.d(TAG, "onFail");
-                // Авторизация не удалась. Обработайте ошибку
-                String errorMessage = "VK ID Auth Failed: " + authFail.getDescription();
-                errorMessage += " - " + authFail.getDescription();
-                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
-                // Диалог, возможно, останется открытым или закроется в зависимости от типа ошибки и настроек SDK
-            }
-        };
-
-        VKIDAuthParams authParams = new VKIDAuthParams.Builder().build();
-
         authBottomSheetDialog.show();
         Toast.makeText(requireContext(), "" + vkIdBottomSheet.isVisible(), Toast.LENGTH_SHORT).show();
 
-
-        getVKID().getInstance().authorize(authBottomSheetDialog, authCallback, authParams);
+        getVKID().getInstance().authorize(authBottomSheetDialog, getAuthCallback(TAG, requireContext()), getAuthParams());
     }
 
     private void updatePlayersCat() {
