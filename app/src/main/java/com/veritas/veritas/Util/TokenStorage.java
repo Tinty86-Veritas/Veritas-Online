@@ -60,7 +60,7 @@ public class TokenStorage {
         // I think accessToken can be null only if user has not been authorized before
         if (encryptedToken == null) {
             Log.d(TAG, "accessToken is null");
-            Toast.makeText(context, R.string.user_not_authorized, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.user_not_authorized, Toast.LENGTH_LONG).show();
             return null;
         }
         String decryptedToken;

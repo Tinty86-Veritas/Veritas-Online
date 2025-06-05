@@ -41,6 +41,10 @@ import java.util.Map;
     Обратите внимание
     Возможности обмена кода подтверждения на токены зависят от архитектуры вашего приложения и от того, какие параметры для поддержки PKCE сервис передал в SDK. */
 
+/* TODO:
+    App should store somewhere current group because after MainActivity onDestroy() fragment will be lost
+*/
+
 public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
 
@@ -66,7 +70,6 @@ public class LobbyFragment extends Fragment {
     private FragmentActivity activity;
 
     private boolean isRevived = false;
-    private boolean isDataLoaded = false;
 
     @Nullable
     @Override
@@ -100,6 +103,11 @@ public class LobbyFragment extends Fragment {
         fireGroupsRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY);
         fireGroupsMapRef = FirebaseDatabase.getInstance().getReference(GROUPS_MAP_KEY);
 
+        Bundle args = getArguments();
+        if (args != null) {
+            isRevived = args.getBoolean("REVIVED_MODE", false);
+        }
+
         if (!isRevived) {
             INIT_MESSAGE = new Question(TAG, getString(R.string.init_session_message), "init");
             currentGroup = createLobby();
@@ -111,12 +119,6 @@ public class LobbyFragment extends Fragment {
         layoutManager.setStackFromEnd(true);
         lobbyQuestionRV.setLayoutManager(layoutManager);
 
-        if (currentGroup != null && !isDataLoaded) {
-            currentQuestions.clear();
-            currentQuestions.add(INIT_MESSAGE);
-            isDataLoaded = true;
-        }
-
         adapter = new LobbyRecyclerAdapter(requireContext(), currentQuestions, true);
         lobbyQuestionRV.setAdapter(adapter);
 
@@ -127,14 +129,7 @@ public class LobbyFragment extends Fragment {
         TokenStorage tokenStorage = new TokenStorage(requireContext());
 
         // LobbyFragment won't be called if accessToken is null
-        long userId;
-        try {
-            userId = tokenStorage.getUserId();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        Log.d(TAG, "userId: " + userId);
+        long userId = tokenStorage.getUserId();
 
         String code = generateCode();
         Log.d(TAG, code);
@@ -191,11 +186,11 @@ public class LobbyFragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
                 Question item = snapshot.getValue(Question.class);
                 // Проверяем, не является ли это INIT_MESSAGE, которое уже добавлено
-                boolean isInitMessage = item.getType() != null && item.getType().equals("init");
-                if (isInitMessage && isDataLoaded) {
-                    // INIT_MESSAGE уже добавлено, пропускаем
-                    return;
-                }
+//                boolean isInitMessage = item.getType() != null && item.getType().equals("init");
+//                if (isInitMessage && isDataLoaded) {
+//                    // INIT_MESSAGE уже добавлено, пропускаем
+//                    return;
+//                }
 
                 // Проверяем, нет ли уже элемента с таким ключом
                 int existingIndex = findItemIndex(item.getKey());
@@ -257,9 +252,9 @@ public class LobbyFragment extends Fragment {
         return -1;
     }
 
-    public void setIsRevived(boolean revived) {
-        isRevived = revived;
-    }
+//    public void setIsRevived(boolean revived) {
+//        isRevived = revived;
+//    }
 
     public Question getINIT_MESSAGE() {
         return INIT_MESSAGE;
@@ -272,5 +267,19 @@ public class LobbyFragment extends Fragment {
             currentGroupRef.child("questions").removeEventListener(childEventListener);
         }
         super.onDestroyView();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("SAVED_REVIVED_STATE", isRevived);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            isRevived = savedInstanceState.getBoolean("SAVED_REVIVED_STATE", false);
+        }
     }
 }

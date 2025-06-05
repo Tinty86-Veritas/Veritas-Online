@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -71,6 +73,11 @@ public class ModeFragment extends Fragment
 
         recyclerViewHandle();
 
+        Bundle args = getArguments();
+        if (args != null) {
+            isRevived = args.getBoolean("REVIVED_MODE", false);
+        }
+
         if (!isRevived) {
             try {
                 aiRequest = new AIRequest(requireContext(), modeName, gameName);
@@ -111,9 +118,9 @@ public class ModeFragment extends Fragment
         bottomSheetDialog.show(getParentFragmentManager(), TAG);
     }
 
-    public void setIsRevived(boolean isRevived) {
-        this.isRevived = isRevived;
-    }
+//    public void setIsRevived(boolean isRevived) {
+//        this.isRevived = isRevived;
+//    }
 
     private void init(View view) {
         activity = requireActivity();
@@ -216,5 +223,19 @@ public class ModeFragment extends Fragment
                 }
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("SAVED_REVIVED_STATE", isRevived);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            isRevived = savedInstanceState.getBoolean("SAVED_REVIVED_STATE", false);
+        }
     }
 }

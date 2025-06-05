@@ -54,7 +54,6 @@ public class GroupFragment extends Fragment {
             MainActivity mainActivity = (MainActivity) requireActivity();
 
             if (!mainActivity.canCreateLobby()) {
-                Toast.makeText(requireContext(), R.string.user_not_authorized, Toast.LENGTH_LONG).show();
                 return;
             }
 

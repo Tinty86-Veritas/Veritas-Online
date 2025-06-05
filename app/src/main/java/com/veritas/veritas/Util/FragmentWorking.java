@@ -1,6 +1,6 @@
 package com.veritas.veritas.Util;
 
-import android.content.Context;
+import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -35,7 +35,7 @@ public class FragmentWorking {
         this.callback = callback;
     }
 
-    public Fragment setFragment(Fragment fragment) {
+    public void setFragment(Fragment fragment) {
         if (fragment instanceof ModeFragment){
             if (callback != null) {
                 modeFragment = (ModeFragment) fragment;
@@ -50,21 +50,26 @@ public class FragmentWorking {
 
         transaction(fragment);
 
-        return fragment;
     }
 
     public void reviveSavedFragment(Fragment fragment) {
+//        if (fragment instanceof ModeFragment) {
+//            ((ModeFragment) fragment).setIsRevived(true);
+//        } else if (fragment instanceof LobbyFragment) {
+//            ((LobbyFragment) fragment).setIsRevived(true);
+//        }
+
+        Bundle args = fragment.getArguments();
+        if (args == null) args = new Bundle();
+        args.putBoolean("REVIVED_MODE", true);
+        fragment.setArguments(args);
+
         transaction(fragment);
-        if (fragment instanceof ModeFragment) {
-            ((ModeFragment) fragment).setIsRevived(true);
-        } else if (fragment instanceof LobbyFragment) {
-            ((LobbyFragment) fragment).setIsRevived(true);
-        }
     }
 
     private void transaction(Fragment fragment) {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.place_holder, fragment);
-        ft.commitNow();
+        ft.commit();
     }
 }
