@@ -70,7 +70,7 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
                 @Override
                 public void onValidCode(String groupId) {
                     addParticipant(groupId);
-                    fw.setFragment(new LobbyFragment(false, groupId));
+                    fw.setFragment(new LobbyFragment(false, groupId), requireContext());
                     dismiss();
                 }
 

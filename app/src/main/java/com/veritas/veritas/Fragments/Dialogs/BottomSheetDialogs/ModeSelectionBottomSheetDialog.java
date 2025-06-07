@@ -106,7 +106,7 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
 
         ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));
 
-        fw.setFragment(modeFragment);
+        fw.setFragment(modeFragment, requireContext());
         dismiss();
     }
 }

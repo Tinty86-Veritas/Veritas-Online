@@ -57,7 +57,7 @@ public class GroupFragment extends Fragment {
                 return;
             }
 
-            fw.setFragment(new LobbyFragment(true));
+            fw.setFragment(new LobbyFragment(true), requireContext());
         });
 
         return view;
