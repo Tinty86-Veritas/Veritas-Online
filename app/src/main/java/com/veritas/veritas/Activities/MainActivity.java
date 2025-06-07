@@ -73,7 +73,10 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             } else if (id == R.id.group_id) {
-                // TODO: If sharedGroupId is not null lobbyFragment should appear instead of group fragment
+                /* TODO:
+                    If sharedGroupId is not null lobbyFragment should appear instead of group fragment.
+                    Also app should store isHost to prevent any inadequate app behaviour
+                  */
                 if (lobbyFragment == null) {
                     fw.setFragment(groupFragment);
                 } else {

@@ -55,6 +55,10 @@ public class FragmentWorking {
      * @param fragment fragment can be only instance of ModeFragment or LobbyFragment
      */
     public void setFragment(Fragment fragment, Context context) {
+        if (callback == null) {
+            Log.w(TAG, "You use setFragment(fragment, context) so are you sure you do not want to use callback?");
+        }
+
         if (fragment instanceof ModeFragment){
             if (callback != null) {
                 modeFragment = (ModeFragment) fragment;

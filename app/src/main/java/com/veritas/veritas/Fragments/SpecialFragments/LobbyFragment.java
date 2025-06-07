@@ -3,6 +3,7 @@ package com.veritas.veritas.Fragments.SpecialFragments;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_KEY;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_MAP_KEY;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.JOIN_CODE_KEY;
+import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.PARTICIPANTS_KEY;
 import static com.veritas.veritas.Util.CodeGenerator.generateCode;
 
 import android.content.Context;
@@ -133,17 +134,25 @@ public class LobbyFragment extends Fragment {
         layoutManager.setStackFromEnd(true);
         lobbyQuestionRV.setLayoutManager(layoutManager);
 
+
+
         // !!!!!!DEV ONLY!!!!!!
         OnBackPressedCallback customOnBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                // !!!!NORMAL DEBUG BEHAVIOUR!!!!
                 if (activity instanceof MainActivity main) {
                     main.setLobbyFragment(null);
                     fw.setFragment(main.getGroupFragment());
                 }
+
+                // !!!!DELETING CURRENT GROUP FROM SHARED PREFERENCES!!!!
+//                performExit();
             }
         };
         activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+
+
 
         currentQuestions = new ArrayList<>();
 
@@ -170,7 +179,6 @@ public class LobbyFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         joinCode = snapshot.getValue(String.class);
-                        Log.d(TAG, "joinCode:\n" + joinCode);
                     }
                 }
 
@@ -183,6 +191,10 @@ public class LobbyFragment extends Fragment {
             updateLobbyText();
         }
 
+        if (isRevived) {
+            updateLobbyText();
+        }
+
         /* TODO:
             CRITICAL MISTAKE:
             Now even not a host can delete group from DB after clicking on the exitBt
@@ -190,23 +202,42 @@ public class LobbyFragment extends Fragment {
             If user is not a host delete only their data from DB
         */
         exitBT.setOnClickListener(v -> {
-            // Removing current group from Realtime Database
-            currentGroupRef.removeValue();
+            if (isHost) {
+                // Removing current group from Realtime Database
+                currentGroupRef.removeValue();
 
-            // I think this check is redundant
-            if (joinCode == null) {
-                Toast.makeText(activity, "Попробуйте позже", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            fireGroupsMapRef.child(joinCode).removeValue();
-            if (activity instanceof MainActivity main) {
-                main.setLobbyFragment(null);
-                fw.setFragment(main.getGroupFragment());
-            }
+                // I think this check is redundant
+                if (joinCode == null) {
+                    Toast.makeText(activity, "Попробуйте позже", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                fireGroupsMapRef.child(joinCode).removeValue();
+                performExit();
+            } else {
+                // Deleting participant data from Firebase
+                currentGroupRef.child(PARTICIPANTS_KEY).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                            TokenStorage tokenStorage = new TokenStorage(requireContext());
+                            Long userId = tokenStorage.getUserId();
+                            Long currentSnapshotId = childSnapshot.child("id").getValue(Long.class);
+                            if (userId.equals(currentSnapshotId)) {
+                                childSnapshot.getRef().removeValue();
+                            }
+                        }
+                        performExit();
+                    }
 
-            sharedPreferences.edit()
-                    .remove(GROUP_ID_KEY)
-                    .apply();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e(TAG, error.getMessage());
+                        Toast.makeText(activity, "Произошла ошибка. Попробуйте позже", Toast.LENGTH_LONG).show();
+                        // no performExit() to prevent leaving group without deleting data from participants
+                    }
+                });
+
+            }
         });
 
         if (groupId == null) {
@@ -224,10 +255,20 @@ public class LobbyFragment extends Fragment {
         participantsCountTV.setText(String.valueOf(participantsCount));
     }
 
+    private void performExit() {
+        if (activity instanceof MainActivity main) {
+            main.setLobbyFragment(null);
+            fw.setFragment(main.getGroupFragment());
+        }
+
+        sharedPreferences.edit()
+                .remove(GROUP_ID_KEY)
+                .apply();
+    }
+
     private DatabaseReference createLobby() {
         TokenStorage tokenStorage = new TokenStorage(requireContext());
 
-        // LobbyFragment won't be called if accessToken is null
         long userId = tokenStorage.getUserId();
 
         joinCode = generateCode();
@@ -271,20 +312,24 @@ public class LobbyFragment extends Fragment {
 
     private void groupInit() {
         if (!isHost) {
-            currentGroupRef.child(JOIN_CODE_KEY).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        joinCode = snapshot.getValue(String.class);
-                        Log.d(TAG, "joinCode:\n" + joinCode);
-                    }
-                }
+//            currentGroupRef.child(JOIN_CODE_KEY).addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    if (snapshot.exists()) {
+//                        joinCode = snapshot.getValue(String.class);
+//                        Log.d(TAG, "joinCode:\n" + joinCode);
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//                    Log.e(TAG, error.getMessage());
+//                }
+//            });
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e(TAG, error.getMessage());
-                }
-            });
+            // workaround
+            updateLobbyText();
+
             initializeFirebaseManager(groupId);
         }
 
@@ -316,6 +361,8 @@ public class LobbyFragment extends Fragment {
     }
 
     private void initializeFirebaseManager(String groupId) {
+        Log.d(TAG, "initializeFirebaseManager");
+
         firebaseManager = new FirebaseManager(groupId);
         if (activity instanceof MainActivity) {
             ((MainActivity) activity).setFirebaseManager(firebaseManager);

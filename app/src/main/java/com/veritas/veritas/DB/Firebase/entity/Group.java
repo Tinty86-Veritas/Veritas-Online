@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Group {
     private String id;
     private String joinCode;
+
+    // TODO: I should change host's instance from GroupParticipant to just Long and rename it to host_id
     private GroupParticipant host;
     private ArrayList<GroupParticipant> participants;
     private ArrayList<Question> questions;

@@ -100,6 +100,8 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
             case 0 -> {
                 if (activity instanceof MainActivity) {
                     FirebaseManager firebaseManager = ((MainActivity) activity).getFirebaseManager();
+
+                    // TODO: This check for some reason passes when user is not the host
                     if (firebaseManager == null) {
                         Log.w(TAG, "firebaseManager is null");
                         Toast.makeText(context, R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();

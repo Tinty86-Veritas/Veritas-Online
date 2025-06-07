@@ -216,7 +216,8 @@ public class ModeFragment extends Fragment
                     }
                     pullToRefresh.setRefreshing(false);
                     if (isFirstLoad) {
-                        initialLoadingIndicator.setVisibility(View.GONE);
+                        activity.runOnUiThread(() ->
+                                initialLoadingIndicator.setVisibility(View.GONE));
                         isFirstLoad = false;
                         pullToRefresh.setEnabled(true);
                     }

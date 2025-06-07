@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Application.App;
 import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
@@ -51,7 +52,7 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
 
     private void init(View view) {
         firebaseManager = new FirebaseManager();
-        fw = new FragmentWorking(TAG, getParentFragmentManager());
+        fw = new FragmentWorking(TAG, getParentFragmentManager(), (MainActivity) requireActivity());
 
         trueJoinViaCodeBt = view.findViewById(R.id.true_join_via_code_bt);
         inputCodeEt = view.findViewById(R.id.input_code_et);
