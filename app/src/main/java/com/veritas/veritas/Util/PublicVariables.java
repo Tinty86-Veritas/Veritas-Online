@@ -58,7 +58,7 @@ public class PublicVariables {
             public void onAuth(@NonNull AccessToken accessToken) {
                 Log.d(TAG, "onAuth");
 
-                // TODO: May be just throwing RuntimeExceptions is not the best idea
+                Toast.makeText(context, "Вы успешно авторизовались", Toast.LENGTH_SHORT).show();
 
                 TokenStorage tokenStorage = new TokenStorage(context);
                 tokenStorage.saveAccessToken(accessToken.getToken(), accessToken.getUserID(), accessToken.getExpireTime());

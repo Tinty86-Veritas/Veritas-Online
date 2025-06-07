@@ -16,8 +16,6 @@ import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.TokenStorage;
 
-// TODO: If app has
-
 public class MainActivity extends AppCompatActivity
         implements FragmentWorking.FragmentCallback {
 

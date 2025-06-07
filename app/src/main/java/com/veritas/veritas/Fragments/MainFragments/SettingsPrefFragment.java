@@ -62,9 +62,9 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
                 // Пример (вам нужно будет адаптировать его под ваш код и документацию VK ID):
                 // VKID.Companion.getInstance().authorize(requireActivity(), yourAuthCallback, yourAuthParams);
 
-                Toast.makeText(getContext(), "Нажата кнопка VK ID Login", Toast.LENGTH_SHORT).show(); // Для примера
+//                showVkIdBottomSheet();
 
-                showVkIdBottomSheet();
+                getVKID().getInstance().authorize(getViewLifecycleOwner(), getAuthCallback(TAG, requireContext()), getAuthParams());
 
                 return true;
             });

@@ -27,6 +27,7 @@ import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Application.App;
 import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
+import com.veritas.veritas.Exceptions.NotAuthorizedException;
 import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
@@ -70,9 +71,13 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
                     new FirebaseManager.OnGroupCodeValidationListener() {
                 @Override
                 public void onValidCode(String groupId) {
-                    addParticipant(groupId);
-                    fw.setFragment(new LobbyFragment(false, groupId), requireContext());
-                    dismiss();
+                    try {
+                        addParticipant(groupId);
+                        fw.setFragment(new LobbyFragment(false, groupId), requireContext());
+                        dismiss();
+                    } catch (NotAuthorizedException ignored) {
+                        Toast.makeText(requireContext(), R.string.user_not_authorized, Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 @Override
@@ -88,9 +93,13 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
         });
     }
 
-    private void addParticipant(String groupId) {
+    private void addParticipant(String groupId) throws NotAuthorizedException {
         TokenStorage tokenStorage = new TokenStorage(requireContext());
         long userId = tokenStorage.getUserId();
+        if (userId == 0) {
+            throw new NotAuthorizedException();
+        }
+
         GroupParticipant newParticipant = new GroupParticipant(userId);
         DatabaseReference groupRef = FirebaseDatabase.getInstance().getReference(GROUPS_KEY)
                 .child(groupId);

@@ -20,6 +20,7 @@ import com.vk.id.refresh.VKIDRefreshTokenParams;
 
 import javax.crypto.SecretKey;
 
+// TODO: May be just throwing RuntimeExceptions is not the best idea
 public class TokenStorage {
     private static final String TAG = "TokenStorage";
 

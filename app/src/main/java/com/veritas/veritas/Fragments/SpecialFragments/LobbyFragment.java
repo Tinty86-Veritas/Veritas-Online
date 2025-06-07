@@ -37,6 +37,7 @@ import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.Group;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.DB.Firebase.entity.Question;
+import com.veritas.veritas.Exceptions.NotAuthorizedException;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.Util.TokenStorage;
@@ -171,6 +172,7 @@ public class LobbyFragment extends Fragment {
         if (sharedGroupId == null) {
             // Group init
             groupInit();
+            if (currentGroupRef == null) return;
         } else {
             groupId = sharedGroupId;
             currentGroupRef = fireGroupsRef.child(groupId);
@@ -195,12 +197,6 @@ public class LobbyFragment extends Fragment {
             updateLobbyText();
         }
 
-        /* TODO:
-            CRITICAL MISTAKE:
-            Now even not a host can delete group from DB after clicking on the exitBt
-            Solution:
-            If user is not a host delete only their data from DB
-        */
         exitBT.setOnClickListener(v -> {
             if (isHost) {
                 // Removing current group from Realtime Database
@@ -270,6 +266,11 @@ public class LobbyFragment extends Fragment {
         TokenStorage tokenStorage = new TokenStorage(requireContext());
 
         long userId = tokenStorage.getUserId();
+        if (userId == 0) {
+            Toast.makeText(activity, R.string.user_not_authorized, Toast.LENGTH_SHORT).show();
+            performExit();
+            return null;
+        }
 
         joinCode = generateCode();
         Log.d(TAG, joinCode);
