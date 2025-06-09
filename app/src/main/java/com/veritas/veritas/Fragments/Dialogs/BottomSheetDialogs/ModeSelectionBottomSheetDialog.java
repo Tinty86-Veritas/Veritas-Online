@@ -58,7 +58,7 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         activity = requireActivity();
 
         items = new ArrayList<>(List.of(
-                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME, MODE_MADNESS
+                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME + " (16+)", MODE_MADNESS + " (18+)"
         ));
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);

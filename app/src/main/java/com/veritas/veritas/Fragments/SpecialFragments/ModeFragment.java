@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 // TODO: Recall progress indicator after reviving
 
 public class ModeFragment extends Fragment
-        implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
+        implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
     private static final String TAG = "ModeFragment";
 
@@ -113,7 +113,7 @@ public class ModeFragment extends Fragment
     }
 
     @Override
-    public void onLongItemClick(View view, int position) {
+    public void onItemClick(View view, int position) {
         String content = contentList.get(position);
         ReactionsBottomSheetDialog bottomSheetDialog =
                 new ReactionsBottomSheetDialog(gameName, modeName, content);

@@ -54,6 +54,10 @@ import java.util.Map;
     Add a progress indicator while questions is loading
 * */
 
+/* TODO:
+     Add the option to enable the ability to send questions only by the host or also by the participants
+* */
+
 public class LobbyFragment extends Fragment {
     private static final String TAG = "LobbyFragment";
 

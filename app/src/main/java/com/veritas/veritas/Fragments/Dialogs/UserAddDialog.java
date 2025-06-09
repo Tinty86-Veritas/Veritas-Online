@@ -12,6 +12,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.veritas.veritas.R;
 
+// TODO: Add mini description for each player
+
 public class UserAddDialog extends DialogFragment {
 
     public interface UserAddDialogListener {
