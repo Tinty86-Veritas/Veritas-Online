@@ -135,6 +135,7 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         gamesDB.close();
     }
 
+    // TODO: If user is not the host of the lobby init message won't be replaced but will be just stored
     private void shareWithLobby(FirebaseManager firebaseManager) {
         firebaseManager.getQuestionByIndex(0, new FirebaseManager.OnQuestionGotListener() {
             @Override

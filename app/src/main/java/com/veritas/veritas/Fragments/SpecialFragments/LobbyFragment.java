@@ -63,6 +63,7 @@ public class LobbyFragment extends Fragment {
 
     public static final String CURRENT_GROUP_KEY = "current_group";
     public static final String GROUP_ID_KEY = "groupId";
+    public static final String IS_HOST_KEY = "isHost";
 
     private Question INIT_MESSAGE;
 
@@ -245,6 +246,7 @@ public class LobbyFragment extends Fragment {
         } else if (sharedGroupId == null) {
             sharedPreferences.edit()
                     .putString(GROUP_ID_KEY, groupId)
+                    .putBoolean(IS_HOST_KEY, isHost)
                     .apply();
         }
 
@@ -263,6 +265,7 @@ public class LobbyFragment extends Fragment {
 
         sharedPreferences.edit()
                 .remove(GROUP_ID_KEY)
+                .remove(IS_HOST_KEY)
                 .apply();
     }
 

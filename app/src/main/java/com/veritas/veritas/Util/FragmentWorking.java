@@ -2,6 +2,7 @@ package com.veritas.veritas.Util;
 
 import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.CURRENT_GROUP_KEY;
 import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.GROUP_ID_KEY;
+import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.IS_HOST_KEY;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,7 +20,7 @@ import com.veritas.veritas.R;
 public class FragmentWorking {
 
     public interface FragmentCallback {
-        void getFragment(Fragment fragment);
+        void setSpecialFragment(Fragment fragment);
     }
 
     private final String TAG;
@@ -43,7 +44,8 @@ public class FragmentWorking {
 
     public void setFragment(Fragment fragment) {
         if (fragment instanceof ModeFragment || fragment instanceof LobbyFragment){
-            String error = "setFragment(fragment) received fragment instance of which is ModeFragment or LobbyFragment, so may be you've meant to use setFragment(fragment, context)?";
+            String error = "setFragment(fragment) received fragment instance of which is ModeFragment or LobbyFragment," +
+                    " so may be you've meant to use setFragment(fragment, context)?";
             Log.e(TAG, error);
             throw new RuntimeException(error);
         }
@@ -62,7 +64,7 @@ public class FragmentWorking {
         if (fragment instanceof ModeFragment){
             if (callback != null) {
                 modeFragment = (ModeFragment) fragment;
-                callback.getFragment(modeFragment);
+                callback.setSpecialFragment(modeFragment);
             }
         } else if (fragment instanceof LobbyFragment) {
             if (callback != null) {
@@ -72,16 +74,19 @@ public class FragmentWorking {
                 SharedPreferences sharedPreferences = context.getSharedPreferences(CURRENT_GROUP_KEY, Context.MODE_PRIVATE);
                 String groupId = sharedPreferences.getString(GROUP_ID_KEY, null);
                 if (groupId != null) {
+                    boolean isHost = sharedPreferences.getBoolean(IS_HOST_KEY, false);
                     Bundle args = fragment.getArguments();
                     if (args == null) args = new Bundle();
                     args.putString(GROUP_ID_KEY, groupId);
+                    args.putBoolean(IS_HOST_KEY, isHost);
                     fragment.setArguments(args);
                 }
 
-                callback.getFragment(lobbyFragment);
+                callback.setSpecialFragment(lobbyFragment);
             }
         } else {
-            String error = "setFragment(fragment, context) received fragment instance of which is not ModeFragment or LobbyFragment, so may be you've meant to use setFragment(fragment)?";
+            String error = "setFragment(fragment, context) received fragment instance of which is not ModeFragment or LobbyFragment," +
+                    " so may be you've meant to use setFragment(fragment)?";
             Log.e(TAG, error);
             throw new RuntimeException(error);
         }

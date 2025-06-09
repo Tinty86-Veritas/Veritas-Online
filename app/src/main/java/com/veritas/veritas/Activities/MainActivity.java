@@ -1,5 +1,11 @@
 package com.veritas.veritas.Activities;
 
+import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.CURRENT_GROUP_KEY;
+import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.GROUP_ID_KEY;
+import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.IS_HOST_KEY;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,7 +82,18 @@ public class MainActivity extends AppCompatActivity
                     Also app should store isHost to prevent any inadequate app behaviour
                   */
                 if (lobbyFragment == null) {
-                    fw.setFragment(groupFragment);
+                    SharedPreferences sharedPreferences = getSharedPreferences(CURRENT_GROUP_KEY, Context.MODE_PRIVATE);
+                    String groupId;
+                    if ((groupId = sharedPreferences.getString(GROUP_ID_KEY, null)) != null) {
+                        fw.setFragment(
+                                new LobbyFragment(
+                                        sharedPreferences.getBoolean(IS_HOST_KEY, false),
+                                        groupId),
+                                getApplicationContext()
+                        );
+                    } else {
+                        fw.setFragment(groupFragment);
+                    }
                 } else {
                     fw.reviveSavedFragment(lobbyFragment);
                 }
@@ -100,7 +117,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void getFragment(Fragment fragment) {
+    public void setSpecialFragment(Fragment fragment) {
         if (fragment instanceof ModeFragment) {
             this.modeFragment = (ModeFragment) fragment;
         } else if (fragment instanceof LobbyFragment) {

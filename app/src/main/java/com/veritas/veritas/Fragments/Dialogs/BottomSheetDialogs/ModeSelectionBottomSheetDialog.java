@@ -96,9 +96,9 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
         */
 
-        if (activity instanceof MainActivity) {
+        if (activity instanceof MainActivity mainActivity) {
             fw = new FragmentWorking(
-                    TAG, getParentFragmentManager(), (MainActivity) activity);
+                    TAG, getParentFragmentManager(), mainActivity);
         } else {
             Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");

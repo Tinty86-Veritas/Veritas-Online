@@ -33,9 +33,9 @@ public class GroupFragment extends Fragment {
         View view = inflater.inflate(R.layout.group_fragment, container, false);
 
         // I think it is better to check is current activity an instance of MainActivity
-        if (requireActivity() instanceof MainActivity) {
+        if (requireActivity() instanceof MainActivity activity) {
             fw = new FragmentWorking(TAG, getParentFragmentManager(),
-                    (MainActivity) requireActivity());
+                    activity);
         } else {
             Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");
