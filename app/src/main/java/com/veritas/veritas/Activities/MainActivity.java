@@ -1,9 +1,12 @@
 package com.veritas.veritas.Activities;
 
-import static com.veritas.veritas.Application.App.getAccessToken;
+import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.CURRENT_GROUP_KEY;
+import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.GROUP_ID_KEY;
+import static com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment.IS_HOST_KEY;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -17,7 +20,7 @@ import com.veritas.veritas.Fragments.SpecialFragments.LobbyFragment;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.R;
-import com.vk.id.AccessToken;
+import com.veritas.veritas.Util.TokenStorage;
 
 public class MainActivity extends AppCompatActivity
         implements FragmentWorking.FragmentCallback {
@@ -74,8 +77,23 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             } else if (id == R.id.group_id) {
+                /* TODO:
+                    If sharedGroupId is not null lobbyFragment should appear instead of group fragment.
+                    Also app should store isHost to prevent any inadequate app behaviour
+                  */
                 if (lobbyFragment == null) {
-                    fw.setFragment(groupFragment);
+                    SharedPreferences sharedPreferences = getSharedPreferences(CURRENT_GROUP_KEY, Context.MODE_PRIVATE);
+                    String groupId;
+                    if ((groupId = sharedPreferences.getString(GROUP_ID_KEY, null)) != null) {
+                        fw.setFragment(
+                                new LobbyFragment(
+                                        sharedPreferences.getBoolean(IS_HOST_KEY, false),
+                                        groupId),
+                                getApplicationContext()
+                        );
+                    } else {
+                        fw.setFragment(groupFragment);
+                    }
                 } else {
                     fw.reviveSavedFragment(lobbyFragment);
                 }
@@ -93,12 +111,13 @@ public class MainActivity extends AppCompatActivity
     // TODO: If returns false may be app should automatically call OneTap auth menu
     public boolean canCreateLobby() {
         // Проверяем accessToken перед созданием лобби
-        AccessToken accessToken = getAccessToken(this, getApplicationContext());
-        return accessToken != null;
+        TokenStorage tokenStorage = new TokenStorage(getApplicationContext());
+
+        return tokenStorage.getAccessToken(this) != null;
     }
 
     @Override
-    public void getFragment(Fragment fragment) {
+    public void setSpecialFragment(Fragment fragment) {
         if (fragment instanceof ModeFragment) {
             this.modeFragment = (ModeFragment) fragment;
         } else if (fragment instanceof LobbyFragment) {

@@ -100,6 +100,8 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
             case 0 -> {
                 if (activity instanceof MainActivity) {
                     FirebaseManager firebaseManager = ((MainActivity) activity).getFirebaseManager();
+
+                    // TODO: This check for some reason passes when user is not the host
                     if (firebaseManager == null) {
                         Log.w(TAG, "firebaseManager is null");
                         Toast.makeText(context, R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
@@ -133,6 +135,7 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
         gamesDB.close();
     }
 
+    // TODO: If user is not the host of the lobby init message won't be replaced but will be just stored
     private void shareWithLobby(FirebaseManager firebaseManager) {
         firebaseManager.getQuestionByIndex(0, new FirebaseManager.OnQuestionGotListener() {
             @Override

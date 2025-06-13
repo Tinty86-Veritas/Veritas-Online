@@ -1,45 +1,244 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+<!--    android:background="@color/black">-->
 
+    <!-- Top App Bar with gradient background -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_header_bg"
+        android:elevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp">
+
+            <!-- Participants section with counter -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/participants_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/participants_card_bg"
+                app:cardCornerRadius="20dp"
+                app:rippleColor="@color/ripple_color">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_participants_modern"
+                        app:tint="@color/primary_color" />
+
+                    <TextView
+                        android:id="@+id/participants_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/on_surface"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Lobby title -->
+            <TextView
+                android:id="@+id/lobby_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Игровое лобби"
+                android:textColor="@color/on_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- Exit button with modern design -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exit_lobby"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="Выйти из лобби"
+                app:backgroundTint="@color/error_container"
+                app:icon="@drawable/ic_exit_modern"
+                app:iconGravity="textStart"
+                app:iconTint="@color/on_error_container"
+                app:rippleColor="@color/error_ripple" />
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <!-- Status indicator -->
+<!--    <com.google.android.material.card.MaterialCardView-->
+<!--        android:id="@+id/status_card"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="16dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        app:cardBackgroundColor="@color/success_container"-->
+<!--        app:cardCornerRadius="12dp"-->
+<!--        app:cardElevation="4dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/toolbar">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:padding="12dp">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:layout_marginEnd="8dp"-->
+<!--                android:src="@drawable/ic_status_online"-->
+<!--                app:tint="@color/success" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/status_text"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Ожидание игроков..."-->
+<!--                android:textColor="@color/on_success_container"-->
+<!--                android:textSize="14sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--        </LinearLayout>-->
+
+<!--    </com.google.android.material.card.MaterialCardView>-->
+
+    <!-- RecyclerView with modern styling -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lobby_questions_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="12dp"
+        android:paddingBottom="16dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/action_buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+<!--        app:layout_constraintTop_toBottomOf="@id/status_card" />-->
 
+    <!-- Action buttons at bottom -->
+    <LinearLayout
+        android:id="@+id/action_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintStart_toStartOf="parent">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_ready"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="Готов!"
+            app:icon="@drawable/ic_check"
+            app:iconGravity="textStart" />
 
-        android:layout_marginTop="16dp"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_settings"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Настройки"
+            app:icon="@drawable/ic_settings"
+            app:iconGravity="textStart" />
 
-        android:src="@drawable/participants"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-
-        android:src="@drawable/logout"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!--My realization-->
+
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/lobby_questions_rv"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+
+<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/participants" />-->
+
+<!--    <androidx.appcompat.widget.AppCompatImageButton-->
+<!--        android:id="@+id/participants"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+
+<!--        android:layout_marginTop="16dp"-->
+
+<!--        android:src="@drawable/alt_participants"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <androidx.appcompat.widget.AppCompatImageButton-->
+<!--        android:id="@+id/exit_lobby"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+
+<!--        android:src="@drawable/logout"-->
+
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

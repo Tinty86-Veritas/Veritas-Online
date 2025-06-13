@@ -1,5 +1,9 @@
 package com.veritas.veritas.Fragments.MainFragments;
 
+import static com.veritas.veritas.Application.App.getVKID;
+import static com.veritas.veritas.Util.PublicVariables.getAuthCallback;
+import static com.veritas.veritas.Util.PublicVariables.getAuthParams;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,9 +37,9 @@ public class GroupFragment extends Fragment {
         View view = inflater.inflate(R.layout.group_fragment, container, false);
 
         // I think it is better to check is current activity an instance of MainActivity
-        if (requireActivity() instanceof MainActivity) {
+        if (requireActivity() instanceof MainActivity activity) {
             fw = new FragmentWorking(TAG, getParentFragmentManager(),
-                    (MainActivity) requireActivity());
+                    activity);
         } else {
             Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");
@@ -54,11 +58,12 @@ public class GroupFragment extends Fragment {
             MainActivity mainActivity = (MainActivity) requireActivity();
 
             if (!mainActivity.canCreateLobby()) {
-                Toast.makeText(requireContext(), R.string.user_not_authorized, Toast.LENGTH_LONG).show();
+                Toast.makeText(mainActivity, R.string.user_not_authorized, Toast.LENGTH_LONG).show();
+                getVKID().getInstance().authorize(getViewLifecycleOwner(), getAuthCallback(TAG, requireContext()), getAuthParams());
                 return;
             }
 
-            fw.setFragment(new LobbyFragment());
+            fw.setFragment(new LobbyFragment(true), requireContext());
         });
 
         return view;

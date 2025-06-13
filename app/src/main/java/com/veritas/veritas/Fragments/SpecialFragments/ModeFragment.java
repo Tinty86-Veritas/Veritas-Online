@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -29,8 +31,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO: Recall progress indicator after reviving
+
 public class ModeFragment extends Fragment
-        implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
+        implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
     private static final String TAG = "ModeFragment";
 
@@ -71,6 +75,11 @@ public class ModeFragment extends Fragment
 
         recyclerViewHandle();
 
+        Bundle args = getArguments();
+        if (args != null) {
+            isRevived = args.getBoolean("REVIVED_MODE", false);
+        }
+
         if (!isRevived) {
             try {
                 aiRequest = new AIRequest(requireContext(), modeName, gameName);
@@ -104,16 +113,16 @@ public class ModeFragment extends Fragment
     }
 
     @Override
-    public void onLongItemClick(View view, int position) {
+    public void onItemClick(View view, int position) {
         String content = contentList.get(position);
         ReactionsBottomSheetDialog bottomSheetDialog =
                 new ReactionsBottomSheetDialog(gameName, modeName, content);
         bottomSheetDialog.show(getParentFragmentManager(), TAG);
     }
 
-    public void setIsRevived(boolean isRevived) {
-        this.isRevived = isRevived;
-    }
+//    public void setIsRevived(boolean isRevived) {
+//        this.isRevived = isRevived;
+//    }
 
     private void init(View view) {
         activity = requireActivity();
@@ -207,7 +216,8 @@ public class ModeFragment extends Fragment
                     }
                     pullToRefresh.setRefreshing(false);
                     if (isFirstLoad) {
-                        initialLoadingIndicator.setVisibility(View.GONE);
+                        activity.runOnUiThread(() ->
+                                initialLoadingIndicator.setVisibility(View.GONE));
                         isFirstLoad = false;
                         pullToRefresh.setEnabled(true);
                     }
@@ -216,5 +226,19 @@ public class ModeFragment extends Fragment
                 }
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("SAVED_REVIVED_STATE", isRevived);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            isRevived = savedInstanceState.getBoolean("SAVED_REVIVED_STATE", false);
+        }
     }
 }

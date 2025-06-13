@@ -8,6 +8,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.veritas.veritas.DB.Firebase.entity.Group;
 import com.veritas.veritas.DB.Firebase.entity.Question;
@@ -17,15 +18,23 @@ import java.util.ArrayList;
 public class FirebaseManager {
     private static final String TAG = "FirebaseManager";
 
-    private DatabaseReference databaseReference;
+    public static final String GROUPS_KEY = "groups";
+    public static final String GROUPS_MAP_KEY = "groupsMap";
+    public static final String PARTICIPANTS_KEY = "participants";
+    public static final String JOIN_CODE_KEY = "joinCode";
+
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+    private ValueEventListener shallowListener;
 
     private String groupId;
+
+    public FirebaseManager() {}
 
     /**
      * @param groupId groupId of the currently connected group
      */
     public FirebaseManager(String groupId) {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
         this.groupId = groupId;
     }
 
@@ -253,6 +262,186 @@ public class FirebaseManager {
     public interface OnGroupRetrievedListener {
         void onSuccess(Group group);
         void onFailure(String error);
+    }
+
+
+
+    /**
+     * Интерфейс для callback'ов при валидации кода группы
+     */
+    public interface OnGroupCodeValidationListener {
+        void onValidCode(String groupId);
+        void onInvalidCode();
+        void onError(String error);
+    }
+
+    /**
+     * Валидирует код группы и возвращает ID группы если код существует
+     *
+     * ПОДВОДНЫЕ КАМНИ И ВАЖНЫЕ МОМЕНТЫ:
+     *
+     * 1. СИНХРОНИЗАЦИЯ ДАННЫХ: Самый критичный момент!
+     *    - При создании новой группы ОБЯЗАТЕЛЬНО нужно создавать запись в group_codes
+     *    - При удалении группы ОБЯЗАТЕЛЬНО нужно удалять запись из group_codes
+     *    - При изменении кода группы нужно обновить и основную запись, и индекс
+     *    - Рекомендуется использовать Firebase Transactions для атомарности операций
+     *
+     * 2. RACE CONDITIONS:
+     *    - Если несколько пользователей одновременно проверяют один код
+     *    - Может возникнуть ситуация, когда код валиден в момент проверки,
+     *      но недоступен в момент подключения к группе
+     *    - Решение: всегда проверять существование группы после получения ID
+     *
+     * 3. КЭШИРОВАНИЕ FIREBASE:
+     *    - Firebase может вернуть кэшированные данные, которые могут быть устаревшими
+     *    - Особенно критично в offline режиме
+     *    - При критичных операциях рассмотрите использование .getSource(Source.SERVER)
+     *
+     * 4. ПРОИЗВОДИТЕЛЬНОСТЬ:
+     *    - Каждый вызов этого метода = 1 запрос к Firebase
+     *    - При частых вызовах рассмотрите локальное кэширование
+     *    - Метод работает быстро только при правильной индексации
+     *
+     * 5. ОБРАБОТКА NULL/ПУСТЫХ ЗНАЧЕНИЙ:
+     *    - Всегда проверяем на null и пустые строки
+     *    - Firebase может вернуть null значения в неожиданных местах
+     *
+     * @param groupCode Код группы для валидации (не должен быть null или пустым)
+     * @param listener Callback для обработки результата валидации
+     */
+    public void validateGroupCode(String groupCode, OnGroupCodeValidationListener listener) {
+        // ПРОВЕРКА 1: Базовая валидация входных данных
+        if (groupCode == null || groupCode.trim().isEmpty()) {
+            Log.w(TAG, "validateGroupCode called with null or empty group code");
+            listener.onError("Код группы не может быть пустым");
+            return;
+        }
+
+        // ОСНОВНОЙ ЗАПРОС: Поиск в индексе group_codes
+        databaseReference.child(GROUPS_MAP_KEY).child(groupCode.trim())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            if (dataSnapshot.exists()) {
+                                // Код найден в индексе, получаем ID группы
+                                String foundGroupId = dataSnapshot.getValue(String.class);
+
+                                // ПРОВЕРКА 3: Валидация полученного ID
+                                if (foundGroupId == null || foundGroupId.trim().isEmpty()) {
+                                    Log.e(TAG, "Found group code " + groupCode + " but group ID is null or empty");
+                                    listener.onError("Ошибка целостности данных: некорректный ID группы");
+                                    return;
+                                }
+
+                                // ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА: Убеждаемся, что группа действительно существует
+                                // Это защищает от ситуации, когда в индексе есть запись, а группы нет
+                                verifyGroupExists(foundGroupId, groupCode, listener);
+
+                            } else {
+                                // Код не найден в индексе
+                                Log.d(TAG, "Group code not found: " + groupCode);
+                                listener.onInvalidCode();
+                            }
+
+                        } catch (Exception e) {
+                            // ОБРАБОТКА ИСКЛЮЧЕНИЙ: Любые ошибки парсинга или обработки
+                            Log.e(TAG, "Exception during group code validation", e);
+                            listener.onError("Ошибка при валидации кода: " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // ОБРАБОТКА ОШИБОК БАЗЫ ДАННЫХ
+                        Log.e(TAG, "Database error during group code validation: " + databaseError.getMessage());
+                        listener.onError("Ошибка базы данных: " + databaseError.getMessage());
+                    }
+                });
+    }
+
+    /**
+     * Дополнительная проверка существования группы по ID
+     * Защищает от несоответствия между индексом и основными данными
+     *
+     * ПОДВОДНЫЙ КАМЕНЬ: Этот дополнительный запрос удваивает количество обращений к Firebase
+     * Но обеспечивает целостность данных и защищает от багов синхронизации
+     *
+     * @param groupId ID группы для проверки
+     * @param originalCode Оригинальный код группы (для логирования)
+     * @param listener Callback для результата
+     */
+    private void verifyGroupExists(String groupId, String originalCode, OnGroupCodeValidationListener listener) {
+        databaseReference.child("groups").child(groupId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Группа существует, код валиден
+                            Log.d(TAG, "Successfully validated group code: " + originalCode + " -> " + groupId);
+                            listener.onValidCode(groupId);
+                        } else {
+                            // КРИТИЧЕСКАЯ ПРОБЛЕМА: В индексе есть запись, но группы нет
+                            Log.e(TAG, "Data inconsistency: group_codes has entry for " + originalCode +
+                                    " pointing to " + groupId + " but group doesn't exist");
+                            listener.onError("Ошибка целостности данных: группа не найдена");
+
+                            // TODO: Рассмотрите возможность автоматической очистки некорректных записей
+                            // Но это требует прав на запись и может быть опасно
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e(TAG, "Database error during group existence verification: " + databaseError.getMessage());
+                        listener.onError("Ошибка при проверке группы: " + databaseError.getMessage());
+                    }
+                });
+    }
+
+    public void startTracking(String groupId, OnCountUpdateListener listener) {
+        DatabaseReference nodeRef = databaseReference
+                .child(GROUPS_KEY)
+                .child(groupId)
+                .child(PARTICIPANTS_KEY);
+
+        shallowListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // При shallow запросе мы получаем только ключи
+                long count = dataSnapshot.getChildrenCount();
+
+                if (listener != null) {
+                    listener.onCountUpdated(count);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                if (listener != null) {
+                    listener.onError(databaseError.getMessage());
+                }
+            }
+        };
+
+        // Делаем shallow запрос - получаем только ключи, не содержимое
+        Query shallowQuery = nodeRef.orderByKey().limitToLast(Integer.MAX_VALUE);
+
+        // Альтернативный способ для shallow запроса
+        // Можно использовать параметр shallow=true в URL, но это требует REST API
+        nodeRef.addValueEventListener(shallowListener);
+    }
+
+    public void stopTracking() {
+        if (shallowListener != null) {
+            databaseReference.child(GROUPS_KEY).child(PARTICIPANTS_KEY).removeEventListener(shallowListener);
+            shallowListener = null;
+        }
+    }
+
+    public interface OnCountUpdateListener {
+        void onCountUpdated(long count);
+        void onError(String error);
     }
 }
 

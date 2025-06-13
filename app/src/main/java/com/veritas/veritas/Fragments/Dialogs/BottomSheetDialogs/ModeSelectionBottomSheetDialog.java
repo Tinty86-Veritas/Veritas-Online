@@ -58,7 +58,7 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         activity = requireActivity();
 
         items = new ArrayList<>(List.of(
-                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME, MODE_MADNESS
+                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME + " (16+)", MODE_MADNESS + " (18+)"
         ));
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
@@ -96,9 +96,9 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
         */
 
-        if (activity instanceof MainActivity) {
+        if (activity instanceof MainActivity mainActivity) {
             fw = new FragmentWorking(
-                    TAG, getParentFragmentManager(), (MainActivity) activity);
+                    TAG, getParentFragmentManager(), mainActivity);
         } else {
             Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");
@@ -106,7 +106,7 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
 
         ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));
 
-        fw.setFragment(modeFragment);
+        fw.setFragment(modeFragment, requireContext());
         dismiss();
     }
 }
