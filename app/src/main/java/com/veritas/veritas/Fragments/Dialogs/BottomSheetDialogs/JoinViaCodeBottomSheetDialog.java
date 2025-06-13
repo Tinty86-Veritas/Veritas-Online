@@ -1,7 +1,10 @@
 package com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs;
 
+import static com.veritas.veritas.Application.App.getVKID;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.GROUPS_KEY;
 import static com.veritas.veritas.DB.Firebase.Util.FirebaseManager.PARTICIPANTS_KEY;
+import static com.veritas.veritas.Util.PublicVariables.getAuthCallback;
+import static com.veritas.veritas.Util.PublicVariables.getAuthParams;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -77,6 +80,7 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
                         dismiss();
                     } catch (NotAuthorizedException ignored) {
                         Toast.makeText(requireContext(), R.string.user_not_authorized, Toast.LENGTH_SHORT).show();
+                        getVKID().getInstance().authorize(getViewLifecycleOwner(), getAuthCallback(TAG, requireContext()), getAuthParams());
                     }
                 }
 

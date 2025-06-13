@@ -1,5 +1,9 @@
 package com.veritas.veritas.Fragments.MainFragments;
 
+import static com.veritas.veritas.Application.App.getVKID;
+import static com.veritas.veritas.Util.PublicVariables.getAuthCallback;
+import static com.veritas.veritas.Util.PublicVariables.getAuthParams;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +58,8 @@ public class GroupFragment extends Fragment {
             MainActivity mainActivity = (MainActivity) requireActivity();
 
             if (!mainActivity.canCreateLobby()) {
+                Toast.makeText(mainActivity, R.string.user_not_authorized, Toast.LENGTH_LONG).show();
+                getVKID().getInstance().authorize(getViewLifecycleOwner(), getAuthCallback(TAG, requireContext()), getAuthParams());
                 return;
             }
 

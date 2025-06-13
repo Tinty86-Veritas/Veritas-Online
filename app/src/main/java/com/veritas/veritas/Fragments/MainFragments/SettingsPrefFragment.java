@@ -32,6 +32,8 @@ import com.vk.id.refreshuser.VKIDGetUserParams;
 
 import java.util.List;
 
+// TODO: Remove manual VK ID authorize and call authorize on first need
+
 public class SettingsPrefFragment extends PreferenceFragmentCompat
         implements UserAddDialog.UserAddDialogListener, ContextMenuPreference.ContextMenuPreferenceListener {
 
@@ -44,31 +46,22 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
     private UsersDB usersDB;
     private PreferenceCategory playersCat;
 
-    private Preference vkIdLoginPref;
+//    private Preference vkIdLoginPref;
 
-    private BottomSheetDialog authBottomSheetDialog;
     @Override
     public void onCreatePreferences(Bundle bundle, String rootKey) {
         setPreferencesFromResource(R.xml.settings, rootKey);
 
-        vkIdLoginPref = findPreference(KEY_VK_ID_LOGIN_PREF);
-
-        if (vkIdLoginPref != null) {
-            vkIdLoginPref.setOnPreferenceClickListener(preference -> {
-                // Здесь будет ваш код для запуска VK ID One Tap Auth
-                // Согласно документации VK ID, это может быть вызов метода authorize()
-                // или показ специального UI элемента (если SDK его предоставляет)
-
-                // Пример (вам нужно будет адаптировать его под ваш код и документацию VK ID):
-                // VKID.Companion.getInstance().authorize(requireActivity(), yourAuthCallback, yourAuthParams);
-
-//                showVkIdBottomSheet();
-
-                getVKID().getInstance().authorize(getViewLifecycleOwner(), getAuthCallback(TAG, requireContext()), getAuthParams());
-
-                return true;
-            });
-        }
+//        vkIdLoginPref = findPreference(KEY_VK_ID_LOGIN_PREF);
+//
+//        if (vkIdLoginPref != null) {
+//            vkIdLoginPref.setOnPreferenceClickListener(preference -> {
+//
+//                getVKID().getInstance().authorize(getViewLifecycleOwner(), getAuthCallback(TAG, requireContext()), getAuthParams());
+//
+//                return true;
+//            });
+//        }
 
         playersCat = findPreference(KEY_PLAYERS_CATEGORY);
 
@@ -83,18 +76,6 @@ public class SettingsPrefFragment extends PreferenceFragmentCompat
             dialog.show(getParentFragmentManager(), "myDialog");
             return true;
         });
-    }
-
-    private void showVkIdBottomSheet() {
-        authBottomSheetDialog = new BottomSheetDialog(requireContext());
-        View bottomSheet = LayoutInflater.from(requireContext()).inflate(R.layout.vk_auth_curtain_layout, null);
-        authBottomSheetDialog.setContentView(bottomSheet);
-        OneTapBottomSheet vkIdBottomSheet = bottomSheet.findViewById(R.id.vkid_bottom_sheet);
-
-        authBottomSheetDialog.show();
-        Toast.makeText(requireContext(), "" + vkIdBottomSheet.isVisible(), Toast.LENGTH_SHORT).show();
-
-        getVKID().getInstance().authorize(authBottomSheetDialog, getAuthCallback(TAG, requireContext()), getAuthParams());
     }
 
     private void updatePlayersCat() {

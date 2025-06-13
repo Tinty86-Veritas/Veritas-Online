@@ -37,7 +37,6 @@ import com.veritas.veritas.DB.Firebase.Util.FirebaseManager;
 import com.veritas.veritas.DB.Firebase.entity.Group;
 import com.veritas.veritas.DB.Firebase.entity.GroupParticipant;
 import com.veritas.veritas.DB.Firebase.entity.Question;
-import com.veritas.veritas.Exceptions.NotAuthorizedException;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 import com.veritas.veritas.Util.TokenStorage;
