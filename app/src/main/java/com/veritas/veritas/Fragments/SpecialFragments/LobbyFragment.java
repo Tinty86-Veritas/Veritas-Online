@@ -9,14 +9,12 @@ import static com.veritas.veritas.Util.CodeGenerator.generateCode;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -171,8 +169,6 @@ public class LobbyFragment extends Fragment {
             sharedGroupId = args.getString(GROUP_ID_KEY, null);
         }
 
-        Log.d(TAG, "sharedGroupId: " + sharedGroupId);
-
         if (sharedGroupId == null) {
             // Group init
             groupInit();
@@ -189,9 +185,7 @@ public class LobbyFragment extends Fragment {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e(TAG, error.getMessage());
-                }
+                public void onCancelled(@NonNull DatabaseError error) {}
             });
             initializeFirebaseManager(groupId);
             updateLobbyText();
@@ -230,7 +224,6 @@ public class LobbyFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e(TAG, error.getMessage());
                         Toast.makeText(activity, "Произошла ошибка. Попробуйте позже", Toast.LENGTH_LONG).show();
                         // no performExit() to prevent leaving group without deleting data from participants
                     }
@@ -239,9 +232,7 @@ public class LobbyFragment extends Fragment {
             }
         });
 
-        if (groupId == null) {
-            Log.e(TAG, "groupId is somehow null");
-        } else if (sharedGroupId == null) {
+        if (sharedGroupId == null) {
             sharedPreferences.edit()
                     .putString(GROUP_ID_KEY, groupId)
                     .putBoolean(IS_HOST_KEY, isHost)
@@ -278,8 +269,6 @@ public class LobbyFragment extends Fragment {
         }
 
         joinCode = generateCode();
-        Log.d(TAG, joinCode);
-
         lobbyText.setText(joinCode);
 
         GroupParticipant host = new GroupParticipant(userId);
@@ -297,21 +286,14 @@ public class LobbyFragment extends Fragment {
 
         currentGroupRef.setValue(group)
                 .addOnSuccessListener(ignored -> {
-                    Log.d(TAG, "Group successfully saved to Firebase with ID: " + groupId);
                     initializeFirebaseManager(groupId);
                     Map<String, Object> update = new HashMap<>();
                     update.put(joinCode, groupId);
                     fireGroupsMapRef.updateChildren(update)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d("Firebase", "Данные успешно добавлены");
-                            })
-                            .addOnFailureListener(exception -> {
-                                Log.e("Firebase", "Ошибка при добавлении данных", exception);
-                            });
+                            .addOnSuccessListener(aVoid -> {})
+                            .addOnFailureListener(exception -> {});
                 })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to save group to Firebase", e);
-                });
+                .addOnFailureListener(e -> {});
 
         return currentGroupRef;
     }
@@ -337,7 +319,6 @@ public class LobbyFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     joinCode = snapshot.getValue(String.class);
-                    Log.d(TAG, "joinCode:\n" + joinCode);
                     activity.runOnUiThread(() -> {
                         // !!!workaround!!!
                         lobbyText.setText(joinCode);
@@ -346,20 +327,16 @@ public class LobbyFragment extends Fragment {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, error.getMessage());
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         });
     }
 
     private void initializeFirebaseManager(String groupId) {
-        Log.d(TAG, "initializeFirebaseManager");
 
         firebaseManager = new FirebaseManager(groupId);
         if (activity instanceof MainActivity) {
             ((MainActivity) activity).setFirebaseManager(firebaseManager);
         } else {
-            Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");
         }
 
@@ -372,9 +349,7 @@ public class LobbyFragment extends Fragment {
             }
 
             @Override
-            public void onError(String error) {
-                Log.e(TAG, error);
-            }
+            public void onError(String error) {}
         });
     }
 
@@ -395,7 +370,6 @@ public class LobbyFragment extends Fragment {
                 if (existingIndex == -1) {
                     currentQuestions.add(item);
                     adapter.notifyItemInserted(currentQuestions.size() - 1);
-                    Log.d(TAG, "Item added at position: " + (currentQuestions.size() - 1));
                 }
             }
 
@@ -427,9 +401,7 @@ public class LobbyFragment extends Fragment {
             public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {}
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "Error: " + error.getMessage());
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         };
 
         if (currentGroupRef != null) {

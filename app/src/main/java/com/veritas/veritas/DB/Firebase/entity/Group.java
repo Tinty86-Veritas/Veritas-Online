@@ -22,6 +22,7 @@ public class Group {
         this.questions = questions;
     }
 
+    // I want to remove it but I have only an hour before stop-code :[
     private String generateJoinCode() {
         // May be it is a good idea to generate join codes based on host id
         // place holder

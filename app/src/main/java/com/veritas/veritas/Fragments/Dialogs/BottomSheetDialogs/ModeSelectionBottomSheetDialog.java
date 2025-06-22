@@ -7,7 +7,6 @@ import static com.veritas.veritas.Util.PublicVariables.MODE_MADNESS;
 import static com.veritas.veritas.Util.PublicVariables.MODE_SOFT;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +99,6 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
             fw = new FragmentWorking(
                     TAG, getParentFragmentManager(), mainActivity);
         } else {
-            Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");
         }
 

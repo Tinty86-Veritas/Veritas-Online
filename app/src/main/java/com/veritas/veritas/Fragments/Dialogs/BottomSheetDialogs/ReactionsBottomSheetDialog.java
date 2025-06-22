@@ -2,7 +2,6 @@ package com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,13 +102,11 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
 
                     // TODO: This check for some reason passes when user is not the host
                     if (firebaseManager == null) {
-                        Log.w(TAG, "firebaseManager is null");
                         Toast.makeText(context, R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
                         break;
                     }
                     shareWithLobby(firebaseManager);
                 } else {
-                    Log.wtf(TAG, "MainActivity somehow is not current Activity");
                     throw new RuntimeException("MainActivity is not current Activity");
                 }
             }
@@ -141,7 +138,6 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
             @Override
             public void onSuccess(Question question) {
                 if (lobbyFragment == null) {
-                    Log.w(TAG, "Cannot share question with lobby because lobbyFragment is null");
                     Toast.makeText(context, R.string.lobby_have_not_created_yet, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -159,7 +155,6 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
 
                                 @Override
                                 public void onFailure(String error) {
-                                    Log.e(TAG, "Failed to update INIT_MESSAGE: " + error);
                                     Toast.makeText(context, "Ошибка при обновлении: " + error, Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -174,10 +169,8 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
                         @Override
                         public void onFailure(String error) {
                             if (error.equals("duplicating question")) {
-                                Log.w(TAG, "duplicating question");
                                 Toast.makeText(context, "Уже добавлено", Toast.LENGTH_LONG).show();
                             } else {
-                                Log.e(TAG, "Failed to add question: " + error);
                                 Toast.makeText(context, "Ошибка при добавлении: " + error, Toast.LENGTH_SHORT).show();
                             }
 
@@ -188,7 +181,6 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
 
             @Override
             public void onFailure(String error) {
-                Log.e(TAG, "Failed to get question by index: " + error);
                 Toast.makeText(context, "Ошибка при получении данных: " + error, Toast.LENGTH_SHORT).show();
             }
         });
@@ -207,8 +199,6 @@ public class ReactionsBottomSheetDialog extends BottomSheetDialogFragment
                 gamesDB.deleteReaction(gameName, modeName, content);
                 Toast.makeText(context, R.string.reaction_deleted, Toast.LENGTH_SHORT).show();
                 return true;
-            } else {
-                Log.wtf(TAG, type);
             }
         }
         return false;

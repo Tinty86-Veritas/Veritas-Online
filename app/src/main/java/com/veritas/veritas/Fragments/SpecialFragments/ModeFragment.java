@@ -2,7 +2,6 @@ package com.veritas.veritas.Fragments.SpecialFragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,9 +180,6 @@ public class ModeFragment extends Fragment
                         });
                         return;
                     }
-
-                    Log.d(TAG, content);
-
                     activity.runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
@@ -194,15 +190,11 @@ public class ModeFragment extends Fragment
                         }
                     });
 
-                    Log.i(TAG, contentList.toString());
-                } else {
-                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onSuccess callback. UI will not be updated.");
                 }
             }
 
             @Override
             public void onFailure(String error) {
-                Log.w(TAG, "onFailure:\n" + error);
                 if (isAdded()) {
                     if (error.equals("code 429")) {
                         activity.runOnUiThread(() ->
@@ -221,8 +213,6 @@ public class ModeFragment extends Fragment
                         isFirstLoad = false;
                         pullToRefresh.setEnabled(true);
                     }
-                } else {
-                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onFailure callback. Toast will not be shown.");
                 }
             }
         });

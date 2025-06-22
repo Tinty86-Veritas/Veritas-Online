@@ -7,7 +7,6 @@ import static com.veritas.veritas.Util.PublicVariables.NEVEREVER;
 import static com.veritas.veritas.Util.PublicVariables.TRUTH;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,8 +76,6 @@ public class AIRequest {
             reactionsJson = "No reactions";
         }
 
-        Log.d(TAG, "reactionsJson:\n" + reactionsJson);
-
         answersNum = gamesDB.getRequestNum(gameName, modeName);
 
         gamesDB.close();
@@ -106,15 +103,11 @@ public class AIRequest {
 
         String participants = gson.toJson(payload);
 
-        Log.i(TAG, "participantsJSON:\n" + participants);
-
         prompt = buildPrompt(gameName, context, reactionsJson, modeName, participants);
 
         if (prompt == null) {
             return;
         }
-
-        Log.d(TAG, "prompt:\n" + prompt);
     }
 
     private String buildPrompt(String gameName, Context context, String reactionsJson,
@@ -131,7 +124,6 @@ public class AIRequest {
                 basePrompt = context.getString(R.string.neverEver_prompt).trim();
                 break;
             default:
-                Log.e(TAG, "gameName is inappropriate");
                 Toast.makeText(context, "gameName is inappropriate: " + gameName, Toast.LENGTH_LONG).show();
                 return null;
         }
@@ -156,9 +148,6 @@ public class AIRequest {
     }
 
     public void sendPOST(ApiCallback callback) {
-
-        Log.i(TAG, "sendPOST method entered");
-
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)  // Время на установку соединения
                 .readTimeout(30, TimeUnit.SECONDS)     // Время на чтение ответа
@@ -193,8 +182,6 @@ public class AIRequest {
     }
 
     private void attemptRequest(OkHttpClient client, Request request, ApiCallback callback) {
-        Log.i(TAG, "attemptRequest method entered");
-
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -206,12 +193,9 @@ public class AIRequest {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         String responseData = response.body().string().trim();
-                        Log.i(TAG, "API Response:\n" + responseData);
-
                         Map<String, Object> root = gson.fromJson(responseData, Map.class);
 
                         if (root.containsKey("error")) {
-                            Log.w(TAG, "Response contains error");
                             Map<String, Object> error = (Map<String, Object>) root.get("error");
                             assert error != null;
                             if (error.containsKey("code")) {
@@ -220,7 +204,6 @@ public class AIRequest {
                                     return;
                                 }
                             } else {
-                                Log.wtf(TAG, "Response contains error but somehow is not contains code");
                                 return;
                             }
                         }
@@ -237,10 +220,7 @@ public class AIRequest {
 
                     } else {
                         callback.onFailure("Error code: " + response.code());
-                        Log.wtf(TAG, "response body is null");
                     }
-                } else {
-                    Log.w(TAG, "API Error. Status Code:\n" + response.code());
                 }
             }
         });

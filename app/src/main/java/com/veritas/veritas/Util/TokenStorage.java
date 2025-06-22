@@ -6,7 +6,6 @@ import static com.veritas.veritas.Util.PublicVariables.getAuthParams;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -60,7 +59,6 @@ public class TokenStorage {
         String encryptedToken = sharedPreferences.getString(KEY_ACCESS_TOKEN, null);
         // I think accessToken can be null only if user has not been authorized before
         if (encryptedToken == null) {
-            Log.d(TAG, "accessToken is null");
             Toast.makeText(context, R.string.user_not_authorized, Toast.LENGTH_LONG).show();
             return null;
         }

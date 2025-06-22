@@ -3,10 +3,6 @@ package com.veritas.veritas.DB.Firebase.entity;
 import static com.veritas.veritas.Util.CurrentTime.getCurrentTimeStamp;
 import static com.veritas.veritas.Util.PublicVariables.getGames;
 
-import android.util.Log;
-
-import com.veritas.veritas.Util.CurrentTime;
-
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -39,8 +35,6 @@ public class Question {
             timeStamp = getCurrentTimeStamp();
 
             answers = new ArrayList<>();
-        } else {
-            Log.e(TAG, "question class got inappropriate question type.\nReceived question type: " + type);
         }
 
     }

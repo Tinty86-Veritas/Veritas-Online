@@ -5,7 +5,6 @@ import static com.veritas.veritas.Util.PublicVariables.getAuthCallback;
 import static com.veritas.veritas.Util.PublicVariables.getAuthParams;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ public class GroupFragment extends Fragment {
             fw = new FragmentWorking(TAG, getParentFragmentManager(),
                     activity);
         } else {
-            Log.wtf(TAG, "MainActivity somehow is not current Activity");
             throw new RuntimeException("MainActivity is not current Activity");
         }
 

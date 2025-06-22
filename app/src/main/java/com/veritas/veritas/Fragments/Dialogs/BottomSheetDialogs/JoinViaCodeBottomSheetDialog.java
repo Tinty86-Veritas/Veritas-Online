@@ -8,7 +8,6 @@ import static com.veritas.veritas.Util.PublicVariables.getAuthParams;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,13 +134,7 @@ public class JoinViaCodeBottomSheetDialog extends BottomSheetDialogFragment {
             }
 
             @Override
-            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                if (databaseError != null) {
-                    Log.e("Firebase", "Транзакция не удалась: " + databaseError.getMessage());
-                } else if (committed) {
-                    Log.d("Firebase", "Элемент успешно добавлен в массив");
-                }
-            }
+            public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {}
         });
     }
 }

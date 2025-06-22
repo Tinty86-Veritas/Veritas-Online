@@ -42,8 +42,6 @@ public class LobbyRecyclerAdapter extends RecyclerView.Adapter<LobbyRecyclerAdap
     public LobbyRecyclerAdapter(Context context, ArrayList<Question> questions, boolean isInitMessage) {
         if (context != null) {
             this.context = context;
-        } else {
-            Log.e(TAG, "Constructor received null context");
         }
 
         this.questions = questions;
