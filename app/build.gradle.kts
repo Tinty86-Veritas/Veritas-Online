@@ -63,6 +63,8 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.security.crypto)
 
+    implementation (libs.circleimageview)
+
     implementation(libs.vkid)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.onetap.xml)

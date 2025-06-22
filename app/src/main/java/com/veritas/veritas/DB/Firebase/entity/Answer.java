@@ -3,23 +3,23 @@ package com.veritas.veritas.DB.Firebase.entity;
 import static com.veritas.veritas.Util.CurrentTime.getCurrentTimeStamp;
 
 public class Answer {
-    private String senderId;
+    private long senderId;
     private String text;
     private String timeStamp;
 
     public Answer() {}
 
-    public Answer(String senderId, String text) {
+    public Answer(long senderId, String text) {
         this.senderId = senderId;
         this.text = text;
-        this.timeStamp = getCurrentTimeStamp();
+        timeStamp = getCurrentTimeStamp();
     }
 
-    public String getSenderId() {
+    public long getSenderId() {
         return senderId;
     }
 
-    public void setSenderId(String senderId) {
+    public void setSenderId(long senderId) {
         this.senderId = senderId;
     }
 

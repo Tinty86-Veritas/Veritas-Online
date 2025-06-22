@@ -5,6 +5,8 @@ import static com.veritas.veritas.Util.PublicVariables.getGames;
 
 import android.util.Log;
 
+import com.veritas.veritas.Util.CurrentTime;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -33,7 +35,9 @@ public class Question {
         if (isTypeCorrect) {
             this.content = content;
             this.type = type;
+
             timeStamp = getCurrentTimeStamp();
+
             answers = new ArrayList<>();
         } else {
             Log.e(TAG, "question class got inappropriate question type.\nReceived question type: " + type);

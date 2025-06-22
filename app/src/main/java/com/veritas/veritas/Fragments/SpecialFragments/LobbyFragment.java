@@ -142,20 +142,20 @@ public class LobbyFragment extends Fragment {
 
 
         // !!!!!!DEV ONLY!!!!!!
-        OnBackPressedCallback customOnBackPressedCallback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                // !!!!NORMAL DEBUG BEHAVIOUR!!!!
-                if (activity instanceof MainActivity main) {
-                    main.setLobbyFragment(null);
-                    fw.setFragment(main.getGroupFragment());
-                }
-
-                // !!!!DELETING CURRENT GROUP FROM SHARED PREFERENCES!!!!
-//                performExit();
-            }
-        };
-        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+//        OnBackPressedCallback customOnBackPressedCallback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                // !!!!NORMAL DEBUG BEHAVIOUR!!!!
+//                if (activity instanceof MainActivity main) {
+//                    main.setLobbyFragment(null);
+//                    fw.setFragment(main.getGroupFragment());
+//                }
+//
+//                // !!!!DELETING CURRENT GROUP FROM SHARED PREFERENCES!!!!
+////                performExit();
+//            }
+//        };
+//        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
 
 
 
@@ -203,7 +203,6 @@ public class LobbyFragment extends Fragment {
 
         exitBT.setOnClickListener(v -> {
             if (isHost) {
-                // Removing current group from Realtime Database
                 currentGroupRef.removeValue();
 
                 // I think this check is redundant
@@ -319,20 +318,6 @@ public class LobbyFragment extends Fragment {
 
     private void groupInit() {
         if (!isHost) {
-//            currentGroupRef.child(JOIN_CODE_KEY).addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if (snapshot.exists()) {
-//                        joinCode = snapshot.getValue(String.class);
-//                        Log.d(TAG, "joinCode:\n" + joinCode);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//                    Log.e(TAG, error.getMessage());
-//                }
-//            });
 
             // workaround
             updateLobbyText();
@@ -393,10 +378,8 @@ public class LobbyFragment extends Fragment {
         });
     }
 
-    // TODO: Переписать и перепроверить код этой функции.
     private void setupChildEventListener() {
         childEventListener = new ChildEventListener() {
-
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
                 Question item = snapshot.getValue(Question.class);
@@ -441,9 +424,7 @@ public class LobbyFragment extends Fragment {
             }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
-                // Обработка перемещения элементов
-            }
+            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {}
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -466,10 +447,6 @@ public class LobbyFragment extends Fragment {
         }
         return -1;
     }
-
-//    public void setIsRevived(boolean revived) {
-//        isRevived = revived;
-//    }
 
     public Question getINIT_MESSAGE() {
         return INIT_MESSAGE;
