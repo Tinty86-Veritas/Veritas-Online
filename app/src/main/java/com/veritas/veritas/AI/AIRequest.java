@@ -16,8 +16,8 @@ import com.google.gson.Gson;
 import com.veritas.veritas.Adapters.entity.User;
 import com.veritas.veritas.DB.GamesDB;
 import com.veritas.veritas.DB.UsersDB;
-import com.veritas.veritas.Exceptions.EmptyUsersList;
-import com.veritas.veritas.Exceptions.NotEnoughPlayers;
+import com.veritas.veritas.Exceptions.EmptyUsersListException;
+import com.veritas.veritas.Exceptions.NotEnoughPlayersException;
 import com.veritas.veritas.R;
 
 import java.io.IOException;
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,7 +37,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// Added 429 error (limit exceeded) handler, so now app won't crash by this reason
+// TODO: If app in online mode AIrequest class should automatically fetch participants
 
 public class AIRequest {
 
@@ -45,14 +46,14 @@ public class AIRequest {
     private static final String API_KEY = getDeepSeekAPIKey();
     private static final String API_URL = getAPIUrl();
 
-    private static String prompt;
-
     private int answersNum;
+
+    private static String prompt;
 
     Gson gson = new Gson();
 
     public AIRequest(Context context, String modeName, String gameName)
-            throws EmptyUsersList, NotEnoughPlayers {
+            throws EmptyUsersListException, NotEnoughPlayersException {
 
         Map<String, Object[]> reactions = new HashMap<>();
 
@@ -87,9 +88,9 @@ public class AIRequest {
         ArrayList<User> users = usersDB.selectAllFromPlayers();
 
         if (users.isEmpty()) {
-            throw new EmptyUsersList(TAG);
+            throw new EmptyUsersListException(TAG);
         } else if (users.size() == 1 && !gameName.equals(NEVEREVER)) {
-            throw new NotEnoughPlayers(TAG);
+            throw new NotEnoughPlayersException(TAG);
         }
 
         usersDB.close();
@@ -107,29 +108,36 @@ public class AIRequest {
 
         Log.i(TAG, "participantsJSON:\n" + participants);
 
-        switch (gameName) {
-            case TRUTH ->
-                    prompt = String.format(context.getString(R.string.truth_prompt).trim(),
-                            answersNum, reactionsJson)
-                            + "Режим: " + modeName
-                            + ". Участники и их пола: " + participants;
-            case DARE ->
-                    prompt = String.format(context.getString(R.string.dare_prompt).trim(),
-                            answersNum, reactionsJson)
-                            + "Режим: " + modeName
-                            + ". Участники и их пола: " + participants;
-            case NEVEREVER ->
-                    prompt = String.format(context.getString(R.string.neverEver_prompt).trim(),
-                            answersNum, reactionsJson)
-                            + "Режим: " + modeName;
-            default -> {
-                Log.e(TAG, "gameName is inappropriate");
-                Toast.makeText(context, "gameName is inappropriate", Toast.LENGTH_LONG).show();
-                return;
-            }
+        prompt = buildPrompt(gameName, context, reactionsJson, modeName, participants);
+
+        if (prompt == null) {
+            return;
         }
 
         Log.d(TAG, "prompt:\n" + prompt);
+    }
+
+    private String buildPrompt(String gameName, Context context, String reactionsJson,
+                               String modeName, String participants) {
+        String basePrompt;
+        switch (gameName) {
+            case TRUTH:
+                basePrompt = context.getString(R.string.truth_prompt).trim();
+                break;
+            case DARE:
+                basePrompt = context.getString(R.string.dare_prompt).trim();
+                break;
+            case NEVEREVER:
+                basePrompt = context.getString(R.string.neverEver_prompt).trim();
+                break;
+            default:
+                Log.e(TAG, "gameName is inappropriate");
+                Toast.makeText(context, "gameName is inappropriate: " + gameName, Toast.LENGTH_LONG).show();
+                return null;
+        }
+        return String.format(basePrompt, answersNum, reactionsJson)
+                + "Режим: " + modeName
+                + (gameName.equals(NEVEREVER) ? "" : ". Участники и их пола: " + participants);
     }
 
     private String createJSON(String message_content) {
@@ -151,8 +159,18 @@ public class AIRequest {
 
         Log.i(TAG, "sendPOST method entered");
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)  // Время на установку соединения
+                .readTimeout(30, TimeUnit.SECONDS)     // Время на чтение ответа
+                .writeTimeout(30, TimeUnit.SECONDS)    // Время на отправку данных
+                .build();
 
+        Request request = buildRequest();
+
+        attemptRequest(client, request, callback);
+    }
+
+    private Request buildRequest() {
         Headers headers = new Headers.Builder()
                 .add("Authorization", "Bearer " + API_KEY)
                 .add("Content-Type", "application/json")
@@ -170,6 +188,12 @@ public class AIRequest {
                 .headers(headers)
                 .post(body)
                 .build();
+
+        return request;
+    }
+
+    private void attemptRequest(OkHttpClient client, Request request, ApiCallback callback) {
+        Log.i(TAG, "attemptRequest method entered");
 
         client.newCall(request).enqueue(new Callback() {
             @Override

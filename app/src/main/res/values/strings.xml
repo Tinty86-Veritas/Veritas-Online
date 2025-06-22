@@ -129,11 +129,16 @@
     <string name="join_via_code">Войти по коду</string>
     <string name="create_group">Создать группу</string>
     <string name="enter_code">Введите код</string>
-    <string name="code_hint">Например: 123456789</string>
+    <string name="code_hint">Например: ABCD1234</string>
     <string name="reaction_saved">Реакция сохранена</string>
     <string name="reaction_deleted">Реакция удалена</string>
     <string name="like_option">Нравится вариант</string>
     <string name="dislike_option">Не нравится вариант</string>
     <string name="recurring_option">Вариант повторяется</string>
+    <string name="share_with_lobby">Отправить в группу</string>
+    <string name="init_session_message">Для того чтобы начать сессию, выберите понравившийся сгенерированный вопрос и отправьте его в группу</string>
+    <string name="lobby_have_not_created_yet">Лобби ещё не создано</string>
+    <string name="user_not_authorized">Вы не авторизованы</string>
+    <string name="comment">Прокомментировать</string>
 
 </resources>

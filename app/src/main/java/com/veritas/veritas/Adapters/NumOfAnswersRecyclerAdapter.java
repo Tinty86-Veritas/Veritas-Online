@@ -78,9 +78,6 @@ public class NumOfAnswersRecyclerAdapter extends RecyclerView.Adapter<NumOfAnswe
                 (parent, view, position1, id) -> {
             Integer selectedItem = (Integer) parent.getItemAtPosition(position1);
 
-//                int spinnerPosition = adapter.getPosition(num_of_answers);
-//                holder.spinner.setSelection(spinnerPosition);
-
             GamesDB gamesDB1 = new GamesDB(context);
             gamesDB1.updateRequestNum(game_name, mode, selectedItem);
             gamesDB1.close();

@@ -2,10 +2,42 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="yellow">#FFDE21</color>
-    <color name="blue">#2142FF</color>
-    <color name="teal">#00CEC8</color>
-    <color name="red">#CE0006</color>
-    <color name="green">#00CE61</color>
     <color name="grey">#666666</color>
+    <color name="initMessageStroke">#189DF0</color>
+
+    <!-- Primary colors -->
+    <color name="primary_color">#6366F1</color>
+    <color name="primary_variant">#4F46E5</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary_color">#FBBF24</color>        <!-- Amber 400: яркий акцент -->
+    <color name="secondary_variant">#F59E0B</color>    <!-- Amber 600: более тёплый оттенок -->
+    <color name="on_secondary">#000000</color>         <!-- Чёрный текст/иконки на жёлтом фоне -->
+
+
+    <!-- Surface colors -->
+    <color name="surface_color">#FAFAFA</color>
+    <color name="surface_variant">#F3F4F6</color>
+    <color name="on_surface">#1F2937</color>
+    <color name="on_surface_variant">#6B7280</color>
+
+    <!-- Participants card -->
+    <color name="participants_card_bg">#E0E7FF</color>
+
+    <!-- Status colors -->
+    <color name="success">#10B981</color>
+    <color name="success_container">#D1FAE5</color>
+    <color name="on_success_container">#065F46</color>
+
+    <!-- Error colors -->
+    <color name="error_container">#FECACA</color>
+    <color name="on_error_container">#991B1B</color>
+    <color name="error_ripple">#EF4444</color>
+
+    <!-- Outline colors -->
+    <color name="outline_variant">#E5E7EB</color>
+
+    <!-- Ripple effect -->
+    <color name="ripple_color">#1A6366F1</color>
 </resources>
