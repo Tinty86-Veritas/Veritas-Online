@@ -55,7 +55,7 @@ public class LobbyRecyclerAdapter extends RecyclerView.Adapter<LobbyRecyclerAdap
                 .inflate(R.layout.standard_button, parent, false);
 
         /* Init message configuration:
-        *       1) Setting stroke color to initMessageStroke (from res/values/colors.xml)
+        *       1) Setting stroke color to initMessageStroke
         *       2) Setting stroke width from 1dp (default standard_button value) to 3dp
         */
 
