@@ -17,7 +17,7 @@
     <item
         android:id="@+id/group_id"
         android:enabled="true"
-        android:icon="@drawable/group"
+        android:icon="@drawable/group_icon_selector"
         android:title="@string/group_text" />
 
 

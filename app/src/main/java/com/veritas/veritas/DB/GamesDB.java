@@ -8,7 +8,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -116,9 +115,6 @@ public class GamesDB extends SQLiteOpenHelper {
     }
 
     public void updateRequestNum(String gameName, String modeName, int num) {
-        Log.d("GamesDB", String.format(
-                "updateRequestNum: gameName=%s, modeName=%s, num=%d", gameName, modeName, num
-        ));
         SQLiteDatabase db = getWritableDatabase();
         String sql = "UPDATE " + TABLE_GAME_MODES + " SET request_num = ? " +
                 "WHERE game_id = (SELECT id FROM " + TABLE_GAMES + " WHERE name = ?) " +
@@ -172,8 +168,6 @@ public class GamesDB extends SQLiteOpenHelper {
                     "game_mode_id = ? AND content = ?",
                     new String[]{String.valueOf(gameModeId), content}
             );
-        } else {
-            Log.w("GamesDB", "No game_mode_id found for game: " + gameName + " and mode: " + modeName);
         }
 
         return deletedRows;
@@ -196,8 +190,7 @@ public class GamesDB extends SQLiteOpenHelper {
             if (c != null && c.moveToFirst()) {
                 exists = true;
             }
-        } catch (Exception e) {
-            Log.e("GamesDB", "Error checking for reaction existence with content", e);
+        } catch (Exception ignored) {
         } finally {
             if (c != null) {
                 c.close();

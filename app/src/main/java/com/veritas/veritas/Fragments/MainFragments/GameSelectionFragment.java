@@ -3,7 +3,6 @@ package com.veritas.veritas.Fragments.MainFragments;
 import static com.veritas.veritas.Util.PublicVariables.getGames;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +82,6 @@ public class GameSelectionFragment extends Fragment
             appGameName = getGames()[2];
         } else {
             appGameName = "";
-            Log.wtf(TAG, "gameName does not equals to any item of getGames() list");
             Toast.makeText(requireContext(), "gameName error", Toast.LENGTH_SHORT).show();
         }
         return appGameName;

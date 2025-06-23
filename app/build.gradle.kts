@@ -1,6 +1,8 @@
 
 plugins {
     alias(libs.plugins.android.application)
+
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -59,8 +61,16 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.okhttp)
     implementation(libs.gson)
+    implementation(libs.security.crypto)
+
+    implementation (libs.circleimageview)
+
     implementation(libs.vkid)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.onetap.xml)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.database)
 }
 

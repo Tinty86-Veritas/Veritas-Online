@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.veritas.veritas.Adapters.entity.User;
 
@@ -67,10 +66,6 @@ public class UsersDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Long sex_id = sexesMap.get(sex);
-
-        if (sex_id == null) {
-            Log.wtf("UsersDB", "sex_id is somehow null");
-        }
 
         String whereClause = PLAYERS_COLUMN_NAME + " = ? AND "
                 + PLAYERS_COLUMN_SEX_ID + " = ?";

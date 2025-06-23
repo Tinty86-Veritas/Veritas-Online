@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory app:key="account_category" android:title="@string/account">
-        <Preference
-            app:key="vk_id_login"
-            android:title="@string/vk_id_login"/>
-    </PreferenceCategory>
+<!--    <PreferenceCategory app:key="account_category" android:title="@string/account">-->
+<!--        <Preference-->
+<!--            app:key="vk_id_login"-->
+<!--            android:title="@string/vk_id_login"/>-->
+<!--    </PreferenceCategory>-->
     <PreferenceCategory app:key="players_category" android:title="@string/players">
         <Preference
             app:key="add_player"

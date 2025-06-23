@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
+import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 
@@ -31,6 +33,8 @@ import java.util.List;
 public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
     private static final String TAG = "ModeSelectionBottomSheetDialog";
+
+    private FragmentActivity activity;
 
     private String gameName;
     private ArrayList<String> items;
@@ -44,8 +48,16 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
 
+        init(view);
+
+        return view;
+    }
+
+    private void init(View view) {
+        activity = requireActivity();
+
         items = new ArrayList<>(List.of(
-                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME, MODE_MADNESS
+                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME + " (16+)", MODE_MADNESS + " (18+)"
         ));
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
@@ -57,8 +69,6 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         adapter.setOnClickListener(this);
 
         recyclerView.setAdapter(adapter);
-
-        return view;
     }
 
     @Override
@@ -80,20 +90,21 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment
         final FragmentWorking fw;
 
         /*
-        "It is never a bad idea to make code as safe" - someone (probably me :D)
+        "It is never a bad idea to make code as safe as you can" - someone (probably me :D)
         So the followed piece of code is for safety ->
         -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
         */
 
-        if (getActivity() instanceof MainActivity) {
-            fw = new FragmentWorking(requireContext(),
-                    TAG, getParentFragmentManager(), (MainActivity) getActivity());
+        if (activity instanceof MainActivity mainActivity) {
+            fw = new FragmentWorking(
+                    TAG, getParentFragmentManager(), mainActivity);
         } else {
-            fw = new FragmentWorking(requireContext(),
-                    TAG, getParentFragmentManager());
+            throw new RuntimeException("MainActivity is not current Activity");
         }
 
-        fw.setFragment(gameName, items.get(position));
+        ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));
+
+        fw.setFragment(modeFragment, requireContext());
         dismiss();
     }
 }

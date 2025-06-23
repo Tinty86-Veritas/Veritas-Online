@@ -2,33 +2,46 @@ package com.veritas.veritas.Fragments.SpecialFragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.veritas.veritas.AI.AIRequest;
+import com.veritas.veritas.Activities.MainActivity;
 import com.veritas.veritas.Adapters.RecyclerAdapter;
-import com.veritas.veritas.Exceptions.EmptyUsersList;
-import com.veritas.veritas.Exceptions.NotEnoughPlayers;
+import com.veritas.veritas.Exceptions.EmptyUsersListException;
+import com.veritas.veritas.Exceptions.NotEnoughPlayersException;
 import com.veritas.veritas.Fragments.Dialogs.BottomSheetDialogs.ReactionsBottomSheetDialog;
 import com.veritas.veritas.R;
+import com.veritas.veritas.Util.FragmentWorking;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO: Recall progress indicator after reviving
+
 public class ModeFragment extends Fragment
-        implements RecyclerAdapter.RecyclerAdapterOnLongItemClickListener {
+        implements RecyclerAdapter.RecyclerAdapterOnItemClickListener {
 
     private static final String TAG = "ModeFragment";
+
+    private FragmentActivity activity;
+
+    private OnBackPressedCallback customOnBackPressedCallback;
+
+    private FragmentWorking fw;
 
     private String gameName;
 
@@ -47,7 +60,7 @@ public class ModeFragment extends Fragment
 
     private boolean isRevived = false;
 
-    public ModeFragment(String modeName, String gameName) {
+    public ModeFragment(String gameName, String modeName) {
         this.gameName = gameName;
         this.modeName = modeName;
     }
@@ -61,6 +74,11 @@ public class ModeFragment extends Fragment
 
         recyclerViewHandle();
 
+        Bundle args = getArguments();
+        if (args != null) {
+            isRevived = args.getBoolean("REVIVED_MODE", false);
+        }
+
         if (!isRevived) {
             try {
                 aiRequest = new AIRequest(requireContext(), modeName, gameName);
@@ -73,13 +91,13 @@ public class ModeFragment extends Fragment
 
                 APIHandle();
 
-            } catch (EmptyUsersList e) {
+            } catch (EmptyUsersListException e) {
                 Toast.makeText(requireContext(), "Empty list of players", Toast.LENGTH_SHORT).show();
                 if (isFirstLoad) {
                     initialLoadingIndicator.setVisibility(View.GONE);
                     pullToRefresh.setEnabled(true);
                 }
-            } catch (NotEnoughPlayers e) {
+            } catch (NotEnoughPlayersException e) {
                 Toast.makeText(requireContext(), "At least 2 players are required to play", Toast.LENGTH_SHORT).show();
                 if (isFirstLoad) {
                     initialLoadingIndicator.setVisibility(View.GONE);
@@ -91,6 +109,49 @@ public class ModeFragment extends Fragment
         }
 
         return view;
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        String content = contentList.get(position);
+        ReactionsBottomSheetDialog bottomSheetDialog =
+                new ReactionsBottomSheetDialog(gameName, modeName, content);
+        bottomSheetDialog.show(getParentFragmentManager(), TAG);
+    }
+
+//    public void setIsRevived(boolean isRevived) {
+//        this.isRevived = isRevived;
+//    }
+
+    private void init(View view) {
+        activity = requireActivity();
+
+        fw = new FragmentWorking(TAG, getParentFragmentManager());
+
+        questionsRecycler = view.findViewById(R.id.questions_recycler);
+        initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
+
+        pullToRefresh = view.findViewById(R.id.pullToRefresh);
+
+        customOnBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (activity instanceof MainActivity main) {
+                    main.setModeFragment(null);
+                    fw.setFragment(main.getGameSelectionFragment());
+                }
+            }
+        };
+
+        activity.getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), customOnBackPressedCallback);
+    }
+
+    private void recyclerViewHandle() {
+        final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
+
+        adapter = new RecyclerAdapter(contentList, false, font);
+        adapter.setOnClickListener(this);
+        questionsRecycler.setAdapter(adapter);
     }
 
     private void APIHandle() {
@@ -107,7 +168,7 @@ public class ModeFragment extends Fragment
                     }
 
                     if (contentList.isEmpty()) {
-                        requireActivity().runOnUiThread(() -> {
+                        activity.runOnUiThread(() -> {
                             pullToRefresh.setRefreshing(false);
 
                             if (isFirstLoad) {
@@ -119,10 +180,7 @@ public class ModeFragment extends Fragment
                         });
                         return;
                     }
-
-                    Log.d(TAG, content);
-
-                    requireActivity().runOnUiThread(() -> {
+                    activity.runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         pullToRefresh.setRefreshing(false);
                         if (isFirstLoad) {
@@ -132,63 +190,45 @@ public class ModeFragment extends Fragment
                         }
                     });
 
-                    Log.i(TAG, contentList.toString());
-                } else {
-                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onSuccess callback. UI will not be updated.");
                 }
             }
 
             @Override
             public void onFailure(String error) {
-                Log.w(TAG, "onFailure:\n" + error);
                 if (isAdded()) {
                     if (error.equals("code 429")) {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Reached limit", Toast.LENGTH_LONG).show());
                     } else if (error.equals("timeout")) {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Response time is up", Toast.LENGTH_LONG).show());
                     } else {
-                        requireActivity().runOnUiThread(() ->
+                        activity.runOnUiThread(() ->
                                 Toast.makeText(requireContext(), "Error: " + error, Toast.LENGTH_LONG).show());
                     }
                     pullToRefresh.setRefreshing(false);
                     if (isFirstLoad) {
-                        initialLoadingIndicator.setVisibility(View.GONE);
+                        activity.runOnUiThread(() ->
+                                initialLoadingIndicator.setVisibility(View.GONE));
                         isFirstLoad = false;
                         pullToRefresh.setEnabled(true);
                     }
-                } else {
-                    Log.w(TAG, "Fragment " + TAG + " not attached to activity on onFailure callback. Toast will not be shown.");
                 }
             }
         });
     }
 
     @Override
-    public void onLongItemClick(View view, int position) {
-        String content = contentList.get(position);
-        ReactionsBottomSheetDialog bottomSheetDialog =
-                new ReactionsBottomSheetDialog(gameName, modeName, content);
-        bottomSheetDialog.show(getParentFragmentManager(), TAG);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("SAVED_REVIVED_STATE", isRevived);
     }
 
-    public void setIsRevived(boolean isRevived) {
-        this.isRevived = isRevived;
-    }
-
-    private void init(View view) {
-        questionsRecycler = view.findViewById(R.id.questions_recycler);
-        initialLoadingIndicator = view.findViewById(R.id.initial_loading_indicator);
-
-        pullToRefresh = view.findViewById(R.id.pullToRefresh);
-    }
-
-    private void recyclerViewHandle() {
-        final Typeface font = ResourcesCompat.getFont(requireContext(), R.font.montserrat_medium);
-
-        adapter = new RecyclerAdapter(contentList, false, font);
-        adapter.setOnClickListener(this);
-        questionsRecycler.setAdapter(adapter);
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            isRevived = savedInstanceState.getBoolean("SAVED_REVIVED_STATE", false);
+        }
     }
 }
