@@ -1,7 +1,103 @@
+<!--<resources xmlns:tools="http://schemas.android.com/tools">-->
+<!--    &lt;!&ndash; Base application theme. &ndash;&gt;-->
+<!--    <style name="Base.Theme.Veritas" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--        &lt;!&ndash; Customize your dark theme here. &ndash;&gt;-->
+<!--        &lt;!&ndash; <item name="colorPrimary">@color/my_dark_primary</item> &ndash;&gt;-->
+<!--    </style>-->
+<!--</resources>-->
+
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Базовая тема приложения для темного режима. -->
     <style name="Base.Theme.Veritas" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- Настройка вашей темной темы здесь. -->
+        <!-- Цветовая палитра Material 3 -->
+        <item name="colorPrimary">@color/md_theme_dark_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_dark_onPrimaryContainer</item>
+
+        <item name="colorSecondary">@color/md_theme_dark_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_dark_primaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/md_theme_dark_onPrimaryContainer</item>
+
+        <item name="colorTertiary">@color/md_theme_dark_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_dark_primaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_dark_onPrimaryContainer</item>
+
+        <item name="colorError">@color/md_theme_dark_error</item>
+        <item name="colorOnError">@color/md_theme_dark_onError</item>
+
+        <item name="colorSurface">@color/md_theme_dark_surface</item>
+        <item name="colorOnSurface">@color/md_theme_dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_dark_onSurfaceVariant</item>
+
+        <item name="colorOutline">@color/md_theme_dark_onSurfaceVariant</item>
+
+        <item name="android:colorBackground">@color/md_theme_dark_background</item>
+        <item name="colorOnBackground">@color/md_theme_dark_onBackground</item>
+
+        <!-- Обновление rippleColor для LobbyCardStyle -->
+        <item name="rippleColor">@color/ripple_color_dark</item>
+
+        <!-- Ваши существующие стили, которые также должны использовать атрибуты Material 3 -->
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+    </style>
+
+    <style name="Theme.Veritas" parent="Base.Theme.Veritas" />
+
+    <style name="FunModeStyle">
+        <item name="strokeColor">@color/md_theme_dark_fun</item>
+    </style>
+
+    <style name="SoftModeStyle">
+        <item name="strokeColor">@color/md_theme_dark_soft</item>
+    </style>
+
+    <style name="HotModeStyle">
+        <item name="strokeColor">@color/md_theme_dark_hot</item>
+    </style>
+
+    <style name="ExtremeModeStyle">
+        <item name="strokeColor">@color/md_theme_dark_extreme</item>
+    </style>
+
+    <style name="MadnessModeStyle">
+        <item name="strokeColor">@color/md_theme_dark_madness</item>
+    </style>
+
+<!--    <style name="Theme.Veritas.Fullscreen" parent="Base.Theme.Veritas">-->
+<!--        <item name="android:windowFullscreen">true</item>-->
+<!--        <item name="android:windowContentOverlay">@null</item>-->
+<!--    </style>-->
+
+    <style name="LobbyCardStyle">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="android:layout_marginHorizontal">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="rippleColor">?attr/rippleColor</item>
+    </style>
+
+    <style name="LobbyButton" parent="Widget.Material3.Button">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="LobbyToolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:elevation">8dp</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Material3.HeadlineSmall</item>
+        <item name="titleTextColor">?attr/colorOnPrimary</item>
+        <item name="android:background">?attr/colorPrimary</item>
     </style>
 </resources>

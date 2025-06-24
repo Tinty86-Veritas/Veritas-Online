@@ -2,6 +2,7 @@ package com.veritas.veritas.Fragments.MainFragments;
 
 import static com.veritas.veritas.Util.PublicVariables.getGames;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
@@ -47,12 +49,23 @@ public class GameSelectionFragment extends Fragment
     private void addMaterialCardViews() {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
 
-        // Пример добавления нескольких MaterialCardView
         for (String gameName : gamesNames) {
             // Надуваем макет MaterialCardView
             MaterialCardView cardView = (MaterialCardView) inflater.inflate(R.layout.game_button, linearLayout, false);
 
-            // Находим MaterialTextView внутри MaterialCardView и устанавливаем текст
+            ColorStateList strokeColor;
+            if (gameName.equals(getString(R.string.truth))) {
+                strokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.truth));
+            } else if (gameName.equals(getString(R.string.dare))) {
+                strokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.dare));
+            } else {
+                strokeColor = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.neverEver));
+            }
+
+            cardView.setStrokeColor(strokeColor);
+            int strokeWidth = (int) (3 * requireContext().getResources().getDisplayMetrics().density);
+            cardView.setStrokeWidth(strokeWidth);
+
             MaterialTextView itemTextView = cardView.findViewById(R.id.item);
             if (itemTextView != null) {
                 itemTextView.setText(gameName);
@@ -66,7 +79,6 @@ public class GameSelectionFragment extends Fragment
                 bottomSheetDialog.show(getParentFragmentManager(), TAG);
             });
 
-            // Добавляем MaterialCardView в LinearLayout
             linearLayout.addView(cardView);
         }
     }

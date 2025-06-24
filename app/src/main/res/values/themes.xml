@@ -1,25 +1,119 @@
+<!--<resources xmlns:tools="http://schemas.android.com/tools">-->
+<!--    &lt;!&ndash; Base application theme. &ndash;&gt;-->
+<!--    <style name="Base.Theme.Veritas" parent="Theme.Material3.DayNight.NoActionBar">-->
+<!--        &lt;!&ndash; Customize your light theme here. &ndash;&gt;-->
+<!--        &lt;!&ndash; <item name="colorPrimary">@color/my_light_primary</item> &ndash;&gt;-->
+<!--    </style>-->
+
+<!--    <style name="Theme.Veritas" parent="Base.Theme.Veritas" />-->
+
+<!--    <style name="Theme.Veritas.Fullscreen" parent="Base.Theme.Veritas">-->
+<!--        <item name="android:windowFullscreen">true</item>-->
+<!--        <item name="android:windowContentOverlay">@null</item>-->
+<!--    </style>-->
+
+<!--    <style name="LobbyCardStyle">-->
+<!--        <item name="cardCornerRadius">12dp</item>-->
+<!--        <item name="cardElevation">4dp</item>-->
+<!--        <item name="cardBackgroundColor">@color/surface_variant</item>-->
+<!--        <item name="android:layout_marginHorizontal">16dp</item>-->
+<!--        <item name="android:clickable">true</item>-->
+<!--        <item name="android:focusable">true</item>-->
+<!--        <item name="rippleColor">@color/ripple_color</item>-->
+<!--    </style>-->
+
+<!--    <style name="LobbyButton" parent="Widget.Material3.Button">-->
+<!--        <item name="cornerRadius">24dp</item>-->
+<!--        <item name="android:minHeight">48dp</item>-->
+<!--        <item name="android:textAllCaps">false</item>-->
+<!--        <item name="android:letterSpacing">0</item>-->
+<!--    </style>-->
+
+<!--    <style name="LobbyToolbar" parent="Widget.Material3.Toolbar">-->
+<!--        <item name="android:elevation">8dp</item>-->
+<!--        <item name="titleTextAppearance">@style/TextAppearance.Material3.HeadlineSmall</item>-->
+<!--        <item name="titleTextColor">@color/on_primary</item>-->
+<!--    </style>-->
+<!--</resources>-->
+
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Базовая тема приложения. -->
     <style name="Base.Theme.Veritas" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- Настройка вашей светлой темы здесь. -->
+        <!-- Цветовая палитра Material 3 -->
+        <item name="colorPrimary">@color/md_theme_light_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+
+        <item name="colorSecondary">@color/md_theme_light_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/md_theme_light_primaryContainer</item> <!-- Можно использовать тот же контейнер для единообразия -->
+        <item name="colorOnSecondaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+
+        <item name="colorTertiary">@color/md_theme_light_tertiary</item>
+        <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_light_primaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_light_onPrimaryContainer</item>
+
+        <item name="colorError">@color/md_theme_light_error</item>
+        <item name="colorOnError">@color/md_theme_light_onError</item>
+
+        <item name="colorSurface">@color/md_theme_light_surface</item>
+        <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
+        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
+
+        <item name="colorOutline">@color/md_theme_light_onSurfaceVariant</item> <!-- Цвет обводки, например, для полей ввода -->
+
+        <item name="android:colorBackground">@color/md_theme_light_background</item> <!-- Цвет основного фона окна -->
+        <item name="colorOnBackground">@color/md_theme_light_onBackground</item>
+
+        <!-- Обновление rippleColor для LobbyCardStyle -->
+        <item name="rippleColor">@color/ripple_color_light</item>
+
+        <!-- Ваши существующие стили также должны использовать эти атрибуты Material 3 -->
+        <!-- Например, LobbyCardStyle и LobbyButton -->
+        <item name="cardBackgroundColor">?attr/colorSurface</item> <!-- Используем цвет поверхности из темы -->
     </style>
 
     <style name="Theme.Veritas" parent="Base.Theme.Veritas" />
 
-    <style name="Theme.Veritas.Fullscreen" parent="Base.Theme.Veritas">
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
+<!--    <style name="Theme.Veritas.Fullscreen" parent="Base.Theme.Veritas">-->
+<!--        <item name="android:windowFullscreen">true</item>-->
+<!--        <item name="android:windowContentOverlay">@null</item>-->
+<!--    </style>-->
+
+    <style name="FunModeStyle">
+        <item name="strokeColor">@color/md_theme_light_fun</item>
+    </style>
+
+    <style name="SoftModeStyle">
+        <item name="strokeColor">@color/md_theme_light_soft</item>
+    </style>
+
+    <style name="HotModeStyle">
+        <item name="strokeColor">@color/md_theme_light_hot</item>
+    </style>
+
+    <style name="ExtremeModeStyle">
+        <item name="strokeColor">@color/md_theme_light_extreme</item>
+    </style>
+
+    <style name="MadnessModeStyle">
+        <item name="strokeColor">@color/md_theme_light_madness</item>
     </style>
 
     <style name="LobbyCardStyle">
         <item name="cardCornerRadius">12dp</item>
         <item name="cardElevation">4dp</item>
-        <item name="cardBackgroundColor">@color/surface_variant</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item> <!-- Используйте атрибут темы -->
         <item name="android:layout_marginHorizontal">16dp</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
-        <item name="rippleColor">@color/ripple_color</item>
+        <item name="rippleColor">?attr/rippleColor</item> <!-- Используйте атрибут темы -->
     </style>
 
     <style name="LobbyButton" parent="Widget.Material3.Button">
@@ -27,11 +121,14 @@
         <item name="android:minHeight">48dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0</item>
+        <item name="backgroundTint">?attr/colorPrimary</item> <!-- Цвет фона кнопки -->
+        <item name="android:textColor">?attr/colorOnPrimary</item> <!-- Цвет текста на кнопке -->
     </style>
 
     <style name="LobbyToolbar" parent="Widget.Material3.Toolbar">
         <item name="android:elevation">8dp</item>
         <item name="titleTextAppearance">@style/TextAppearance.Material3.HeadlineSmall</item>
-        <item name="titleTextColor">@color/on_primary</item>
+        <item name="titleTextColor">?attr/colorOnPrimary</item> <!-- Цвет текста тулбара -->
+        <item name="android:background">?attr/colorPrimary</item> <!-- Цвет фона тулбара -->
     </style>
 </resources>

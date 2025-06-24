@@ -140,5 +140,6 @@
     <string name="lobby_have_not_created_yet">Лобби ещё не создано</string>
     <string name="user_not_authorized">Вы не авторизованы</string>
     <string name="comment">Прокомментировать</string>
+    <string name="exit">Выйти из лобби</string>
 
 </resources>
