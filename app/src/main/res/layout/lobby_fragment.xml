@@ -34,7 +34,7 @@
                 app:strokeWidth="0dp"
                 app:cardBackgroundColor="@color/participants_card_bg"
                 app:cardCornerRadius="20dp"
-                app:rippleColor="@color/ripple_color">
+                app:rippleColor="?attr/rippleColor">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:contentDescription="Выйти из лобби"
+                android:contentDescription="@string/exit"
                 app:backgroundTint="@color/error_container"
                 app:icon="@drawable/ic_exit_modern"
                 app:iconGravity="textStart"

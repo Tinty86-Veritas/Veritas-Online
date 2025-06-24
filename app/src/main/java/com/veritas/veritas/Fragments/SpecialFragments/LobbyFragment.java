@@ -137,8 +137,6 @@ public class LobbyFragment extends Fragment {
         layoutManager.setStackFromEnd(true);
         lobbyQuestionRV.setLayoutManager(layoutManager);
 
-
-
         // !!!!!!DEV ONLY!!!!!!
 //        OnBackPressedCallback customOnBackPressedCallback = new OnBackPressedCallback(true) {
 //            @Override
