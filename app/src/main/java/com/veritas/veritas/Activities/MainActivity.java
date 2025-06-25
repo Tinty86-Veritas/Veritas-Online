@@ -97,10 +97,6 @@ public class MainActivity extends AppCompatActivity
                 return true;
 
             } else if (id == R.id.group_id) {
-                /* TODO:
-                    If sharedGroupId is not null lobbyFragment should appear instead of group fragment.
-                    Also app should store isHost to prevent any inadequate app behaviour
-                  */
                 if (lobbyFragment == null) {
                     SharedPreferences sharedPreferences = getSharedPreferences(CURRENT_GROUP_KEY, Context.MODE_PRIVATE);
                     String groupId;
@@ -128,9 +124,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    // TODO: If returns false may be app should automatically call OneTap auth menu
     public boolean canCreateLobby() {
-        // Проверяем accessToken перед созданием лобби
         TokenStorage tokenStorage = new TokenStorage(getApplicationContext());
 
         return tokenStorage.getAccessToken(this) != null;

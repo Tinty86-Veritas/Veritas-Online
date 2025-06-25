@@ -20,6 +20,8 @@
 
         android:orientation="vertical"
 
+        android:paddingBottom="8dp"
+
         android:id="@+id/modes_layout">
     </LinearLayout>
 </LinearLayout>

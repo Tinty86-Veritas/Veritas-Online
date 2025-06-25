@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.veritas.veritas"
-    compileSdk = 35
+    compileSdk = 36
 
     android {
         compileOptions {
@@ -70,7 +70,6 @@ dependencies {
 
     implementation(libs.vkid)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
-    implementation(libs.onetap.xml)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
