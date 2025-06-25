@@ -23,6 +23,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -30,11 +32,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 import com.veritas.veritas.Activities.MainActivity;
+import com.veritas.veritas.Adapters.RecyclerAdapter;
 import com.veritas.veritas.Fragments.SpecialFragments.ModeFragment;
 import com.veritas.veritas.R;
 import com.veritas.veritas.Util.FragmentWorking;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment {
     private static final String TAG = "ModeSelectionBottomSheetDialog";
@@ -42,7 +46,7 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment {
     private FragmentActivity activity;
 
     private String gameName;
-//    private ArrayList<String> items;
+    private ArrayList<String> items;
 
     private LinearLayout linearLayout;
 
@@ -53,8 +57,8 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
-        View view = inflater.inflate(R.layout.mode_selection_bottom_sheet_dialog, container, false);
+        View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
+//        View view = inflater.inflate(R.layout.mode_selection_bottom_sheet_dialog, container, false);
 
         init(view);
 
@@ -64,142 +68,142 @@ public class ModeSelectionBottomSheetDialog extends BottomSheetDialogFragment {
     private void init(View view) {
         activity = requireActivity();
 
-//        items = new ArrayList<>(List.of(
-//                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME + " (16+)", MODE_MADNESS + " (18+)"
-//        ));
+        items = new ArrayList<>(List.of(
+                MODE_FUN, MODE_SOFT, MODE_HOT, MODE_EXTREME + " (16+)", MODE_MADNESS + " (18+)"
+        ));
 
-        linearLayout = view.findViewById(R.id.modes_layout);
+//        linearLayout = view.findViewById(R.id.modes_layout);
+//
+//        addMaterialCardViews();
 
-        addMaterialCardViews();
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
 
-//        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        RecyclerAdapter adapter = new RecyclerAdapter(items);
+
+        adapter.setOnClickListener((RecyclerAdapter.RecyclerAdapterOnItemClickListener)
+                (view1, position) -> {
+            final FragmentWorking fw;
+
+            /*
+            "It is never a bad idea to make code as safe as you can" - someone (probably me :D)
+            So the followed piece of code is for safety ->
+            -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
+            */
+
+            if (activity instanceof MainActivity mainActivity) {
+                fw = new FragmentWorking(
+                        TAG, getParentFragmentManager(), mainActivity);
+            } else {
+                throw new RuntimeException("MainActivity is not current Activity");
+            }
+
+            ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));
+
+            fw.setFragment(modeFragment, requireContext());
+            dismiss();
+        });
+
+        recyclerView.setAdapter(adapter);
+    }
+
+//    private void addMaterialCardViews() {
+//        LayoutInflater inflater = LayoutInflater.from(requireContext());
+//        String[] modes = getModes();
+//        for (String modeName : modes) {
+//            MaterialCardView cardView = (MaterialCardView) inflater.inflate(R.layout.standard_button, linearLayout, false);
 //
-//        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+//            // This call should be before switch case with modes renaming
+////            setModesColors(cardView, modeName);
 //
-//        RecyclerAdapter adapter = new RecyclerAdapter(items);
-//
-//        adapter.setOnClickListener((RecyclerAdapter.RecyclerAdapterOnItemClickListener)
-//                (view1, position) -> {
-//            final FragmentWorking fw;
-//
-//            /*
-//            "It is never a bad idea to make code as safe as you can" - someone (probably me :D)
-//            So the followed piece of code is for safety ->
-//            -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
-//            */
-//
-//            if (activity instanceof MainActivity mainActivity) {
-//                fw = new FragmentWorking(
-//                        TAG, getParentFragmentManager(), mainActivity);
-//            } else {
-//                throw new RuntimeException("MainActivity is not current Activity");
+//            switch (modeName) {
+//                case MODE_EXTREME -> modeName += " (16+)";
+//                case MODE_MADNESS -> modeName += " (18+)";
 //            }
 //
-//            ModeFragment modeFragment = new ModeFragment(gameName, items.get(position));
+//            MaterialTextView itemTextView = cardView.findViewById(R.id.item);
+//            if (itemTextView != null) {
+//                itemTextView.setText(modeName);
+//                itemTextView.setGravity(Gravity.CENTER);
+//            }
 //
-//            fw.setFragment(modeFragment, requireContext());
-//            dismiss();
-//        });
+//            final String finalModeName = modeName;
 //
-//        recyclerView.setAdapter(adapter);
-    }
-
-    private void addMaterialCardViews() {
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        String[] modes = getModes();
-        for (String modeName : modes) {
-            MaterialCardView cardView = (MaterialCardView) inflater.inflate(R.layout.standard_button, linearLayout, false);
-
-            // This call should be before switch case with modes renaming
-//            setModesColors(cardView, modeName);
-
-            switch (modeName) {
-                case MODE_EXTREME -> modeName += " (16+)";
-                case MODE_MADNESS -> modeName += " (18+)";
-            }
-
-            MaterialTextView itemTextView = cardView.findViewById(R.id.item);
-            if (itemTextView != null) {
-                itemTextView.setText(modeName);
-                itemTextView.setGravity(Gravity.CENTER);
-            }
-
-            final String finalModeName = modeName;
-
-            cardView.setOnClickListener(v -> {
-                final FragmentWorking fw;
-
-                /*
-                "It is never a bad idea to make code as safe as you can" - someone (probably me :D)
-                So the followed piece of code is for safety ->
-                -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
-                */
-
-                if (activity instanceof MainActivity mainActivity) {
-                    fw = new FragmentWorking(
-                            TAG, getParentFragmentManager(), mainActivity);
-                } else {
-                    throw new RuntimeException("MainActivity is not current Activity");
-                }
-
-                ModeFragment modeFragment = new ModeFragment(gameName, finalModeName);
-
-                fw.setFragment(modeFragment, requireContext());
-                dismiss();
-            });
-
-            linearLayout.addView(cardView);
-        }
-    }
-
-    private void setModesColors(MaterialCardView cardView, String modeName) {
-        Context context = requireContext();
-        int strokeColor;
-
-        switch (modeName) {
-            case MODE_FUN -> strokeColor = getStrokeColorFromStyle(R.style.FunModeStyle);
-            case MODE_SOFT -> strokeColor = getStrokeColorFromStyle(R.style.SoftModeStyle);
-            case MODE_HOT -> strokeColor = getStrokeColorFromStyle(R.style.HotModeStyle);
-            case MODE_EXTREME -> strokeColor = getStrokeColorFromStyle(R.style.ExtremeModeStyle);
-            case MODE_MADNESS -> strokeColor = getStrokeColorFromStyle(R.style.MadnessModeStyle);
-            default ->  {
-                TypedValue typedValue = new TypedValue();
-                context.getTheme().resolveAttribute(com.google.android.material.R.attr.colorOutline, typedValue, true);
-                strokeColor = typedValue.data;
-            }
-        }
-
-        cardView.setStrokeColor(strokeColor);
-        int strokeWidth = (int) (2 * requireContext().getResources().getDisplayMetrics().density);
-        cardView.setStrokeWidth(strokeWidth);
-    }
-
-    /**
-     * Helper-метод для получения strokeColor из заданного стиля,
-     * используя MaterialCardView's declare-styleable.
-     *
-     * @param styleResId Идентификатор ресурса стиля.
-     * @return Значение цвета strokeColor или 0, если не найдено.
-     */
-    private int getStrokeColorFromStyle(@StyleRes int styleResId) {
-        Context context = requireContext();
-        TypedArray typedArray = null;
-        int strokeColor = 0;
-
-        try {
-            typedArray = context.obtainStyledAttributes(styleResId, com.google.android.material.R.styleable.MaterialCardView);
-
-            strokeColor = typedArray.getColor(com.google.android.material.R.styleable.MaterialCardView_strokeColor, 0);
-
-        } catch (Exception e) {
-            Log.e(TAG, "Ошибка при получении strokeColor из стиля " + getResources().getResourceEntryName(styleResId) + ": ", e);
-        } finally {
-            if (typedArray != null) {
-                typedArray.recycle();
-            }
-        }
-        return strokeColor;
-    }
+//            cardView.setOnClickListener(v -> {
+//                final FragmentWorking fw;
+//
+//                /*
+//                "It is never a bad idea to make code as safe as you can" - someone (probably me :D)
+//                So the followed piece of code is for safety ->
+//                -> even considering that my app is using (at least specifically at the moment when I am writing this (11:38 pm...))
+//                */
+//
+//                if (activity instanceof MainActivity mainActivity) {
+//                    fw = new FragmentWorking(
+//                            TAG, getParentFragmentManager(), mainActivity);
+//                } else {
+//                    throw new RuntimeException("MainActivity is not current Activity");
+//                }
+//
+//                ModeFragment modeFragment = new ModeFragment(gameName, finalModeName);
+//
+//                fw.setFragment(modeFragment, requireContext());
+//                dismiss();
+//            });
+//
+//            linearLayout.addView(cardView);
+//        }
+//    }
+//
+//    private void setModesColors(MaterialCardView cardView, String modeName) {
+//        Context context = requireContext();
+//        int strokeColor;
+//
+//        switch (modeName) {
+//            case MODE_FUN -> strokeColor = getStrokeColorFromStyle(R.style.FunModeStyle);
+//            case MODE_SOFT -> strokeColor = getStrokeColorFromStyle(R.style.SoftModeStyle);
+//            case MODE_HOT -> strokeColor = getStrokeColorFromStyle(R.style.HotModeStyle);
+//            case MODE_EXTREME -> strokeColor = getStrokeColorFromStyle(R.style.ExtremeModeStyle);
+//            case MODE_MADNESS -> strokeColor = getStrokeColorFromStyle(R.style.MadnessModeStyle);
+//            default ->  {
+//                TypedValue typedValue = new TypedValue();
+//                context.getTheme().resolveAttribute(com.google.android.material.R.attr.colorOutline, typedValue, true);
+//                strokeColor = typedValue.data;
+//            }
+//        }
+//
+//        cardView.setStrokeColor(strokeColor);
+//        int strokeWidth = (int) (2 * requireContext().getResources().getDisplayMetrics().density);
+//        cardView.setStrokeWidth(strokeWidth);
+//    }
+//
+//    /**
+//     * Helper-метод для получения strokeColor из заданного стиля,
+//     * используя MaterialCardView's declare-styleable.
+//     *
+//     * @param styleResId Идентификатор ресурса стиля.
+//     * @return Значение цвета strokeColor или 0, если не найдено.
+//     */
+//    private int getStrokeColorFromStyle(@StyleRes int styleResId) {
+//        Context context = requireContext();
+//        TypedArray typedArray = null;
+//        int strokeColor = 0;
+//
+//        try {
+//            typedArray = context.obtainStyledAttributes(styleResId, com.google.android.material.R.styleable.MaterialCardView);
+//
+//            strokeColor = typedArray.getColor(com.google.android.material.R.styleable.MaterialCardView_strokeColor, 0);
+//
+//        } catch (Exception e) {
+//            Log.e(TAG, "Ошибка при получении strokeColor из стиля " + getResources().getResourceEntryName(styleResId) + ": ", e);
+//        } finally {
+//            if (typedArray != null) {
+//                typedArray.recycle();
+//            }
+//        }
+//        return strokeColor;
+//    }
 
     @Override
     public void onStart() {

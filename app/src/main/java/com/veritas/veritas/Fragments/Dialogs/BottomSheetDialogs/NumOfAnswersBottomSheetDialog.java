@@ -29,9 +29,9 @@ public class NumOfAnswersBottomSheetDialog extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.num_of_answers_bottom_sheet_dialog_fragment, container, false);
+        View view = inflater.inflate(R.layout.standard_bottom_sheet_dialog_fragment, container, false);
 
-        RecyclerView numOfAnswersRecyclerView = view.findViewById(R.id.modes_num_of_answers_rv);
+        RecyclerView numOfAnswersRecyclerView = view.findViewById(R.id.recycler_view);
 
         NumOfAnswersRecyclerAdapter num_of_answers_adapter =
                 new NumOfAnswersRecyclerAdapter(requireContext(), key);
